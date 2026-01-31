@@ -129,3 +129,35 @@ E2E tests using Playwright in `e2e/app.spec.ts`. Tests run with 1 worker to avoi
 
 **Run tests before deploying** - if all pass, site works.
 
+## Memory System
+
+Claude Code uses a two-layer memory system to maintain context across sessions.
+
+### Memory Files
+
+- `.claude/MEMORY.md` - Long-term curated knowledge (user preferences, important decisions, key contacts)
+- `.claude/memory/YYYY-MM-DD.md` - Daily logs (session notes, running narrative)
+
+### Every Session
+
+At the start of each session:
+1. Read `.claude/MEMORY.md` for long-term context
+2. Read today's daily log (`.claude/memory/YYYY-MM-DD.md`) if it exists
+3. Read yesterday's daily log for recent context
+
+### When to Write to Memory
+
+| Trigger | Destination |
+|---------|-------------|
+| User says "remember this" or similar | `.claude/memory/YYYY-MM-DD.md` |
+| Day-to-day notes, session activities | `.claude/memory/YYYY-MM-DD.md` |
+| Durable facts, user preferences, important decisions | `.claude/MEMORY.md` |
+| Lessons learned about this codebase | `CLAUDE.md` |
+
+### Writing Guidelines
+
+- Include context: who, what, when, why
+- For daily logs: append with timestamp headers (e.g., `## 2:30 PM - Topic`)
+- For long-term memory: organize under appropriate sections
+- Confirm to user when something is recorded
+
