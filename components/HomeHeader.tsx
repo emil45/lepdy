@@ -19,42 +19,27 @@ export default function HomeHeader({ locale }: HomeHeaderProps) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const { getFlag } = useFeatureFlagContext();
-  const isRTL = locale === 'he';
   const showStickersButton = getFlag('showStickersButton');
 
   return (
     <>
-      <Box
-        sx={{
-          position: 'absolute',
-          top: { xs: '10px', sm: '20px' },
-          ...(isRTL ? { left: { xs: '10px', sm: '20px' } } : { right: { xs: '10px', sm: '20px' } }),
-          zIndex: 10,
-        }}
-      >
-        <RoundFunButton onClick={() => setOpen(true)}>
-          <SettingsIcon />
-        </RoundFunButton>
-      </Box>
-      {showStickersButton && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: { xs: '10px', sm: '20px' },
-            ...(isRTL ? { right: { xs: '10px', sm: '20px' } } : { left: { xs: '10px', sm: '20px' } }),
-            zIndex: 10,
-            display: 'flex',
-            gap: { xs: '8px', sm: '12px' },
-          }}
-        >
-          <RoundFunButton onClick={() => router.push(getLanguageSpecificRoute('/stickers', locale))}>
-            <EmojiEventsIcon />
-          </RoundFunButton>
-          <RoundFunButton onClick={() => router.push(getLanguageSpecificRoute('/my-words', locale))}>
-            <MenuBookIcon />
+      <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+        {showStickersButton && (
+          <Box sx={{ display: 'flex', gap: { xs: 1, sm: 1.5 } }}>
+            <RoundFunButton onClick={() => router.push(getLanguageSpecificRoute('/stickers', locale))}>
+              <EmojiEventsIcon />
+            </RoundFunButton>
+            <RoundFunButton onClick={() => router.push(getLanguageSpecificRoute('/my-words', locale))}>
+              <MenuBookIcon />
+            </RoundFunButton>
+          </Box>
+        )}
+        <Box sx={{ marginInlineStart: 'auto' }}>
+          <RoundFunButton onClick={() => setOpen(true)}>
+            <SettingsIcon />
           </RoundFunButton>
         </Box>
-      )}
+      </Box>
       <SettingsDrawer open={open} toggleDrawer={setOpen} />
     </>
   );

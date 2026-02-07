@@ -37,7 +37,7 @@ export default async function HomePage({ params }: Props) {
         display="flex"
         flexDirection="column"
         alignItems="center"
-        sx={{ pt: { xs: 8, sm: 6 } }}
+        sx={{ pt: 2 }}
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
           <FunButton to="/letters" text={t('home.buttons.letters')} />

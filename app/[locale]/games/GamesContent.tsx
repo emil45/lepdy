@@ -11,17 +11,17 @@ export default function GamesContent() {
   const t = useTranslations();
 
   return (
-    <Box sx={{ position: 'relative' }}>
+    <Box>
       <PageHeader />
-      <PageIntro pageName="games" />
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          pt: { xs: 8, sm: 6 },
-        }}
-      >
+      <Box sx={{ pt: 2 }}>
+        <PageIntro pageName="games" />
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
           <FunButton to="/games/simon-game" text={t('games.buttons.simon')} />
           <FunButton to="/games/sound-matching" text={t('games.buttons.soundMatching')} />
@@ -32,6 +32,7 @@ export default function GamesContent() {
           <FunButton to="/games/guess-game" text={t('games.buttons.guessGame')} />
           <FunButton to="/games/counting-game" text={t('games.buttons.countingGame')} />
           {/* letter-tracing game disabled - needs proper implementation */}
+        </Box>
         </Box>
       </Box>
     </Box>
