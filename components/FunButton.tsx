@@ -18,6 +18,14 @@ interface FunButtonProps {
   paddingX?: number;
 }
 
+function darkenColor(hex: string, factor: number): string {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const r = Math.round(((num >> 16) & 0xFF) * factor);
+  const g = Math.round(((num >> 8) & 0xFF) * factor);
+  const b = Math.round((num & 0xFF) * factor);
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+}
+
 const FunButton: React.FC<FunButtonProps> = ({
   text,
   to,
@@ -28,6 +36,9 @@ const FunButton: React.FC<FunButtonProps> = ({
   ...rest
 }) => {
   const locale = useLocale();
+  const bg = backgroundColor || '#f74572';
+  const edgeMid = darkenColor(bg, 0.68);
+  const edgeDark = darkenColor(bg, 0.38);
 
   const commonStyles = (theme: any) => ({
     width: '100%',
@@ -57,7 +68,7 @@ const FunButton: React.FC<FunButtonProps> = ({
       width: '100%',
       height: '100%',
       borderRadius: '12px',
-      background: 'linear-gradient(to left, #5e1c32 0%, #a82f57 8%, #a82f57 92%, #5e1c32 100%)',
+      background: `linear-gradient(to left, ${edgeDark} 0%, ${edgeMid} 8%, ${edgeMid} 92%, ${edgeDark} 100%)`,
     },
     '& .front': {
       display: 'block',
@@ -67,7 +78,7 @@ const FunButton: React.FC<FunButtonProps> = ({
       fontSize: fontSize ? `${fontSize}px` : { xs: '24px', sm: '30px', md: '40px' },
       padding: `12px ${paddingX || 30}px`,
       borderRadius: '12px',
-      background: backgroundColor || '#f74572',
+      background: bg,
       willChange: 'transform',
       transform: 'translateY(-4px)',
       transition: 'transform 600ms cubic-bezier(.3, .7, .4, 1)',

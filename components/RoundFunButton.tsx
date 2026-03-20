@@ -26,6 +26,7 @@ const RoundFunButton: React.FC<RoundFunButtonProps> = (props) => {
     outlineOffset: '4px',
     transition: 'filter 250ms',
     minWidth: 0,
+    flexShrink: 0,
     '& .shadow': {
       position: 'absolute',
       width: 'inherit',
@@ -46,7 +47,9 @@ const RoundFunButton: React.FC<RoundFunButtonProps> = (props) => {
     '& .front': {
       width: 'inherit',
       height: 'inherit',
-      pt: `15px`,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
       borderRadius: `50%`,
       background: props.backgroundColor || '#f74572',
       willChange: 'transform',

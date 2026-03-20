@@ -485,20 +485,24 @@ export default function LetterRainPage() {
 
       {/* Mode Selection */}
       <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-        <FunButton
-          text={t('games.letterRain.freePlay')}
-          onClick={() => setGameMode('freeplay')}
-          backgroundColor={gameMode === 'freeplay' ? '#4CAF50' : '#9E9E9E'}
-          fontSize={18}
-          paddingX={16}
-        />
-        <FunButton
-          text={t('games.letterRain.challenge')}
-          onClick={() => setGameMode('challenge')}
-          backgroundColor={gameMode === 'challenge' ? '#FF9800' : '#9E9E9E'}
-          fontSize={18}
-          paddingX={16}
-        />
+        <Box sx={{ opacity: gameMode === 'freeplay' ? 1 : 0.5, transition: 'opacity 200ms' }}>
+          <FunButton
+            text={t('games.letterRain.freePlay')}
+            onClick={() => setGameMode('freeplay')}
+            backgroundColor="#4CAF50"
+            fontSize={18}
+            paddingX={16}
+          />
+        </Box>
+        <Box sx={{ opacity: gameMode === 'challenge' ? 1 : 0.5, transition: 'opacity 200ms' }}>
+          <FunButton
+            text={t('games.letterRain.challenge')}
+            onClick={() => setGameMode('challenge')}
+            backgroundColor="#FF9800"
+            fontSize={18}
+            paddingX={16}
+          />
+        </Box>
       </Box>
 
       {/* Global High Score for Challenge Mode */}

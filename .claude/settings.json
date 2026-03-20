@@ -1,45 +1,40 @@
 {
-  "statusLine": {
-    "type": "command",
-    "command": ".claude/statusline.sh"
-  },
   "permissions": {
     "allow": [
       "WebFetch",
       "WebSearch",
-
       "Bash(npm *)",
       "Bash(npx *)",
-
       "Bash(git *)",
       "Bash(gh *)",
-
       "Bash(ls *)",
       "Bash(find *)",
       "Bash(grep *)",
       "Bash(head *)",
       "Bash(wc *)",
       "Bash(tree *)",
-
       "Bash(mv *)",
       "Bash(rm *)",
       "Bash(cp *)",
       "Bash(mkdir *)",
-
       "Bash(curl *)",
       "Bash(ffmpeg *)",
       "Bash(lsof *)",
       "Bash(pkill *)",
       "Bash(xargs kill -9)",
-
       "Bash(claude *)",
-
       "mcp__monday-mcp__*",
       "mcp__amplitude__*",
       "mcp__playwright__*"
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": ".claude/statusline-command.sh",
+    "padding": 0
+  },
   "enabledPlugins": {
-    "pr-review-toolkit@claude-plugins-official": true
+    "pr-review-toolkit@claude-plugins-official": true,
+    "telegram@claude-plugins-official": true
   }
 }
