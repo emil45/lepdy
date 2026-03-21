@@ -44,6 +44,36 @@ test.describe('Game pages load', () => {
   }
 });
 
+test.describe('Chess game shell', () => {
+  test('chess game button visible on games page', async ({ page }) => {
+    await page.goto('/games');
+    await expect(page.locator('a[href="/games/chess-game"], button:has-text("שחמט")')).toBeVisible();
+  });
+
+  test('level map shows three levels', async ({ page }) => {
+    await page.goto('/games/chess-game');
+    const levelCards = page.locator('[data-testid="level-card"]');
+    await expect(levelCards).toHaveCount(3);
+  });
+
+  test('back button navigates to games page', async ({ page }) => {
+    await page.goto('/games/chess-game');
+    await page.locator('a[href="/games"]').first().click();
+    await expect(page).toHaveURL(/\/games$/);
+  });
+
+  test('progress persists across reload', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('lepdy_chess_progress', JSON.stringify({
+        completedLevels: [1],
+        currentLevel: 2
+      }));
+    });
+    await page.goto('/games/chess-game');
+    await expect(page.locator('[data-testid="level-card-completed"]').first()).toBeVisible();
+  });
+});
+
 test.describe('Info pages load', () => {
   const pages = ['learn', 'about', 'safety', 'contact'];
   for (const p of pages) {
