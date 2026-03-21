@@ -7,12 +7,12 @@
 
 ### Board & Rendering
 
-- [ ] **BOARD-01**: Classic 8x8 chess board renders using react-chessboard with clean, colorful pieces
-- [ ] **BOARD-02**: Board squares are 56px+ minimum for tablet touch targets (ages 5-9)
-- [ ] **BOARD-03**: Tapping a piece highlights all valid squares it can move to
-- [ ] **BOARD-04**: Board uses tap-select-then-tap-destination interaction (no drag-and-drop)
-- [ ] **BOARD-05**: Board renders correctly in RTL (Hebrew) locale — explicitly set `direction: ltr` on board container
-- [ ] **BOARD-06**: Board loads without SSR hydration crash — use `next/dynamic` with `ssr: false`
+- [x] **BOARD-01**: Classic 8x8 chess board renders using react-chessboard with clean, colorful pieces
+- [x] **BOARD-02**: Board squares are 56px+ minimum for tablet touch targets (ages 5-9)
+- [x] **BOARD-03**: Tapping a piece highlights all valid squares it can move to
+- [x] **BOARD-04**: Board uses tap-select-then-tap-destination interaction (no drag-and-drop)
+- [x] **BOARD-05**: Board renders correctly in RTL (Hebrew) locale — explicitly set `direction: ltr` on board container
+- [x] **BOARD-06**: Board loads without SSR hydration crash — use `next/dynamic` with `ssr: false`
 
 ### Piece Introduction (Level 1)
 
@@ -90,12 +90,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BOARD-01 | Phase 2 | Pending |
-| BOARD-02 | Phase 2 | Pending |
-| BOARD-03 | Phase 2 | Pending |
-| BOARD-04 | Phase 2 | Pending |
-| BOARD-05 | Phase 2 | Pending |
-| BOARD-06 | Phase 2 | Pending |
+| BOARD-01 | Phase 2 | Complete |
+| BOARD-02 | Phase 2 | Complete |
+| BOARD-03 | Phase 2 | Complete |
+| BOARD-04 | Phase 2 | Complete |
+| BOARD-05 | Phase 2 | Complete |
+| BOARD-06 | Phase 2 | Complete |
 | INTRO-01 | Phase 4 | Pending |
 | INTRO-02 | Phase 4 | Pending |
 | INTRO-03 | Phase 4 | Pending |

@@ -47,7 +47,7 @@ Plans:
   5. Interaction model is tap-select then tap-destination — no drag-and-drop required
 **Plans**: 2 plans
 Plans:
-- [ ] 02-01-PLAN.md — Board component with useChessGame hook, react-chessboard rendering, and SSR-safe wrapper
+- [x] 02-01-PLAN.md — Board component with useChessGame hook, react-chessboard rendering, and SSR-safe wrapper
 - [ ] 02-02-PLAN.md — Chess game page route, E2E test, and visual verification
 
 ### Phase 3: Game Shell
@@ -104,7 +104,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 0/2 | Planning complete | - |
-| 2. Board Infrastructure | 0/2 | Planning complete | - |
+| 2. Board Infrastructure | 1/2 | In Progress|  |
 | 3. Game Shell | 0/? | Not started | - |
 | 4. Level 1 — Piece Introduction | 0/? | Not started | - |
 | 5. Level 2 — Movement Puzzles | 0/? | Not started | - |

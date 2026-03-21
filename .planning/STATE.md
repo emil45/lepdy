@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 01-02-PLAN.md
-last_updated: "2026-03-21T20:13:34.992Z"
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-03-21T20:40:50.762Z"
 progress:
   total_phases: 6
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 4
+  completed_plans: 3
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 01 — foundation
+**Current focus:** Phase 02 — board-infrastructure
 
 ## Current Position
 
-Phase: 2
-Plan: Not started
+Phase: 02 (board-infrastructure) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Plan: Not started
 *Updated after each plan completion*
 | Phase 01 P01 | 2min | 2 tasks | 4 files |
 | Phase 01 P02 | 2min | 2 tasks | 1 files |
+| Phase 02 P01 | 4min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -62,6 +63,8 @@ Recent decisions affecting current work:
 - [Phase 01]: Chess pieces use own ChessPieceId type, not ModelsTypesEnum - game concept vs learning category
 - [Phase 01]: Translation namespace chessGame.{pieces|levels|ui}.* established for all chess strings
 - [Phase 01]: FEN puzzle data uses piece-placement-only format (no castling/en-passant fields)
+- [Phase 02]: Used ref-based Chess instance with FEN state for React render cycle (useRef + useState pattern)
+- [Phase 02]: react-chessboard v5 uses options prop API, not flat props — legalCaptures tracked in hook state to avoid ref access during render
 
 ### Pending Todos
 
@@ -74,6 +77,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-21T20:10:40.380Z
-Stopped at: Completed 01-02-PLAN.md
+Last session: 2026-03-21T20:40:50.761Z
+Stopped at: Completed 02-01-PLAN.md
 Resume file: None
