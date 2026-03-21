@@ -48,7 +48,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 02-01-PLAN.md — Board component with useChessGame hook, react-chessboard rendering, and SSR-safe wrapper
-- [ ] 02-02-PLAN.md — Chess game page route, E2E test, and visual verification
+- [x] 02-02-PLAN.md — Chess game page route, E2E test, and visual verification
 
 ### Phase 3: Game Shell
 **Goal**: The chess game is reachable from the games list, has a working level map, and progress persists across sessions
