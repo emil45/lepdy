@@ -22,6 +22,7 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 ### Active
 
 - [ ] Classic 8x8 chess board rendered for kids (clean, colorful, Lepdy-style)
+- [x] Chess piece data structures with Hebrew names and audio path references — Validated in Phase 1: Foundation
 - [ ] All 6 chess pieces with Hebrew names, audio pronunciation, and visual display
 - [ ] Level-based progression system (learn pieces → movement puzzles → capture puzzles)
 - [ ] Level 1: Learn each piece — name, appearance, Hebrew audio
@@ -31,6 +32,7 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 - [ ] Adaptive difficulty for ages 5-9
 - [ ] Game integrates into existing /games route and games list
 - [ ] Audio for Hebrew piece names (like other Lepdy categories)
+- [x] Chess i18n translation keys (Hebrew, English, Russian) — Validated in Phase 1: Foundation
 - [ ] i18n support (Hebrew, English, Russian) via existing next-intl setup
 
 ### Out of Scope
@@ -86,4 +88,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-21 after initialization*
+*Last updated: 2026-03-21 after Phase 1: Foundation complete*
