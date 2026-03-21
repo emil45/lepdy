@@ -39,9 +39,9 @@
 
 ### Progression System
 
-- [ ] **PROG-01**: Levels unlock sequentially — must complete previous level to access next
-- [ ] **PROG-02**: Visual progress indicator shows which levels are completed (checkmarks/stars)
-- [ ] **PROG-03**: Progress is saved to localStorage and persists across sessions
+- [x] **PROG-01**: Levels unlock sequentially — must complete previous level to access next
+- [x] **PROG-02**: Visual progress indicator shows which levels are completed (checkmarks/stars)
+- [x] **PROG-03**: Progress is saved to localStorage and persists across sessions
 - [ ] **PROG-04**: Level map screen shows all levels with locked/unlocked/completed state
 
 ### Feedback & Polish
@@ -52,10 +52,10 @@
 
 ### Integration
 
-- [ ] **INTG-01**: Chess game appears in the existing /games list page
+- [x] **INTG-01**: Chess game appears in the existing /games list page
 - [ ] **INTG-02**: Game route follows existing pattern: `app/[locale]/games/chess-game/`
 - [x] **INTG-03**: i18n support for Hebrew (default), English, Russian via next-intl
-- [ ] **INTG-04**: Game fits Lepdy's visual language (MUI theming, pastel colors)
+- [x] **INTG-04**: Game fits Lepdy's visual language (MUI theming, pastel colors)
 - [ ] **INTG-05**: Back button navigates to /games (matching other game pages)
 - [x] **INTG-06**: Audio file paths reference `/public/audio/chess/he/*.mp3` — files added later
 
@@ -110,17 +110,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CAPT-02 | Phase 6 | Pending |
 | CAPT-03 | Phase 6 | Pending |
 | CAPT-04 | Phase 6 | Pending |
-| PROG-01 | Phase 3 | Pending |
-| PROG-02 | Phase 3 | Pending |
-| PROG-03 | Phase 3 | Pending |
+| PROG-01 | Phase 3 | Complete |
+| PROG-02 | Phase 3 | Complete |
+| PROG-03 | Phase 3 | Complete |
 | PROG-04 | Phase 3 | Pending |
 | FEED-01 | Phase 5 | Pending |
 | FEED-02 | Phase 5 | Pending |
 | FEED-03 | Phase 5 | Pending |
-| INTG-01 | Phase 3 | Pending |
+| INTG-01 | Phase 3 | Complete |
 | INTG-02 | Phase 3 | Pending |
 | INTG-03 | Phase 1 | Complete |
-| INTG-04 | Phase 3 | Pending |
+| INTG-04 | Phase 3 | Complete |
 | INTG-05 | Phase 3 | Pending |
 | INTG-06 | Phase 1 | Complete |
 
