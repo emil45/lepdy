@@ -45,7 +45,10 @@ Plans:
   3. Board renders with correct file orientation (a-file on left) when the page locale is Hebrew RTL
   4. Tapping a piece on the board highlights all squares it can legally move to
   5. Interaction model is tap-select then tap-destination — no drag-and-drop required
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 02-01-PLAN.md — Board component with useChessGame hook, react-chessboard rendering, and SSR-safe wrapper
+- [ ] 02-02-PLAN.md — Chess game page route, E2E test, and visual verification
 
 ### Phase 3: Game Shell
 **Goal**: The chess game is reachable from the games list, has a working level map, and progress persists across sessions
@@ -101,7 +104,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 0/2 | Planning complete | - |
-| 2. Board Infrastructure | 0/? | Not started | - |
+| 2. Board Infrastructure | 0/2 | Planning complete | - |
 | 3. Game Shell | 0/? | Not started | - |
 | 4. Level 1 — Piece Introduction | 0/? | Not started | - |
 | 5. Level 2 — Movement Puzzles | 0/? | Not started | - |
