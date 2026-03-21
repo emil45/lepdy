@@ -30,7 +30,8 @@
       "countingGame": "счёт 🔢",
       "letterRain": "дождь букв 🎈",
       "soundMatching": "звук и буква 🔊",
-      "letterTracing": "обводка букв ✏️"
+      "letterTracing": "обводка букв ✏️",
+      "chessGame": "♟️ Шахматы"
     },
     "letterRain": {
       "title": "Дождь Букв",

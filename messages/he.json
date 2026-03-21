@@ -30,7 +30,8 @@
       "countingGame": "🔢 משחק הספירה",
       "letterRain": "🎈 גשם אותיות",
       "soundMatching": "🔊 התאמת צלילים",
-      "letterTracing": "✏️ כתיבת אותיות"
+      "letterTracing": "✏️ כתיבת אותיות",
+      "chessGame": "♟️ שחמט"
     },
     "letterRain": {
       "title": "גשם אותיות",
