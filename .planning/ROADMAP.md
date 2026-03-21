@@ -32,7 +32,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. Audio paths reference expected files even when the MP3 files themselves do not yet exist — game does not crash on missing audio
 **Plans**: 2 plans
 Plans:
-- [ ] 01-01-PLAN.md — Chess piece data, types, and i18n translations for all 3 locales
+- [x] 01-01-PLAN.md — Chess piece data, types, and i18n translations for all 3 locales
 - [ ] 01-02-PLAN.md — Movement and capture puzzle data with curated FEN positions
 
 ### Phase 2: Board Infrastructure

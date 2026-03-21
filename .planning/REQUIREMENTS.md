@@ -54,10 +54,10 @@
 
 - [ ] **INTG-01**: Chess game appears in the existing /games list page
 - [ ] **INTG-02**: Game route follows existing pattern: `app/[locale]/games/chess-game/`
-- [ ] **INTG-03**: i18n support for Hebrew (default), English, Russian via next-intl
+- [x] **INTG-03**: i18n support for Hebrew (default), English, Russian via next-intl
 - [ ] **INTG-04**: Game fits Lepdy's visual language (MUI theming, pastel colors)
 - [ ] **INTG-05**: Back button navigates to /games (matching other game pages)
-- [ ] **INTG-06**: Audio file paths reference `/public/audio/chess/he/*.mp3` — files added later
+- [x] **INTG-06**: Audio file paths reference `/public/audio/chess/he/*.mp3` — files added later
 
 ## v2 Requirements
 
@@ -119,10 +119,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FEED-03 | Phase 5 | Pending |
 | INTG-01 | Phase 3 | Pending |
 | INTG-02 | Phase 3 | Pending |
-| INTG-03 | Phase 1 | Pending |
+| INTG-03 | Phase 1 | Complete |
 | INTG-04 | Phase 3 | Pending |
 | INTG-05 | Phase 3 | Pending |
-| INTG-06 | Phase 1 | Pending |
+| INTG-06 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 33 total
