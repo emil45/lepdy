@@ -1,16 +1,18 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
-import { Chess, Square } from 'chess.js';
+import { Chess, Square, Piece } from 'chess.js';
 
 export interface ChessGameState {
   fen: string;
   selectedSquare: Square | null;
   legalMoves: Square[];
+  legalCaptures: Square[];
   selectSquare: (square: Square) => void;
   makeMove: (from: Square, to: Square) => boolean;
   reset: (fen?: string) => void;
-  game: Chess;
+  getSquarePiece: (square: Square) => Piece | null;
+  getGame: () => Chess;
 }
 
 const DEFAULT_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
@@ -21,6 +23,7 @@ export function useChessGame(initialFen?: string): ChessGameState {
   const [fen, setFen] = useState(startFen);
   const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
   const [legalMoves, setLegalMoves] = useState<Square[]>([]);
+  const [legalCaptures, setLegalCaptures] = useState<Square[]>([]);
 
   const makeMove = useCallback((from: Square, to: Square): boolean => {
     try {
@@ -28,6 +31,7 @@ export function useChessGame(initialFen?: string): ChessGameState {
       setFen(gameRef.current.fen());
       setSelectedSquare(null);
       setLegalMoves([]);
+      setLegalCaptures([]);
       return true;
     } catch {
       return false;
@@ -47,6 +51,7 @@ export function useChessGame(initialFen?: string): ChessGameState {
     if (selectedSquare === square) {
       setSelectedSquare(null);
       setLegalMoves([]);
+      setLegalCaptures([]);
       return;
     }
 
@@ -56,12 +61,14 @@ export function useChessGame(initialFen?: string): ChessGameState {
       setSelectedSquare(square);
       const moves = game.moves({ square, verbose: true });
       setLegalMoves(moves.map((m) => m.to as Square));
+      setLegalCaptures(moves.filter((m) => m.captured).map((m) => m.to as Square));
       return;
     }
 
     // Empty square or opponent piece with nothing selected — do nothing
     setSelectedSquare(null);
     setLegalMoves([]);
+    setLegalCaptures([]);
   }, [selectedSquare, legalMoves, makeMove]);
 
   const reset = useCallback((newFen?: string) => {
@@ -70,15 +77,26 @@ export function useChessGame(initialFen?: string): ChessGameState {
     setFen(resetFen);
     setSelectedSquare(null);
     setLegalMoves([]);
+    setLegalCaptures([]);
   }, [startFen]);
+
+  const getSquarePiece = useCallback((square: Square): Piece | null => {
+    return gameRef.current.get(square) || null;
+  }, []);
+
+  const getGame = useCallback((): Chess => {
+    return gameRef.current;
+  }, []);
 
   return {
     fen,
     selectedSquare,
     legalMoves,
+    legalCaptures,
     selectSquare,
     makeMove,
     reset,
-    game: gameRef.current,
+    getSquarePiece,
+    getGame,
   };
 }
