@@ -35,7 +35,7 @@ test.describe('Games page', () => {
 
 test.describe('Game pages load', () => {
   // letter-tracing disabled - needs proper implementation
-  const games = ['simon-game', 'guess-game', 'letter-rain', 'memory-match-game', 'speed-challenge', 'word-builder', 'sound-matching', 'counting-game'];
+  const games = ['simon-game', 'guess-game', 'letter-rain', 'memory-match-game', 'speed-challenge', 'word-builder', 'sound-matching', 'counting-game', 'chess-game'];
   for (const game of games) {
     test(`${game} page loads`, async ({ page }) => {
       await page.goto(`/games/${game}`);
