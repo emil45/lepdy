@@ -60,7 +60,10 @@ Plans:
   3. The back button on the chess game navigates to `/games`
   4. Progress (which levels are completed) is saved to localStorage and survives a page reload
   5. Completing a level unlocks the next level on the map — locked levels cannot be entered
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 03-01-PLAN.md — useChessProgress hook, games list chess button, translation keys
+- [ ] 03-02-PLAN.md — Level map UI in ChessGameContent, E2E tests, visual verification
 
 ### Phase 4: Level 1 — Piece Introduction
 **Goal**: A child can step through all 6 chess pieces, see each piece's image and Hebrew name, and hear the pronunciation
@@ -105,7 +108,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Foundation | 0/2 | Planning complete | - |
 | 2. Board Infrastructure | 1/2 | In Progress|  |
-| 3. Game Shell | 0/? | Not started | - |
+| 3. Game Shell | 0/2 | Planning complete | - |
 | 4. Level 1 — Piece Introduction | 0/? | Not started | - |
 | 5. Level 2 — Movement Puzzles | 0/? | Not started | - |
 | 6. Level 3 — Capture Puzzles | 0/? | Not started | - |
