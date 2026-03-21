@@ -123,6 +123,33 @@
       "traceHint": "עקבו אחרי האות באצבע"
     }
   },
+  "chessGame": {
+    "title": "שחמט",
+    "pieces": {
+      "king": "מלך",
+      "queen": "מלכה",
+      "rook": "צריח",
+      "bishop": "רץ",
+      "knight": "פרש",
+      "pawn": "חייל"
+    },
+    "levels": {
+      "pieceIntro": "הכר את הכלים",
+      "movement": "לאן הכלי זז?",
+      "capture": "מי יכול לתפוס?"
+    },
+    "ui": {
+      "correct": "כל הכבוד!",
+      "tryAgain": "נסו שוב!",
+      "hint": "רמז",
+      "next": "הבא",
+      "back": "חזרה",
+      "levelComplete": "השלב הושלם!",
+      "tapToHear": "לחצו לשמוע",
+      "findSquare": "מצאו את המשבצת הנכונה",
+      "whichCaptures": "מי יכול לתפוס?"
+    }
+  },
   "soundMatching": {
     "title": "התאמת צלילים",
     "instructions": "הקשיבו לצליל האות ולחצו על האות המתאימה!",

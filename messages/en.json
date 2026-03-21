@@ -123,6 +123,33 @@
       "traceHint": "Trace the letter with your finger"
     }
   },
+  "chessGame": {
+    "title": "Chess",
+    "pieces": {
+      "king": "King",
+      "queen": "Queen",
+      "rook": "Rook",
+      "bishop": "Bishop",
+      "knight": "Knight",
+      "pawn": "Pawn"
+    },
+    "levels": {
+      "pieceIntro": "Meet the Pieces",
+      "movement": "Where Can It Go?",
+      "capture": "Who Can Capture?"
+    },
+    "ui": {
+      "correct": "Great Job!",
+      "tryAgain": "Try Again!",
+      "hint": "Hint",
+      "next": "Next",
+      "back": "Back",
+      "levelComplete": "Level Complete!",
+      "tapToHear": "Tap to hear",
+      "findSquare": "Find the right square",
+      "whichCaptures": "Which piece can capture?"
+    }
+  },
   "soundMatching": {
     "title": "Sound Matching",
     "instructions": "Listen to the letter sound and tap the matching letter!",
