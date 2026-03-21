@@ -21,7 +21,7 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 
 ### Active
 
-- [ ] Classic 8x8 chess board rendered for kids (clean, colorful, Lepdy-style)
+- [x] Classic 8x8 chess board rendered for kids with tap interaction, RTL-safe, SSR-safe — Validated in Phase 2: Board Infrastructure
 - [x] Chess piece data structures with Hebrew names and audio path references — Validated in Phase 1: Foundation
 - [ ] All 6 chess pieces with Hebrew names, audio pronunciation, and visual display
 - [ ] Level-based progression system (learn pieces → movement puzzles → capture puzzles)
@@ -88,4 +88,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-21 after Phase 1: Foundation complete*
+*Last updated: 2026-03-21 after Phase 2: Board Infrastructure complete*
