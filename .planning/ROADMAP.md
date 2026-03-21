@@ -30,7 +30,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Movement and capture puzzle data exists as static TypeScript with valid FEN positions for all 6 piece types
   3. All chess translation keys are present in `messages/he.json`, `messages/en.json`, and `messages/ru.json` with no missing keys
   4. Audio paths reference expected files even when the MP3 files themselves do not yet exist — game does not crash on missing audio
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 01-01-PLAN.md — Chess piece data, types, and i18n translations for all 3 locales
+- [ ] 01-02-PLAN.md — Movement and capture puzzle data with curated FEN positions
 
 ### Phase 2: Board Infrastructure
 **Goal**: A chess board renders correctly on tablet in Hebrew RTL locale with touch-optimized square sizing and no SSR crash
@@ -97,7 +100,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/? | Not started | - |
+| 1. Foundation | 0/2 | Planning complete | - |
 | 2. Board Infrastructure | 0/? | Not started | - |
 | 3. Game Shell | 0/? | Not started | - |
 | 4. Level 1 — Piece Introduction | 0/? | Not started | - |
