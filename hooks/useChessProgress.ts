@@ -29,24 +29,21 @@ export function useChessProgress(): UseChessProgressReturn {
 
   // Load from localStorage on mount
   useEffect(() => {
-    if (typeof window === 'undefined') {
-      setIsInitialized(true);
-      return;
-    }
-
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed.completedLevels)) {
-          setData({
-            completedLevels: parsed.completedLevels as number[],
-            currentLevel: typeof parsed.currentLevel === 'number' ? parsed.currentLevel : 1,
-          });
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed.completedLevels)) {
+            setData({
+              completedLevels: parsed.completedLevels as number[],
+              currentLevel: typeof parsed.currentLevel === 'number' ? parsed.currentLevel : 1,
+            });
+          }
         }
+      } catch (e) {
+        console.error('[chess] Failed to load progress:', e);
       }
-    } catch (e) {
-      console.error('[chess] Failed to load progress:', e);
     }
 
     setIsInitialized(true);
