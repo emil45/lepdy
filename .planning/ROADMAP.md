@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 2 plans
 Plans:
 - [x] 01-01-PLAN.md — Chess piece data, types, and i18n translations for all 3 locales
-- [ ] 01-02-PLAN.md — Movement and capture puzzle data with curated FEN positions
+- [x] 01-02-PLAN.md — Movement and capture puzzle data with curated FEN positions
 
 ### Phase 2: Board Infrastructure
 **Goal**: A chess board renders correctly on tablet in Hebrew RTL locale with touch-optimized square sizing and no SSR crash
