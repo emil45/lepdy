@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import Fade from '@mui/material/Fade';
-import IconButton from '@mui/material/IconButton';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useTranslations } from 'next-intl';
 import LockIcon from '@mui/icons-material/Lock';
@@ -14,6 +13,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import StarIcon from '@mui/icons-material/Star';
 import dynamic from 'next/dynamic';
 import BackButton from '@/components/BackButton';
+import RoundFunButton from '@/components/RoundFunButton';
 import { useChessProgress } from '@/hooks/useChessProgress';
 import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
 import ChessSettingsDrawer from './ChessSettingsDrawer';
@@ -125,15 +125,11 @@ export default function ChessGameContent() {
   return (
     <Fade in={true} timeout={300}>
       <Box sx={{ py: 2, px: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
-        <Box sx={{ width: '100%', maxWidth: 520, mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <BackButton href="/games" />
-          <IconButton
-            onClick={() => setSettingsOpen(true)}
-            sx={{ color: 'secondary.main' }}
-            aria-label="settings"
-          >
+        <Box sx={{ width: '100%', mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <RoundFunButton onClick={() => setSettingsOpen(true)}>
             <SettingsIcon />
-          </IconButton>
+          </RoundFunButton>
+          <BackButton href="/games" />
         </Box>
         <Typography variant="h4" component="h1" sx={{ mb: 2, fontWeight: 'bold', textAlign: 'center' }}>
           {t('title')}
