@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 1: Foundation** - Chess piece data, puzzle definitions, i18n keys, and audio file path stubs
 - [ ] **Phase 2: Board Infrastructure** - Chess board component working correctly on tablet in Hebrew RTL locale
 - [x] **Phase 3: Game Shell** - Routing, level map, progression system, and games list integration (completed 2026-03-21)
-- [ ] **Phase 4: Level 1 — Piece Introduction** - Each piece introduced individually with Hebrew name and optional audio
+- [x] **Phase 4: Level 1 — Piece Introduction** - Each piece introduced individually with Hebrew name and optional audio (completed 2026-03-22)
 - [ ] **Phase 5: Level 2 — Movement Puzzles** - Tap-to-move puzzles with legal move highlights, hints, and feedback
 - [ ] **Phase 6: Level 3 — Capture Puzzles** - Capture identification puzzles completing the full learning arc
 
@@ -76,7 +76,7 @@ Plans:
   4. Completing all 6 piece introductions marks Level 1 as done on the level map
 **Plans**: 1 plan
 Plans:
-- [ ] 04-01-PLAN.md — PieceIntroduction component, ChessGameContent wiring, E2E tests
+- [x] 04-01-PLAN.md — PieceIntroduction component, ChessGameContent wiring, E2E tests
 
 ### Phase 5: Level 2 — Movement Puzzles
 **Goal**: A child can tap where a piece can move, receive immediate feedback, and get a hint if stuck — for all 6 piece types
@@ -111,6 +111,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Foundation | 0/2 | Planning complete | - |
 | 2. Board Infrastructure | 1/2 | In Progress|  |
 | 3. Game Shell | 2/2 | Complete   | 2026-03-21 |
-| 4. Level 1 — Piece Introduction | 0/1 | Planning complete | - |
+| 4. Level 1 — Piece Introduction | 1/1 | Complete   | 2026-03-22 |
 | 5. Level 2 — Movement Puzzles | 0/? | Not started | - |
 | 6. Level 3 — Capture Puzzles | 0/? | Not started | - |
