@@ -19,14 +19,14 @@ Requirements for Infinite Replayability milestone. Each maps to roadmap phases.
 - [x] **DIFF-01**: User encounters puzzles at 3 difficulty tiers (easy, medium, hard) with increasing board complexity
 - [x] **DIFF-02**: User automatically advances to harder puzzles after demonstrating mastery (consecutive correct answers)
 - [x] **DIFF-03**: User automatically gets easier puzzles after struggling (consecutive wrong answers)
-- [ ] **DIFF-04**: User sees their current mastery level as a named band per piece type ("Rook Beginner → Knight Expert")
+- [x] **DIFF-04**: User sees their current mastery level as a named band per piece type ("Rook Beginner → Knight Expert")
 
 ### Session
 
 - [x] **SESS-01**: User plays structured 10-puzzle sessions with a clear start and end
 - [x] **SESS-02**: User sees a consecutive-correct streak counter during play ("4 in a row!")
-- [ ] **SESS-03**: User sees a session complete screen with 1-3 stars based on accuracy
-- [ ] **SESS-04**: User can play a daily featured puzzle that is the same for all players each day
+- [x] **SESS-03**: User sees a session complete screen with 1-3 stars based on accuracy
+- [x] **SESS-04**: User can play a daily featured puzzle that is the same for all players each day
 
 ## Future Requirements
 
@@ -64,11 +64,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DIFF-01 | Phase 15 | Complete |
 | DIFF-02 | Phase 15 | Complete |
 | DIFF-03 | Phase 15 | Complete |
-| DIFF-04 | Phase 17 | Pending |
+| DIFF-04 | Phase 17 | Complete |
 | SESS-01 | Phase 16 | Complete |
 | SESS-02 | Phase 16 | Complete |
-| SESS-03 | Phase 17 | Pending |
-| SESS-04 | Phase 18 | Pending |
+| SESS-03 | Phase 17 | Complete |
+| SESS-04 | Phase 18 | Complete |
 
 **Coverage:**
 - v1.3 requirements: 12 total

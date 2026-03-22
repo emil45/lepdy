@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Infinite Replayability
-status: Ready to plan
-stopped_at: "Checkpoint 17-02 Task 3: awaiting human verify of SessionCompleteScreen"
-last_updated: "2026-03-22T21:29:42.937Z"
+status: Ready to execute
+stopped_at: Completed 18-01-PLAN.md
+last_updated: "2026-03-22T21:46:25.544Z"
 progress:
   total_phases: 5
   completed_phases: 4
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 10
+  completed_plans: 9
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 17 — session-complete-progression-ui
+**Current focus:** Phase 18 — daily-featured-puzzle
 
 ## Current Position
 
-Phase: 18
-Plan: Not started
+Phase: 18 (daily-featured-puzzle) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Plan: Not started
 | Phase 16-session-hook-puzzle-refactor P01 | 5 | 2 tasks | 5 files |
 | Phase 16 P02 | 10 | 2 tasks | 3 files |
 | Phase 17 P01 | 4 | 2 tasks | 6 files |
+| Phase 18 P01 | 2 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,8 @@ Recent decisions affecting current work:
 - [Phase 16]: displayFen reset via inline derived state (not useEffect) to avoid react-hooks/set-state-in-effect lint error
 - [Phase 17]: firstTryCount is session-memory-only — mid-session refresh resets to 0 (acceptable for 10-puzzle session)
 - [Phase 17]: chessStarThreshold3=8, chessStarThreshold2=5 as defaults in Firebase Remote Config for post-launch adjustment using Amplitude data
+- [Phase 18]: getDailyPuzzle is a pure function — no React, no side effects, deterministic for same dateStr input
+- [Phase 18]: Date-keyed localStorage: lepdy_chess_daily_YYYY-MM-DD — auto-expires semantically next day
 
 ### Pending Todos
 
@@ -90,6 +93,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T21:25:53.165Z
-Stopped at: Checkpoint 17-02 Task 3: awaiting human verify of SessionCompleteScreen
+Last session: 2026-03-22T21:46:25.541Z
+Stopped at: Completed 18-01-PLAN.md
 Resume file: None

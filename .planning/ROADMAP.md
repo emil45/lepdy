@@ -130,7 +130,7 @@ Plans:
   4. Daily puzzle rotates at midnight and the next day's puzzle is different
 **Plans**: 2 plans
 Plans:
-- [ ] 18-01-PLAN.md — useDailyPuzzle hook, DailyPuzzleCard component, translation keys
+- [x] 18-01-PLAN.md — useDailyPuzzle hook, DailyPuzzleCard component, translation keys
 - [ ] 18-02-PLAN.md — Wire daily puzzle into ChessGameContent with daily view and map card
 
 ## Progress
@@ -156,4 +156,4 @@ Plans:
 | 15. Generator + Progress Hook | v1.3 | 2/2 | Complete   | 2026-03-22 |
 | 16. Session Hook + Puzzle Refactor | v1.3 | 1/2 | Complete    | 2026-03-22 |
 | 17. Session Complete + Progression UI | v1.3 | 2/2 | Complete    | 2026-03-22 |
-| 18. Daily Featured Puzzle | v1.3 | 0/? | Not started | - |
+| 18. Daily Featured Puzzle | v1.3 | 1/2 | In Progress|  |
