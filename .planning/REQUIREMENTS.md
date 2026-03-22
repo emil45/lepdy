@@ -13,14 +13,14 @@
 ### Piece Themes
 
 - [x] **PIECE-01**: Staunty piece theme — all 12 pieces (6 white, 6 black) sourced from lichess staunty SVGs and integrated into the chess game
-- [ ] **PIECE-02**: Horsey piece theme — all 12 pieces sourced from lichess horsey SVGs and integrated as an alternative theme
+- [x] **PIECE-02**: Horsey piece theme — all 12 pieces sourced from lichess horsey SVGs and integrated as an alternative theme
 - [x] **PIECE-03**: Piece themes render correctly at all board sizes (320px–480px responsive range)
 - [x] **PIECE-04**: Extensible theme system — adding a new piece set requires only dropping SVGs in a folder and adding a theme entry (no code changes beyond registration)
 
 ### Settings
 
-- [ ] **SET-01**: Settings drawer in chess game includes a piece theme selector to switch between available themes
-- [ ] **SET-02**: Selected theme persists across browser sessions (localStorage)
+- [x] **SET-01**: Settings drawer in chess game includes a piece theme selector to switch between available themes
+- [x] **SET-02**: Selected theme persists across browser sessions (localStorage)
 
 ## v2 Requirements
 
@@ -47,11 +47,11 @@
 | BOARD-01 | Phase 11 | Complete |
 | BOARD-02 | Phase 11 | Complete |
 | PIECE-01 | Phase 12 | Complete |
-| PIECE-02 | Phase 12 | Pending |
+| PIECE-02 | Phase 12 | Complete |
 | PIECE-03 | Phase 12 | Complete |
 | PIECE-04 | Phase 12 | Complete |
-| SET-01 | Phase 13 | Pending |
-| SET-02 | Phase 13 | Pending |
+| SET-01 | Phase 13 | Complete |
+| SET-02 | Phase 13 | Complete |
 
 **Coverage:**
 - v1.2 requirements: 8 total

@@ -41,7 +41,7 @@
 
 - [x] **Phase 11: Board Theme** - Pastel board square colors and complementary coordinate labels (completed 2026-03-22)
 - [x] **Phase 12: Custom Piece SVGs** - Two kid-friendly SVG piece themes (staunty + horsey) via an extensible theme architecture (completed 2026-03-22)
-- [ ] **Phase 13: Theme Selector** - Settings drawer piece theme selector with localStorage persistence
+- [x] **Phase 13: Theme Selector** - Settings drawer piece theme selector with localStorage persistence (completed 2026-03-22)
 
 ## Phase Details
 
@@ -85,7 +85,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 13-01: Add piece theme selector to chess game settings drawer with localStorage persistence
+- [x] 13-01: Add piece theme selector to chess game settings drawer with localStorage persistence
 
 ## Progress
 
@@ -103,4 +103,4 @@ Plans:
 | 10. Sticker Integration | v1.1 | 1/1 | Complete | 2026-03-22 |
 | 11. Board Theme | v1.2 | 1/1 | Complete    | 2026-03-22 |
 | 12. Custom Piece SVGs | v1.2 | 2/2 | Complete    | 2026-03-22 |
-| 13. Theme Selector | v1.2 | 0/1 | Not started | - |
+| 13. Theme Selector | v1.2 | 1/1 | Complete   | 2026-03-22 |
