@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Polish & Fixes
-status: defining-requirements
-stopped_at: —
-last_updated: "2026-03-22T09:28:57.186Z"
+status: ready-to-plan
+stopped_at: Roadmap created for v1.1 (Phases 7-10)
+last_updated: "2026-03-22T00:00:00.000Z"
 progress:
-  total_phases: 6
+  total_phases: 10
   completed_phases: 6
   total_plans: 11
   completed_plans: 11
@@ -16,49 +16,47 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-21)
+See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Defining requirements for v1.1
+**Current focus:** Phase 7 — Bug Fixes & Cleanup
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-22 — Milestone v1.1 started
+Phase: 7 of 10 (Bug Fixes & Cleanup)
+Plan: 0 of TBD in current phase
+Status: Ready to plan
+Last activity: 2026-03-22 — v1.1 roadmap created (Phases 7-10)
+
+Progress: [██████░░░░░░░░░░░░░░] 6/10 phases complete (v1.0 shipped, v1.1 starting)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: 0 hours
+- Total plans completed: 11 (v1.0)
+- Average duration: ~3 min
+- Total execution time: ~33 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
-
-**Recent Trend:**
-
-- Last 5 plans: —
-- Trend: —
-
-*Updated after each plan completion*
 | Phase 01 P01 | 2min | 2 tasks | 4 files |
 | Phase 01 P02 | 2min | 2 tasks | 1 files |
 | Phase 02 P01 | 4min | 2 tasks | 5 files |
 | Phase 02 P02 | 3min | 2 tasks | 6 files |
 | Phase 03 P01 | 2min | 2 tasks | 5 files |
-| Phase 03-game-shell P02 | 2min | 2 tasks | 2 files |
-| Phase 04-level-1-piece-introduction P01 | 3min | 2 tasks | 3 files |
-| Phase 05 P01 | 1 | 2 tasks | 4 files |
-| Phase 05-level-2-movement-puzzles P02 | 4min | 2 tasks | 2 files |
-| Phase 06-level-3-capture-puzzles P01 | 2min | 2 tasks | 5 files |
-| Phase 06-level-3-capture-puzzles P02 | 3min | 2 tasks | 2 files |
+| Phase 03 P02 | 2min | 2 tasks | 2 files |
+| Phase 04 P01 | 3min | 2 tasks | 3 files |
+| Phase 05 P01 | 1min | 2 tasks | 4 files |
+| Phase 05 P02 | 4min | 2 tasks | 2 files |
+| Phase 06 P01 | 2min | 2 tasks | 5 files |
+| Phase 06 P02 | 3min | 2 tasks | 2 files |
+
+**Recent Trend:**
+- Last 5 plans: 4, 1, 3, 2, 4 min
+- Trend: Stable
 
 ## Accumulated Context
 
@@ -67,26 +65,10 @@ Last activity: 2026-03-22 — Milestone v1.1 started
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- [Init]: Audio files are placeholder-only — game must work without them (INTRO-03 is a hard requirement)
-- [Init]: react-chessboard v5.10.0 + chess.js v1.4.0 confirmed as the library pair
-- [Init]: Hebrew piece names need verification with native speaker before audio recording (WordReference source is low confidence)
-- [Phase 01]: Chess pieces use own ChessPieceId type, not ModelsTypesEnum - game concept vs learning category
-- [Phase 01]: Translation namespace chessGame.{pieces|levels|ui}.* established for all chess strings
-- [Phase 01]: FEN puzzle data uses piece-placement-only format (no castling/en-passant fields)
-- [Phase 02]: Used ref-based Chess instance with FEN state for React render cycle (useRef + useState pattern)
-- [Phase 02]: react-chessboard v5 uses options prop API, not flat props — legalCaptures tracked in hook state to avoid ref access during render
-- [Phase 02]: Chess game page follows guess-game pattern exactly for consistency
-- [Phase 03]: useChessProgress is standalone hook (not using useCategoryProgress) — simpler chess-specific shape, no migration logic, hardcoded storage key
-- [Phase 03]: Chess hooks use [chess] prefix in console.error for easy grep filtering
-- [Phase 03-02]: View routing uses useState<ChessView> union type not Next.js router — keeps single-page feel for game shell
-- [Phase 03-02]: ChessBoard removed from game shell phase — level placeholders show Coming soon until Phases 4-6 wire real content
-- [Phase 04-01]: completeLevel prop pattern: ChessGameContent owns useChessProgress and passes completeLevel down to level components — avoids dual hook instances with stale state
-- [Phase 05]: Direct Chessboard import from react-chessboard in MovementPuzzle (not ChessBoard.tsx wrapper) — puzzle mode is read-only, no chess.js move execution needed
-- [Phase 05]: No WRONG_ANSWER audio on wrong taps in MovementPuzzle — gentle try-again text only per FEED-02; hints after 2 wrong taps per MOVE-03/MOVE-04
-- [Phase 05-level-2]: dynamic import with ssr:false for MovementPuzzle — react-chessboard is SSR-unsafe, same pattern as ChessBoard.tsx
-- [Phase 06-01]: targetPieceId derived from FEN analysis at targetSquare — pawn x6 (difficulty 1), queen x1 and rook x1 (difficulty 2)
-- [Phase 06-01]: CapturePuzzle ignores empty square taps (not in distractorSquares) — cleaner hit detection for capture puzzle mode
-- [Phase 06-02]: Removed unused Button import from ChessGameContent after eliminating Coming soon block
+- [Phase 01]: Translation namespace chessGame.{pieces|levels|ui}.* established — chessPieces.ts incorrectly includes chessGame. prefix causing double-namespace (FIX-01 scope)
+- [Phase 02]: ChessBoard.tsx wrapper is orphaned — Phases 5-6 import react-chessboard directly (FIX-02 scope)
+- [Phase 05]: Direct Chessboard import in MovementPuzzle — puzzle mode is read-only, no chess.js move execution needed
+- [Phase 03]: View routing uses useState<ChessView> — keeps single-page feel for game shell
 
 ### Pending Todos
 
@@ -94,11 +76,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 1]: Hebrew chess piece names (מלך, מלכה, צריח, רץ, פרש, חייל) sourced from forum, not Israeli Chess Federation. Must verify before recording audio. Does not block Phase 1 data file creation but blocks final audio delivery.
-- [Phase 5]: Pawn movement puzzle design needs a design decision — pawns have asymmetric movement (forward only, capture diagonal). Decide during Phase 5 planning whether to include pawns or create a simplified sub-level.
+- [Phase 1]: Hebrew chess piece names sourced from forum, not Israeli Chess Federation. Must verify before recording audio. Does not block v1.1 execution.
+- [Phase 5]: Pawn movement puzzle design — decision deferred to v2 (asymmetric movement). No impact on v1.1.
 
 ## Session Continuity
 
-Last session: 2026-03-22T09:15:47.010Z
-Stopped at: Completed 06-02-PLAN.md
+Last session: 2026-03-22
+Stopped at: v1.1 roadmap created, ready to plan Phase 7
 Resume file: None
