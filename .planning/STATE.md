@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Infinite Replayability
-status: Defining requirements
+status: Ready to plan
 stopped_at: null
-last_updated: "2026-03-22T17:00:00.000Z"
+last_updated: "2026-03-22T17:30:00.000Z"
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -19,14 +19,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Not started (defining requirements)
+**Current focus:** Phase 14 — Puzzle Pool Expansion
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-22 — Milestone v1.3 started
+Phase: 14 of 18 (Puzzle Pool Expansion)
+Plan: 0 of ? in current phase
+Status: Ready to plan
+Last activity: 2026-03-22 — v1.3 roadmap created; phases 14-18 defined
+
+Progress: [████████░░░░░░░░░░░░] 40% (milestones v1.0–v1.2 complete; v1.3 starting at phase 14)
 
 ## Performance Metrics
 
@@ -52,12 +54,12 @@ Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
 - [Phase 09]: displayFen state pattern triggers react-chessboard 200ms slide animation on correct puzzle answer
-- [Phase 08]: Board + instruction co-located in beige card — keeps instruction visually tied to its context
-- [Phase 10]: chess_level unlock type uses includes(unlockValue) on completedLevels array
-- [Phase 11-board-theme]: react-chessboard pastel theming via lightSquareStyle/darkSquareStyle/notation props in options object — no CSS overrides needed
-- [Phase 12-custom-piece-svgs]: PieceRenderObject type defined inline — react-chessboard/dist/types subpath not resolvable by TypeScript bundler
-- [Phase 12-custom-piece-svgs]: buildPieceRenderObject factory pattern: adding a theme = drop SVGs + add one registry line
-- [Phase 13-theme-selector]: ChessSettingsDrawer takes currentTheme/onSelectTheme as props (not calling hook internally) — clean separation, hook state lives in ChessGameContent
+- [Phase 12]: buildPieceRenderObject factory: adding a theme = drop SVGs + 1 registry line
+- [Phase 13]: ChessSettingsDrawer takes currentTheme/onSelectTheme as props — hook state lives in ChessGameContent
+- [v1.3 scoping]: Lives/hearts excluded — punishment discourages young learners (Duolingo removed May 2025)
+- [v1.3 scoping]: ELO/numeric rating excluded — anxiety-inducing for ages 5-9; named mastery bands instead
+- [v1.3 arch]: No new npm dependencies — chess.js `moves()` is the full generation engine
+- [v1.3 arch]: usePuzzleSession hook sources puzzles; MovementPuzzle/CapturePuzzle rendering unchanged
 
 ### Pending Todos
 
@@ -65,11 +67,13 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 1]: Hebrew chess piece names sourced from forum, not Israeli Chess Federation. Must verify before recording audio. Does not block v1.3 execution.
-- [Phase 12]: react-chessboard customPieces prop accepts React components — theme system should wrap each SVG file in a component that renders at full cell dimensions.
+- [Phase 15]: chess.js SSR guard needed in new `utils/puzzleGenerator.ts` — confirm client-only import pattern before writing
+- [Phase 15]: Difficulty thresholds (advance after 5 correct, de-escalate after 3 wrong) are estimates; store in Firebase Remote Config for post-launch tuning
+- [Phase 17]: Star thresholds (3 stars at 8/10 first-try) are estimates; flag for post-launch adjustment using Amplitude data
+- [Phase 1 carry-over]: Hebrew chess piece names sourced from forum, not Israeli Chess Federation. Must verify before recording audio. Does not block v1.3 execution.
 
 ## Session Continuity
 
-Last session: 2026-03-22T17:00:00.000Z
-Stopped at: Milestone v1.3 started — defining requirements
+Last session: 2026-03-22T17:30:00.000Z
+Stopped at: Roadmap created for v1.3; no plans written yet
 Resume file: None

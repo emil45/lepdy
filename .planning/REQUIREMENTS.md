@@ -57,24 +57,24 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PGEN-01 | — | Pending |
-| PGEN-02 | — | Pending |
-| PGEN-03 | — | Pending |
-| PGEN-04 | — | Pending |
-| DIFF-01 | — | Pending |
-| DIFF-02 | — | Pending |
-| DIFF-03 | — | Pending |
-| DIFF-04 | — | Pending |
-| SESS-01 | — | Pending |
-| SESS-02 | — | Pending |
-| SESS-03 | — | Pending |
-| SESS-04 | — | Pending |
+| PGEN-01 | Phase 14 | Pending |
+| PGEN-02 | Phase 14 | Pending |
+| PGEN-03 | Phase 15 | Pending |
+| PGEN-04 | Phase 15 | Pending |
+| DIFF-01 | Phase 15 | Pending |
+| DIFF-02 | Phase 15 | Pending |
+| DIFF-03 | Phase 15 | Pending |
+| DIFF-04 | Phase 17 | Pending |
+| SESS-01 | Phase 16 | Pending |
+| SESS-02 | Phase 16 | Pending |
+| SESS-03 | Phase 17 | Pending |
+| SESS-04 | Phase 18 | Pending |
 
 **Coverage:**
 - v1.3 requirements: 12 total
-- Mapped to phases: 0
-- Unmapped: 12 ⚠️
+- Mapped to phases: 12
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-22*
-*Last updated: 2026-03-22 after initial definition*
+*Last updated: 2026-03-22 — traceability filled in after v1.3 roadmap creation*
