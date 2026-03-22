@@ -15,6 +15,7 @@ import { useNumbersProgressContext } from '@/contexts/NumbersProgressContext';
 import { useAnimalsProgressContext } from '@/contexts/AnimalsProgressContext';
 import { useGamesProgressContext } from '@/contexts/GamesProgressContext';
 import { useWordCollectionContext } from '@/contexts/WordCollectionContext';
+import { useChessProgress } from '@/hooks/useChessProgress';
 
 const NOTIFIED_STORAGE_KEY = 'lepdy_sticker_toasts_shown';
 
@@ -62,6 +63,7 @@ function useProgressValues(): StickerProgressValues {
     totalGamesCompleted,
   } = useGamesProgressContext();
   const { uniqueWordsCollected } = useWordCollectionContext();
+  const { completedLevels: chessLevelsCompleted } = useChessProgress();
 
   return useMemo(
     () => ({
@@ -80,6 +82,7 @@ function useProgressValues(): StickerProgressValues {
       soundMatchingPerfect,
       countingGameCompletions,
       totalGamesCompleted,
+      chessLevelsCompleted,
       uniqueWordsCollected,
     }),
     [
@@ -98,6 +101,7 @@ function useProgressValues(): StickerProgressValues {
       soundMatchingPerfect,
       countingGameCompletions,
       totalGamesCompleted,
+      chessLevelsCompleted,
       uniqueWordsCollected,
     ]
   );

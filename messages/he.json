@@ -326,83 +326,296 @@
     }
   },
   "colors": {
-    "red": { "name": "אדום", "fullName": "אדום" },
-    "green": { "name": "ירוק", "fullName": "ירוק" },
-    "blue": { "name": "כחול", "fullName": "כחול" },
-    "yellow": { "name": "צהוב", "fullName": "צהוב" },
-    "orange": { "name": "כתום", "fullName": "כתום" },
-    "cyan": { "name": "תכלת", "fullName": "תכלת" },
-    "brown": { "name": "חום", "fullName": "חום" },
-    "black": { "name": "שחור", "fullName": "שחור" },
-    "white": { "name": "לבן", "fullName": "לבן" },
-    "pink": { "name": "ורוד", "fullName": "ורוד" },
-    "purple": { "name": "סגול", "fullName": "סגול" },
-    "gray": { "name": "אפור", "fullName": "אפור" }
+    "red": {
+      "name": "אדום",
+      "fullName": "אדום"
+    },
+    "green": {
+      "name": "ירוק",
+      "fullName": "ירוק"
+    },
+    "blue": {
+      "name": "כחול",
+      "fullName": "כחול"
+    },
+    "yellow": {
+      "name": "צהוב",
+      "fullName": "צהוב"
+    },
+    "orange": {
+      "name": "כתום",
+      "fullName": "כתום"
+    },
+    "cyan": {
+      "name": "תכלת",
+      "fullName": "תכלת"
+    },
+    "brown": {
+      "name": "חום",
+      "fullName": "חום"
+    },
+    "black": {
+      "name": "שחור",
+      "fullName": "שחור"
+    },
+    "white": {
+      "name": "לבן",
+      "fullName": "לבן"
+    },
+    "pink": {
+      "name": "ורוד",
+      "fullName": "ורוד"
+    },
+    "purple": {
+      "name": "סגול",
+      "fullName": "סגול"
+    },
+    "gray": {
+      "name": "אפור",
+      "fullName": "אפור"
+    }
   },
   "shapes": {
-    "circle": { "name": "עיגול", "fullName": "עיגול" },
-    "square": { "name": "ריבוע", "fullName": "ריבוע" },
-    "heart": { "name": "לב", "fullName": "לב" },
-    "ellipse": { "name": "אליפסה", "fullName": "אליפסה" },
-    "rectangle": { "name": "מלבן", "fullName": "מלבן" },
-    "star": { "name": "כוכב", "fullName": "כוכב" },
-    "triangle": { "name": "משולש", "fullName": "משולש" },
-    "cone": { "name": "חרוט", "fullName": "חרוט" },
-    "hexagon": { "name": "משושה", "fullName": "משושה" },
-    "kite": { "name": "דלתון", "fullName": "דלתון" },
-    "moon": { "name": "ירח", "fullName": "ירח" },
-    "pentagon": { "name": "מחומש", "fullName": "מחומש" },
-    "trapezoid": { "name": "טרפז", "fullName": "טרפז" },
-    "pyramid": { "name": "פירמידה", "fullName": "פירמידה" },
-    "rhombus": { "name": "מעוין", "fullName": "מעוין" },
-    "wave": { "name": "גל", "fullName": "גל" },
-    "cylinder": { "name": "גליל", "fullName": "גליל" },
-    "octagon": { "name": "מתומן", "fullName": "מתומן" },
-    "parallelogram": { "name": "מקבילית", "fullName": "מקבילית" },
-    "diamond": { "name": "יהלום", "fullName": "יהלום" },
-    "triangular_prism": { "name": "מנסרה משולשת", "fullName": "מנסרה משולשת" }
+    "circle": {
+      "name": "עיגול",
+      "fullName": "עיגול"
+    },
+    "square": {
+      "name": "ריבוע",
+      "fullName": "ריבוע"
+    },
+    "heart": {
+      "name": "לב",
+      "fullName": "לב"
+    },
+    "ellipse": {
+      "name": "אליפסה",
+      "fullName": "אליפסה"
+    },
+    "rectangle": {
+      "name": "מלבן",
+      "fullName": "מלבן"
+    },
+    "star": {
+      "name": "כוכב",
+      "fullName": "כוכב"
+    },
+    "triangle": {
+      "name": "משולש",
+      "fullName": "משולש"
+    },
+    "cone": {
+      "name": "חרוט",
+      "fullName": "חרוט"
+    },
+    "hexagon": {
+      "name": "משושה",
+      "fullName": "משושה"
+    },
+    "kite": {
+      "name": "דלתון",
+      "fullName": "דלתון"
+    },
+    "moon": {
+      "name": "ירח",
+      "fullName": "ירח"
+    },
+    "pentagon": {
+      "name": "מחומש",
+      "fullName": "מחומש"
+    },
+    "trapezoid": {
+      "name": "טרפז",
+      "fullName": "טרפז"
+    },
+    "pyramid": {
+      "name": "פירמידה",
+      "fullName": "פירמידה"
+    },
+    "rhombus": {
+      "name": "מעוין",
+      "fullName": "מעוין"
+    },
+    "wave": {
+      "name": "גל",
+      "fullName": "גל"
+    },
+    "cylinder": {
+      "name": "גליל",
+      "fullName": "גליל"
+    },
+    "octagon": {
+      "name": "מתומן",
+      "fullName": "מתומן"
+    },
+    "parallelogram": {
+      "name": "מקבילית",
+      "fullName": "מקבילית"
+    },
+    "diamond": {
+      "name": "יהלום",
+      "fullName": "יהלום"
+    },
+    "triangular_prism": {
+      "name": "מנסרה משולשת",
+      "fullName": "מנסרה משולשת"
+    }
   },
   "animals": {
-    "cow": { "name": "פרה", "fullName": "פרה" },
-    "pig": { "name": "חזיר", "fullName": "חזיר" },
-    "sheep": { "name": "כבש", "fullName": "כבש" },
-    "chicken": { "name": "תרנגולת", "fullName": "תרנגולת" },
-    "horse": { "name": "סוס", "fullName": "סוס" },
-    "dog": { "name": "כלב", "fullName": "כלב" },
-    "cat": { "name": "חתול", "fullName": "חתול" },
-    "bee": { "name": "דבורה", "fullName": "דבורה" },
-    "goat": { "name": "עז", "fullName": "עז" },
-    "bird": { "name": "ציפור", "fullName": "ציפור" },
-    "lion": { "name": "אריה", "fullName": "אריה" },
-    "elephant": { "name": "פיל", "fullName": "פיל" },
-    "monkey": { "name": "קוף", "fullName": "קוף" },
-    "duck": { "name": "ברווז", "fullName": "ברווז" },
-    "wolf": { "name": "זאב", "fullName": "זאב" },
-    "fox": { "name": "שועל", "fullName": "שועל" },
-    "tiger": { "name": "נמר", "fullName": "נמר" },
-    "cricket": { "name": "צרצר", "fullName": "צרצר" },
-    "zebra": { "name": "זברה", "fullName": "זברה" },
-    "frog": { "name": "צפרדע", "fullName": "צפרדע" }
+    "cow": {
+      "name": "פרה",
+      "fullName": "פרה"
+    },
+    "pig": {
+      "name": "חזיר",
+      "fullName": "חזיר"
+    },
+    "sheep": {
+      "name": "כבש",
+      "fullName": "כבש"
+    },
+    "chicken": {
+      "name": "תרנגולת",
+      "fullName": "תרנגולת"
+    },
+    "horse": {
+      "name": "סוס",
+      "fullName": "סוס"
+    },
+    "dog": {
+      "name": "כלב",
+      "fullName": "כלב"
+    },
+    "cat": {
+      "name": "חתול",
+      "fullName": "חתול"
+    },
+    "bee": {
+      "name": "דבורה",
+      "fullName": "דבורה"
+    },
+    "goat": {
+      "name": "עז",
+      "fullName": "עז"
+    },
+    "bird": {
+      "name": "ציפור",
+      "fullName": "ציפור"
+    },
+    "lion": {
+      "name": "אריה",
+      "fullName": "אריה"
+    },
+    "elephant": {
+      "name": "פיל",
+      "fullName": "פיל"
+    },
+    "monkey": {
+      "name": "קוף",
+      "fullName": "קוף"
+    },
+    "duck": {
+      "name": "ברווז",
+      "fullName": "ברווז"
+    },
+    "wolf": {
+      "name": "זאב",
+      "fullName": "זאב"
+    },
+    "fox": {
+      "name": "שועל",
+      "fullName": "שועל"
+    },
+    "tiger": {
+      "name": "נמר",
+      "fullName": "נמר"
+    },
+    "cricket": {
+      "name": "צרצר",
+      "fullName": "צרצר"
+    },
+    "zebra": {
+      "name": "זברה",
+      "fullName": "זברה"
+    },
+    "frog": {
+      "name": "צפרדע",
+      "fullName": "צפרדע"
+    }
   },
   "food": {
-    "apple": { "name": "תפוח", "fullName": "תפוח" },
-    "banana": { "name": "בננה", "fullName": "בננה" },
-    "orange": { "name": "תפוז", "fullName": "תפוז" },
-    "strawberry": { "name": "תות", "fullName": "תות" },
-    "grapes": { "name": "ענבים", "fullName": "ענבים" },
-    "watermelon": { "name": "אבטיח", "fullName": "אבטיח" },
-    "carrot": { "name": "גזר", "fullName": "גזר" },
-    "tomato": { "name": "עגבנייה", "fullName": "עגבנייה" },
-    "cucumber": { "name": "מלפפון", "fullName": "מלפפון" },
-    "pepper": { "name": "פלפל", "fullName": "פלפל" },
-    "broccoli": { "name": "ברוקולי", "fullName": "ברוקולי" },
-    "corn": { "name": "תירס", "fullName": "תירס" },
-    "bread": { "name": "לחם", "fullName": "לחם" },
-    "cheese": { "name": "גבינה", "fullName": "גבינה" },
-    "egg": { "name": "ביצה", "fullName": "ביצה" },
-    "cookie": { "name": "עוגייה", "fullName": "עוגייה" },
-    "icecream": { "name": "גלידה", "fullName": "גלידה" },
-    "chocolate": { "name": "שוקולד", "fullName": "שוקולד" }
+    "apple": {
+      "name": "תפוח",
+      "fullName": "תפוח"
+    },
+    "banana": {
+      "name": "בננה",
+      "fullName": "בננה"
+    },
+    "orange": {
+      "name": "תפוז",
+      "fullName": "תפוז"
+    },
+    "strawberry": {
+      "name": "תות",
+      "fullName": "תות"
+    },
+    "grapes": {
+      "name": "ענבים",
+      "fullName": "ענבים"
+    },
+    "watermelon": {
+      "name": "אבטיח",
+      "fullName": "אבטיח"
+    },
+    "carrot": {
+      "name": "גזר",
+      "fullName": "גזר"
+    },
+    "tomato": {
+      "name": "עגבנייה",
+      "fullName": "עגבנייה"
+    },
+    "cucumber": {
+      "name": "מלפפון",
+      "fullName": "מלפפון"
+    },
+    "pepper": {
+      "name": "פלפל",
+      "fullName": "פלפל"
+    },
+    "broccoli": {
+      "name": "ברוקולי",
+      "fullName": "ברוקולי"
+    },
+    "corn": {
+      "name": "תירס",
+      "fullName": "תירס"
+    },
+    "bread": {
+      "name": "לחם",
+      "fullName": "לחם"
+    },
+    "cheese": {
+      "name": "גבינה",
+      "fullName": "גבינה"
+    },
+    "egg": {
+      "name": "ביצה",
+      "fullName": "ביצה"
+    },
+    "cookie": {
+      "name": "עוגייה",
+      "fullName": "עוגייה"
+    },
+    "icecream": {
+      "name": "גלידה",
+      "fullName": "גלידה"
+    },
+    "chocolate": {
+      "name": "שוקולד",
+      "fullName": "שוקולד"
+    }
   },
   "seo": {
     "siteTitle": "לימוד עברית לילדים - אלף בית, מספרים, צבעים ומשחקים",
@@ -768,7 +981,10 @@
       "sounds": "מאזין מושלם",
       "counting": "סופר מספרים",
       "dedicated": "שחקן מסור",
-      "master": "אלוף משחקים"
+      "master": "אלוף משחקים",
+      "chess1": "שחמט מתחיל",
+      "chess2": "מהלכים ראשונים",
+      "chess3": "אלוף השחמט"
     },
     "streaks": {
       "day1": "יום ראשון",

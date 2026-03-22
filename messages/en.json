@@ -170,7 +170,7 @@
     "category": "Category",
     "baby": "Baby",
     "easy": "Easy",
-    "medium": "Medium", 
+    "medium": "Medium",
     "hard": "Hard",
     "mixed": "Mixed",
     "letters": "Letters",
@@ -326,63 +326,222 @@
     }
   },
   "colors": {
-    "red": { "name": "Red", "fullName": "Red" },
-    "green": { "name": "Green", "fullName": "Green" },
-    "blue": { "name": "Blue", "fullName": "Blue" },
-    "yellow": { "name": "Yellow", "fullName": "Yellow" },
-    "orange": { "name": "Orange", "fullName": "Orange" },
-    "cyan": { "name": "Cyan", "fullName": "Cyan" },
-    "brown": { "name": "Brown", "fullName": "Brown" },
-    "black": { "name": "Black", "fullName": "Black" },
-    "white": { "name": "White", "fullName": "White" },
-    "pink": { "name": "Pink", "fullName": "Pink" },
-    "purple": { "name": "Purple", "fullName": "Purple" },
-    "gray": { "name": "Gray", "fullName": "Gray" }
+    "red": {
+      "name": "Red",
+      "fullName": "Red"
+    },
+    "green": {
+      "name": "Green",
+      "fullName": "Green"
+    },
+    "blue": {
+      "name": "Blue",
+      "fullName": "Blue"
+    },
+    "yellow": {
+      "name": "Yellow",
+      "fullName": "Yellow"
+    },
+    "orange": {
+      "name": "Orange",
+      "fullName": "Orange"
+    },
+    "cyan": {
+      "name": "Cyan",
+      "fullName": "Cyan"
+    },
+    "brown": {
+      "name": "Brown",
+      "fullName": "Brown"
+    },
+    "black": {
+      "name": "Black",
+      "fullName": "Black"
+    },
+    "white": {
+      "name": "White",
+      "fullName": "White"
+    },
+    "pink": {
+      "name": "Pink",
+      "fullName": "Pink"
+    },
+    "purple": {
+      "name": "Purple",
+      "fullName": "Purple"
+    },
+    "gray": {
+      "name": "Gray",
+      "fullName": "Gray"
+    }
   },
   "shapes": {
-    "circle": { "name": "Circle", "fullName": "Circle" },
-    "square": { "name": "Square", "fullName": "Square" },
-    "heart": { "name": "Heart", "fullName": "Heart" },
-    "ellipse": { "name": "Ellipse", "fullName": "Ellipse" },
-    "rectangle": { "name": "Rectangle", "fullName": "Rectangle" },
-    "star": { "name": "Star", "fullName": "Star" },
-    "triangle": { "name": "Triangle", "fullName": "Triangle" },
-    "cone": { "name": "Cone", "fullName": "Cone" },
-    "hexagon": { "name": "Hexagon", "fullName": "Hexagon" },
-    "kite": { "name": "Kite", "fullName": "Kite" },
-    "moon": { "name": "Moon", "fullName": "Moon" },
-    "pentagon": { "name": "Pentagon", "fullName": "Pentagon" },
-    "trapezoid": { "name": "Trapezoid", "fullName": "Trapezoid" },
-    "pyramid": { "name": "Pyramid", "fullName": "Pyramid" },
-    "rhombus": { "name": "Rhombus", "fullName": "Rhombus" },
-    "wave": { "name": "Wave", "fullName": "Wave" },
-    "cylinder": { "name": "Cylinder", "fullName": "Cylinder" },
-    "octagon": { "name": "Octagon", "fullName": "Octagon" },
-    "parallelogram": { "name": "Parallelogram", "fullName": "Parallelogram" },
-    "diamond": { "name": "Diamond", "fullName": "Diamond" },
-    "triangular_prism": { "name": "Triangular Prism", "fullName": "Triangular Prism" }
+    "circle": {
+      "name": "Circle",
+      "fullName": "Circle"
+    },
+    "square": {
+      "name": "Square",
+      "fullName": "Square"
+    },
+    "heart": {
+      "name": "Heart",
+      "fullName": "Heart"
+    },
+    "ellipse": {
+      "name": "Ellipse",
+      "fullName": "Ellipse"
+    },
+    "rectangle": {
+      "name": "Rectangle",
+      "fullName": "Rectangle"
+    },
+    "star": {
+      "name": "Star",
+      "fullName": "Star"
+    },
+    "triangle": {
+      "name": "Triangle",
+      "fullName": "Triangle"
+    },
+    "cone": {
+      "name": "Cone",
+      "fullName": "Cone"
+    },
+    "hexagon": {
+      "name": "Hexagon",
+      "fullName": "Hexagon"
+    },
+    "kite": {
+      "name": "Kite",
+      "fullName": "Kite"
+    },
+    "moon": {
+      "name": "Moon",
+      "fullName": "Moon"
+    },
+    "pentagon": {
+      "name": "Pentagon",
+      "fullName": "Pentagon"
+    },
+    "trapezoid": {
+      "name": "Trapezoid",
+      "fullName": "Trapezoid"
+    },
+    "pyramid": {
+      "name": "Pyramid",
+      "fullName": "Pyramid"
+    },
+    "rhombus": {
+      "name": "Rhombus",
+      "fullName": "Rhombus"
+    },
+    "wave": {
+      "name": "Wave",
+      "fullName": "Wave"
+    },
+    "cylinder": {
+      "name": "Cylinder",
+      "fullName": "Cylinder"
+    },
+    "octagon": {
+      "name": "Octagon",
+      "fullName": "Octagon"
+    },
+    "parallelogram": {
+      "name": "Parallelogram",
+      "fullName": "Parallelogram"
+    },
+    "diamond": {
+      "name": "Diamond",
+      "fullName": "Diamond"
+    },
+    "triangular_prism": {
+      "name": "Triangular Prism",
+      "fullName": "Triangular Prism"
+    }
   },
   "animals": {
-    "cow": { "name": "Cow", "fullName": "Cow" },
-    "pig": { "name": "Pig", "fullName": "Pig" },
-    "sheep": { "name": "Sheep", "fullName": "Sheep" },
-    "chicken": { "name": "Chicken", "fullName": "Chicken" },
-    "horse": { "name": "Horse", "fullName": "Horse" },
-    "dog": { "name": "Dog", "fullName": "Dog" },
-    "cat": { "name": "Cat", "fullName": "Cat" },
-    "bee": { "name": "Bee", "fullName": "Bee" },
-    "goat": { "name": "Goat", "fullName": "Goat" },
-    "bird": { "name": "Bird", "fullName": "Bird" },
-    "lion": { "name": "Lion", "fullName": "Lion" },
-    "elephant": { "name": "Elephant", "fullName": "Elephant" },
-    "monkey": { "name": "Monkey", "fullName": "Monkey" },
-    "duck": { "name": "Duck", "fullName": "Duck" },
-    "wolf": { "name": "Wolf", "fullName": "Wolf" },
-    "fox": { "name": "Fox", "fullName": "Fox" },
-    "tiger": { "name": "Tiger", "fullName": "Tiger" },
-    "cricket": { "name": "Cricket", "fullName": "Cricket" },
-    "zebra": { "name": "Zebra", "fullName": "Zebra" },
-    "frog": { "name": "Frog", "fullName": "Frog" }
+    "cow": {
+      "name": "Cow",
+      "fullName": "Cow"
+    },
+    "pig": {
+      "name": "Pig",
+      "fullName": "Pig"
+    },
+    "sheep": {
+      "name": "Sheep",
+      "fullName": "Sheep"
+    },
+    "chicken": {
+      "name": "Chicken",
+      "fullName": "Chicken"
+    },
+    "horse": {
+      "name": "Horse",
+      "fullName": "Horse"
+    },
+    "dog": {
+      "name": "Dog",
+      "fullName": "Dog"
+    },
+    "cat": {
+      "name": "Cat",
+      "fullName": "Cat"
+    },
+    "bee": {
+      "name": "Bee",
+      "fullName": "Bee"
+    },
+    "goat": {
+      "name": "Goat",
+      "fullName": "Goat"
+    },
+    "bird": {
+      "name": "Bird",
+      "fullName": "Bird"
+    },
+    "lion": {
+      "name": "Lion",
+      "fullName": "Lion"
+    },
+    "elephant": {
+      "name": "Elephant",
+      "fullName": "Elephant"
+    },
+    "monkey": {
+      "name": "Monkey",
+      "fullName": "Monkey"
+    },
+    "duck": {
+      "name": "Duck",
+      "fullName": "Duck"
+    },
+    "wolf": {
+      "name": "Wolf",
+      "fullName": "Wolf"
+    },
+    "fox": {
+      "name": "Fox",
+      "fullName": "Fox"
+    },
+    "tiger": {
+      "name": "Tiger",
+      "fullName": "Tiger"
+    },
+    "cricket": {
+      "name": "Cricket",
+      "fullName": "Cricket"
+    },
+    "zebra": {
+      "name": "Zebra",
+      "fullName": "Zebra"
+    },
+    "frog": {
+      "name": "Frog",
+      "fullName": "Frog"
+    }
   },
   "seo": {
     "siteTitle": "Hebrew for Kids - Learn Alef Bet, Numbers, Colors & Games",
@@ -611,24 +770,78 @@
     }
   },
   "food": {
-    "apple": { "name": "Apple", "fullName": "Apple" },
-    "banana": { "name": "Banana", "fullName": "Banana" },
-    "orange": { "name": "Orange", "fullName": "Orange" },
-    "strawberry": { "name": "Strawberry", "fullName": "Strawberry" },
-    "grapes": { "name": "Grapes", "fullName": "Grapes" },
-    "watermelon": { "name": "Watermelon", "fullName": "Watermelon" },
-    "carrot": { "name": "Carrot", "fullName": "Carrot" },
-    "tomato": { "name": "Tomato", "fullName": "Tomato" },
-    "cucumber": { "name": "Cucumber", "fullName": "Cucumber" },
-    "pepper": { "name": "Pepper", "fullName": "Pepper" },
-    "broccoli": { "name": "Broccoli", "fullName": "Broccoli" },
-    "corn": { "name": "Corn", "fullName": "Corn" },
-    "bread": { "name": "Bread", "fullName": "Bread" },
-    "cheese": { "name": "Cheese", "fullName": "Cheese" },
-    "egg": { "name": "Egg", "fullName": "Egg" },
-    "cookie": { "name": "Cookie", "fullName": "Cookie" },
-    "icecream": { "name": "Ice Cream", "fullName": "Ice Cream" },
-    "chocolate": { "name": "Chocolate", "fullName": "Chocolate" }
+    "apple": {
+      "name": "Apple",
+      "fullName": "Apple"
+    },
+    "banana": {
+      "name": "Banana",
+      "fullName": "Banana"
+    },
+    "orange": {
+      "name": "Orange",
+      "fullName": "Orange"
+    },
+    "strawberry": {
+      "name": "Strawberry",
+      "fullName": "Strawberry"
+    },
+    "grapes": {
+      "name": "Grapes",
+      "fullName": "Grapes"
+    },
+    "watermelon": {
+      "name": "Watermelon",
+      "fullName": "Watermelon"
+    },
+    "carrot": {
+      "name": "Carrot",
+      "fullName": "Carrot"
+    },
+    "tomato": {
+      "name": "Tomato",
+      "fullName": "Tomato"
+    },
+    "cucumber": {
+      "name": "Cucumber",
+      "fullName": "Cucumber"
+    },
+    "pepper": {
+      "name": "Pepper",
+      "fullName": "Pepper"
+    },
+    "broccoli": {
+      "name": "Broccoli",
+      "fullName": "Broccoli"
+    },
+    "corn": {
+      "name": "Corn",
+      "fullName": "Corn"
+    },
+    "bread": {
+      "name": "Bread",
+      "fullName": "Bread"
+    },
+    "cheese": {
+      "name": "Cheese",
+      "fullName": "Cheese"
+    },
+    "egg": {
+      "name": "Egg",
+      "fullName": "Egg"
+    },
+    "cookie": {
+      "name": "Cookie",
+      "fullName": "Cookie"
+    },
+    "icecream": {
+      "name": "Ice Cream",
+      "fullName": "Ice Cream"
+    },
+    "chocolate": {
+      "name": "Chocolate",
+      "fullName": "Chocolate"
+    }
   },
   "wordBuilder": {
     "score": "Score",
@@ -768,7 +981,10 @@
       "sounds": "Perfect Listener",
       "counting": "Counting Pro",
       "dedicated": "Dedicated Player",
-      "master": "Game Champion"
+      "master": "Game Champion",
+      "chess1": "Chess Beginner",
+      "chess2": "First Moves",
+      "chess3": "Chess Champion"
     },
     "streaks": {
       "day1": "Day One",

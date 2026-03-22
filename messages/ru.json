@@ -284,95 +284,338 @@
     }
   },
   "numbers": {
-    "number_1": { "name": "1", "fullName": "Один" },
-    "number_2": { "name": "2", "fullName": "Два" },
-    "number_3": { "name": "3", "fullName": "Три" },
-    "number_4": { "name": "4", "fullName": "Четыре" },
-    "number_5": { "name": "5", "fullName": "Пять" },
-    "number_6": { "name": "6", "fullName": "Шесть" },
-    "number_7": { "name": "7", "fullName": "Семь" },
-    "number_8": { "name": "8", "fullName": "Восемь" },
-    "number_9": { "name": "9", "fullName": "Девять" },
-    "number_10": { "name": "10", "fullName": "Десять" }
+    "number_1": {
+      "name": "1",
+      "fullName": "Один"
+    },
+    "number_2": {
+      "name": "2",
+      "fullName": "Два"
+    },
+    "number_3": {
+      "name": "3",
+      "fullName": "Три"
+    },
+    "number_4": {
+      "name": "4",
+      "fullName": "Четыре"
+    },
+    "number_5": {
+      "name": "5",
+      "fullName": "Пять"
+    },
+    "number_6": {
+      "name": "6",
+      "fullName": "Шесть"
+    },
+    "number_7": {
+      "name": "7",
+      "fullName": "Семь"
+    },
+    "number_8": {
+      "name": "8",
+      "fullName": "Восемь"
+    },
+    "number_9": {
+      "name": "9",
+      "fullName": "Девять"
+    },
+    "number_10": {
+      "name": "10",
+      "fullName": "Десять"
+    }
   },
   "colors": {
-    "red": { "name": "Красный", "fullName": "Красный" },
-    "green": { "name": "Зелёный", "fullName": "Зелёный" },
-    "blue": { "name": "Синий", "fullName": "Синий" },
-    "yellow": { "name": "Жёлтый", "fullName": "Жёлтый" },
-    "orange": { "name": "Оранжевый", "fullName": "Оранжевый" },
-    "cyan": { "name": "Голубой", "fullName": "Голубой" },
-    "brown": { "name": "Коричневый", "fullName": "Коричневый" },
-    "black": { "name": "Чёрный", "fullName": "Чёрный" },
-    "white": { "name": "Белый", "fullName": "Белый" },
-    "pink": { "name": "Розовый", "fullName": "Розовый" },
-    "purple": { "name": "Фиолетовый", "fullName": "Фиолетовый" },
-    "gray": { "name": "Серый", "fullName": "Серый" }
+    "red": {
+      "name": "Красный",
+      "fullName": "Красный"
+    },
+    "green": {
+      "name": "Зелёный",
+      "fullName": "Зелёный"
+    },
+    "blue": {
+      "name": "Синий",
+      "fullName": "Синий"
+    },
+    "yellow": {
+      "name": "Жёлтый",
+      "fullName": "Жёлтый"
+    },
+    "orange": {
+      "name": "Оранжевый",
+      "fullName": "Оранжевый"
+    },
+    "cyan": {
+      "name": "Голубой",
+      "fullName": "Голубой"
+    },
+    "brown": {
+      "name": "Коричневый",
+      "fullName": "Коричневый"
+    },
+    "black": {
+      "name": "Чёрный",
+      "fullName": "Чёрный"
+    },
+    "white": {
+      "name": "Белый",
+      "fullName": "Белый"
+    },
+    "pink": {
+      "name": "Розовый",
+      "fullName": "Розовый"
+    },
+    "purple": {
+      "name": "Фиолетовый",
+      "fullName": "Фиолетовый"
+    },
+    "gray": {
+      "name": "Серый",
+      "fullName": "Серый"
+    }
   },
   "shapes": {
-    "circle": { "name": "Круг", "fullName": "Круг" },
-    "square": { "name": "Квадрат", "fullName": "Квадрат" },
-    "heart": { "name": "Сердце", "fullName": "Сердце" },
-    "ellipse": { "name": "Эллипс", "fullName": "Эллипс" },
-    "rectangle": { "name": "Прямоугольник", "fullName": "Прямоугольник" },
-    "star": { "name": "Звезда", "fullName": "Звезда" },
-    "triangle": { "name": "Треугольник", "fullName": "Треугольник" },
-    "cone": { "name": "Конус", "fullName": "Конус" },
-    "hexagon": { "name": "Шестиугольник", "fullName": "Шестиугольник" },
-    "kite": { "name": "Воздушный змей", "fullName": "Воздушный змей" },
-    "moon": { "name": "Луна", "fullName": "Луна" },
-    "pentagon": { "name": "Пятиугольник", "fullName": "Пятиугольник" },
-    "trapezoid": { "name": "Трапеция", "fullName": "Трапеция" },
-    "pyramid": { "name": "Пирамида", "fullName": "Пирамида" },
-    "rhombus": { "name": "Ромб", "fullName": "Ромб" },
-    "wave": { "name": "Волна", "fullName": "Волна" },
-    "cylinder": { "name": "Цилиндр", "fullName": "Цилиндр" },
-    "octagon": { "name": "Восьмиугольник", "fullName": "Восьмиугольник" },
-    "parallelogram": { "name": "Параллелограмм", "fullName": "Параллелограмм" },
-    "diamond": { "name": "Алмаз", "fullName": "Алмаз" },
-    "triangular_prism": { "name": "Треугольная призма", "fullName": "Треугольная призма" }
+    "circle": {
+      "name": "Круг",
+      "fullName": "Круг"
+    },
+    "square": {
+      "name": "Квадрат",
+      "fullName": "Квадрат"
+    },
+    "heart": {
+      "name": "Сердце",
+      "fullName": "Сердце"
+    },
+    "ellipse": {
+      "name": "Эллипс",
+      "fullName": "Эллипс"
+    },
+    "rectangle": {
+      "name": "Прямоугольник",
+      "fullName": "Прямоугольник"
+    },
+    "star": {
+      "name": "Звезда",
+      "fullName": "Звезда"
+    },
+    "triangle": {
+      "name": "Треугольник",
+      "fullName": "Треугольник"
+    },
+    "cone": {
+      "name": "Конус",
+      "fullName": "Конус"
+    },
+    "hexagon": {
+      "name": "Шестиугольник",
+      "fullName": "Шестиугольник"
+    },
+    "kite": {
+      "name": "Воздушный змей",
+      "fullName": "Воздушный змей"
+    },
+    "moon": {
+      "name": "Луна",
+      "fullName": "Луна"
+    },
+    "pentagon": {
+      "name": "Пятиугольник",
+      "fullName": "Пятиугольник"
+    },
+    "trapezoid": {
+      "name": "Трапеция",
+      "fullName": "Трапеция"
+    },
+    "pyramid": {
+      "name": "Пирамида",
+      "fullName": "Пирамида"
+    },
+    "rhombus": {
+      "name": "Ромб",
+      "fullName": "Ромб"
+    },
+    "wave": {
+      "name": "Волна",
+      "fullName": "Волна"
+    },
+    "cylinder": {
+      "name": "Цилиндр",
+      "fullName": "Цилиндр"
+    },
+    "octagon": {
+      "name": "Восьмиугольник",
+      "fullName": "Восьмиугольник"
+    },
+    "parallelogram": {
+      "name": "Параллелограмм",
+      "fullName": "Параллелограмм"
+    },
+    "diamond": {
+      "name": "Алмаз",
+      "fullName": "Алмаз"
+    },
+    "triangular_prism": {
+      "name": "Треугольная призма",
+      "fullName": "Треугольная призма"
+    }
   },
   "animals": {
-    "cow": { "name": "Корова", "fullName": "Корова" },
-    "pig": { "name": "Свинья", "fullName": "Свинья" },
-    "sheep": { "name": "Овца", "fullName": "Овца" },
-    "chicken": { "name": "Курица", "fullName": "Курица" },
-    "horse": { "name": "Лошадь", "fullName": "Лошадь" },
-    "dog": { "name": "Собака", "fullName": "Собака" },
-    "cat": { "name": "Кошка", "fullName": "Кошка" },
-    "bee": { "name": "Пчела", "fullName": "Пчела" },
-    "goat": { "name": "Коза", "fullName": "Коза" },
-    "bird": { "name": "Птица", "fullName": "Птица" },
-    "lion": { "name": "Лев", "fullName": "Лев" },
-    "elephant": { "name": "Слон", "fullName": "Слон" },
-    "monkey": { "name": "Обезьяна", "fullName": "Обезьяна" },
-    "duck": { "name": "Утка", "fullName": "Утка" },
-    "wolf": { "name": "Волк", "fullName": "Волк" },
-    "fox": { "name": "Лиса", "fullName": "Лиса" },
-    "tiger": { "name": "Тигр", "fullName": "Тигр" },
-    "cricket": { "name": "Сверчок", "fullName": "Сверчок" },
-    "zebra": { "name": "Зебра", "fullName": "Зебра" },
-    "frog": { "name": "Лягушка", "fullName": "Лягушка" }
+    "cow": {
+      "name": "Корова",
+      "fullName": "Корова"
+    },
+    "pig": {
+      "name": "Свинья",
+      "fullName": "Свинья"
+    },
+    "sheep": {
+      "name": "Овца",
+      "fullName": "Овца"
+    },
+    "chicken": {
+      "name": "Курица",
+      "fullName": "Курица"
+    },
+    "horse": {
+      "name": "Лошадь",
+      "fullName": "Лошадь"
+    },
+    "dog": {
+      "name": "Собака",
+      "fullName": "Собака"
+    },
+    "cat": {
+      "name": "Кошка",
+      "fullName": "Кошка"
+    },
+    "bee": {
+      "name": "Пчела",
+      "fullName": "Пчела"
+    },
+    "goat": {
+      "name": "Коза",
+      "fullName": "Коза"
+    },
+    "bird": {
+      "name": "Птица",
+      "fullName": "Птица"
+    },
+    "lion": {
+      "name": "Лев",
+      "fullName": "Лев"
+    },
+    "elephant": {
+      "name": "Слон",
+      "fullName": "Слон"
+    },
+    "monkey": {
+      "name": "Обезьяна",
+      "fullName": "Обезьяна"
+    },
+    "duck": {
+      "name": "Утка",
+      "fullName": "Утка"
+    },
+    "wolf": {
+      "name": "Волк",
+      "fullName": "Волк"
+    },
+    "fox": {
+      "name": "Лиса",
+      "fullName": "Лиса"
+    },
+    "tiger": {
+      "name": "Тигр",
+      "fullName": "Тигр"
+    },
+    "cricket": {
+      "name": "Сверчок",
+      "fullName": "Сверчок"
+    },
+    "zebra": {
+      "name": "Зебра",
+      "fullName": "Зебра"
+    },
+    "frog": {
+      "name": "Лягушка",
+      "fullName": "Лягушка"
+    }
   },
   "food": {
-    "apple": { "name": "Яблоко", "fullName": "Яблоко" },
-    "banana": { "name": "Банан", "fullName": "Банан" },
-    "orange": { "name": "Апельсин", "fullName": "Апельсин" },
-    "strawberry": { "name": "Клубника", "fullName": "Клубника" },
-    "grapes": { "name": "Виноград", "fullName": "Виноград" },
-    "watermelon": { "name": "Арбуз", "fullName": "Арбуз" },
-    "carrot": { "name": "Морковь", "fullName": "Морковь" },
-    "tomato": { "name": "Помидор", "fullName": "Помидор" },
-    "cucumber": { "name": "Огурец", "fullName": "Огурец" },
-    "pepper": { "name": "Перец", "fullName": "Перец" },
-    "broccoli": { "name": "Брокколи", "fullName": "Брокколи" },
-    "corn": { "name": "Кукуруза", "fullName": "Кукуруза" },
-    "bread": { "name": "Хлеб", "fullName": "Хлеб" },
-    "cheese": { "name": "Сыр", "fullName": "Сыр" },
-    "egg": { "name": "Яйцо", "fullName": "Яйцо" },
-    "cookie": { "name": "Печенье", "fullName": "Печенье" },
-    "icecream": { "name": "Мороженое", "fullName": "Мороженое" },
-    "chocolate": { "name": "Шоколад", "fullName": "Шоколад" }
+    "apple": {
+      "name": "Яблоко",
+      "fullName": "Яблоко"
+    },
+    "banana": {
+      "name": "Банан",
+      "fullName": "Банан"
+    },
+    "orange": {
+      "name": "Апельсин",
+      "fullName": "Апельсин"
+    },
+    "strawberry": {
+      "name": "Клубника",
+      "fullName": "Клубника"
+    },
+    "grapes": {
+      "name": "Виноград",
+      "fullName": "Виноград"
+    },
+    "watermelon": {
+      "name": "Арбуз",
+      "fullName": "Арбуз"
+    },
+    "carrot": {
+      "name": "Морковь",
+      "fullName": "Морковь"
+    },
+    "tomato": {
+      "name": "Помидор",
+      "fullName": "Помидор"
+    },
+    "cucumber": {
+      "name": "Огурец",
+      "fullName": "Огурец"
+    },
+    "pepper": {
+      "name": "Перец",
+      "fullName": "Перец"
+    },
+    "broccoli": {
+      "name": "Брокколи",
+      "fullName": "Брокколи"
+    },
+    "corn": {
+      "name": "Кукуруза",
+      "fullName": "Кукуруза"
+    },
+    "bread": {
+      "name": "Хлеб",
+      "fullName": "Хлеб"
+    },
+    "cheese": {
+      "name": "Сыр",
+      "fullName": "Сыр"
+    },
+    "egg": {
+      "name": "Яйцо",
+      "fullName": "Яйцо"
+    },
+    "cookie": {
+      "name": "Печенье",
+      "fullName": "Печенье"
+    },
+    "icecream": {
+      "name": "Мороженое",
+      "fullName": "Мороженое"
+    },
+    "chocolate": {
+      "name": "Шоколад",
+      "fullName": "Шоколад"
+    }
   },
   "seo": {
     "siteTitle": "Иврит для детей - Алеф Бет, цифры, цвета и игры",
@@ -756,7 +999,10 @@
       "sounds": "Идеальный слух",
       "counting": "Счётчик про",
       "dedicated": "Преданный игрок",
-      "master": "Чемпион игр"
+      "master": "Чемпион игр",
+      "chess1": "Начинающий шахматист",
+      "chess2": "Первые ходы",
+      "chess3": "Чемпион по шахматам"
     },
     "streaks": {
       "day1": "Первый день",

@@ -13,6 +13,7 @@ import { useNumbersProgressContext } from '@/contexts/NumbersProgressContext';
 import { useAnimalsProgressContext } from '@/contexts/AnimalsProgressContext';
 import { useGamesProgressContext } from '@/contexts/GamesProgressContext';
 import { useWordCollectionContext } from '@/contexts/WordCollectionContext';
+import { useChessProgress } from '@/hooks/useChessProgress';
 import {
   STICKER_PAGES,
   getStickersForPage,
@@ -38,6 +39,7 @@ export default function StickersContent() {
   const { totalHeard: animalsHeard, totalClicks: animalsTotalClicks } = useAnimalsProgressContext();
   const { uniqueGamesPlayed, memoryWins, simonHighScore, speedChallengeHighScores, wordBuilderCompletions, soundMatchingPerfect, countingGameCompletions, totalGamesCompleted } = useGamesProgressContext();
   const { uniqueWordsCollected } = useWordCollectionContext();
+  const { completedLevels: chessLevelsCompleted } = useChessProgress();
   const t = useTranslations();
 
   // Peel animation state
@@ -66,6 +68,7 @@ export default function StickersContent() {
       soundMatchingPerfect,
       countingGameCompletions,
       totalGamesCompleted,
+      chessLevelsCompleted,
       uniqueWordsCollected,
     }),
     [
@@ -84,6 +87,7 @@ export default function StickersContent() {
       soundMatchingPerfect,
       countingGameCompletions,
       totalGamesCompleted,
+      chessLevelsCompleted,
       uniqueWordsCollected,
     ]
   );
