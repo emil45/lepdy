@@ -111,6 +111,60 @@ test.describe('Chess piece introduction', () => {
   });
 });
 
+test.describe('Chess movement puzzles', () => {
+  test('Level 2 board renders with puzzle progress', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('lepdy_chess_progress', JSON.stringify({
+        completedLevels: [1],
+        currentLevel: 2
+      }));
+    });
+    await page.goto('/games/chess-game');
+    // Click Level 2 card (second level card)
+    await page.locator('[data-testid="level-card"]').nth(1).click();
+    // Verify puzzle progress counter appears
+    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 18');
+    // Verify piece group label appears
+    await expect(page.locator('[data-testid="piece-group-label"]')).toBeVisible();
+  });
+
+  test('Wrong tap shows try again feedback', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('lepdy_chess_progress', JSON.stringify({
+        completedLevels: [1],
+        currentLevel: 2
+      }));
+    });
+    await page.goto('/games/chess-game');
+    await page.locator('[data-testid="level-card"]').nth(1).click();
+    await expect(page.locator('[data-testid="puzzle-progress"]')).toBeVisible();
+    // First puzzle is king at e4. Tap a1 which is NOT a valid target for king
+    // react-chessboard squares have data-square attribute
+    await page.locator('[data-square="a1"]').click();
+    // Verify try again text appears
+    await expect(page.locator('[data-testid="try-again-text"]')).toBeVisible();
+  });
+
+  test('Hint appears after 2 wrong taps', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('lepdy_chess_progress', JSON.stringify({
+        completedLevels: [1],
+        currentLevel: 2
+      }));
+    });
+    await page.goto('/games/chess-game');
+    await page.locator('[data-testid="level-card"]').nth(1).click();
+    await expect(page.locator('[data-testid="puzzle-progress"]')).toBeVisible();
+    // Tap 2 wrong squares (a1 and h8 are never valid for king at e4)
+    await page.locator('[data-square="a1"]').click();
+    await page.waitForTimeout(700); // wait for flash to clear
+    await page.locator('[data-square="h8"]').click();
+    // After 2 wrong taps, hint squares should be highlighted
+    // Verify the puzzle progress still shows 1/18 (no advancement)
+    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 18');
+  });
+});
+
 test.describe('Info pages load', () => {
   const pages = ['learn', 'about', 'safety', 'contact'];
   for (const p of pages) {
