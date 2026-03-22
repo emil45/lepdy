@@ -55,7 +55,7 @@
 
 - [x] **Phase 14: Puzzle Pool Expansion** - Expand curated puzzles to 60+ movement and 30+ capture, tagged by difficulty tier (completed 2026-03-22)
 - [x] **Phase 15: Generator + Progress Hook** - Build puzzle generator with dedup ring buffer and extend useChessProgress with difficulty bands and migration (completed 2026-03-22)
-- [ ] **Phase 16: Session Hook + Puzzle Refactor** - Wire usePuzzleSession into MovementPuzzle and CapturePuzzle, replacing linear puzzle array with infinite random stream
+- [x] **Phase 16: Session Hook + Puzzle Refactor** - Wire usePuzzleSession into MovementPuzzle and CapturePuzzle, replacing linear puzzle array with infinite random stream (completed 2026-03-22)
 - [ ] **Phase 17: Session Complete + Progression UI** - Star-based session complete screen and named mastery band display
 - [ ] **Phase 18: Daily Featured Puzzle** - Date-seeded daily puzzle that is the same for all players each day
 
@@ -154,6 +154,6 @@ Plans:
 | 13. Theme Selector | v1.2 | 1/1 | Complete | 2026-03-22 |
 | 14. Puzzle Pool Expansion | v1.3 | 2/2 | Complete    | 2026-03-22 |
 | 15. Generator + Progress Hook | v1.3 | 2/2 | Complete   | 2026-03-22 |
-| 16. Session Hook + Puzzle Refactor | v1.3 | 1/2 | In Progress|  |
+| 16. Session Hook + Puzzle Refactor | v1.3 | 1/2 | Complete    | 2026-03-22 |
 | 17. Session Complete + Progression UI | v1.3 | 0/? | Not started | - |
 | 18. Daily Featured Puzzle | v1.3 | 0/? | Not started | - |

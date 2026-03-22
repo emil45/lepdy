@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Infinite Replayability
-status: Ready to execute
-stopped_at: Completed 16-01-PLAN.md — usePuzzleSession hook and StreakBadge component
-last_updated: "2026-03-22T20:43:58.911Z"
+status: Ready to plan
+stopped_at: "Checkpoint Task 3: human-verify session flow in 16-02-PLAN.md"
+last_updated: "2026-03-22T20:54:13.801Z"
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -23,8 +23,8 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 
 ## Current Position
 
-Phase: 16 (session-hook-puzzle-refactor) — EXECUTING
-Plan: 2 of 2
+Phase: 17
+Plan: Not started
 
 ## Performance Metrics
 
@@ -46,6 +46,7 @@ Plan: 2 of 2
 | Phase 15-generator-progress-hook P01 | 5 | 2 tasks | 4 files |
 | Phase 15-generator-progress-hook P02 | 6 | 2 tasks | 3 files |
 | Phase 16-session-hook-puzzle-refactor P01 | 5 | 2 tasks | 5 files |
+| Phase 16 P02 | 10 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -69,6 +70,9 @@ Recent decisions affecting current work:
 - [Phase 16-01]: Session queue: 5 movement + 5 capture interleaved, movement slots rotate through king/rook/bishop/queen/knight by order
 - [Phase 16-01]: sessionStorage stores only puzzle IDs, hydrates on mount with discard-on-miss strategy to handle stale data
 - [Phase 16-01]: completeLevel NOT wired in usePuzzleSession — Plan 02 handles this in ChessGameContent where level context available
+- [Phase 16]: onAnswer(false) called on wrong tap in puzzle components — session hook resets streak, does NOT advance puzzle (retry-in-place)
+- [Phase 16]: Level-2 and level-3 map cards unified to single 'session' view — usePuzzleSession provides mixed movement+capture queue
+- [Phase 16]: displayFen reset via inline derived state (not useEffect) to avoid react-hooks/set-state-in-effect lint error
 
 ### Pending Todos
 
@@ -83,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T20:43:58.909Z
-Stopped at: Completed 16-01-PLAN.md — usePuzzleSession hook and StreakBadge component
+Last session: 2026-03-22T20:50:27.915Z
+Stopped at: Checkpoint Task 3: human-verify session flow in 16-02-PLAN.md
 Resume file: None
