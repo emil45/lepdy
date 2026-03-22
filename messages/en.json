@@ -140,15 +140,10 @@
       "capture": "Who Can Capture?"
     },
     "ui": {
-      "correct": "Great Job!",
       "tryAgain": "Try Again!",
-      "hint": "Hint",
       "next": "Next",
       "back": "Back",
       "levelComplete": "Level Complete!",
-      "tapToHear": "Tap to hear",
-      "findSquare": "Find the right square",
-      "whichCaptures": "Which piece can capture?",
       "tapToMove": "Where can the {piece} move? Tap!",
       "tapToCapture": "Which piece can capture the {piece}? Tap it!",
       "learnedChess": "You learned chess!"
