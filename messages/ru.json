@@ -151,7 +151,11 @@
     "settings": {
       "pieceTheme": "Стиль фигур",
       "staunty": "Классический",
-      "horsey": "Игривый"
+      "horsey": "Игривый",
+      "anarcandy": "Конфетный",
+      "pixel": "Пиксель",
+      "shapes": "Фигуры",
+      "xkcd": "Каракули"
     }
   },
   "soundMatching": {

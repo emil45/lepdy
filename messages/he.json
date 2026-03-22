@@ -151,7 +151,11 @@
     "settings": {
       "pieceTheme": "סגנון כלים",
       "staunty": "קלאסי",
-      "horsey": "שובב"
+      "horsey": "שובב",
+      "anarcandy": "סוכריה",
+      "pixel": "פיקסל",
+      "shapes": "צורות",
+      "xkcd": "שרבוט"
     }
   },
   "soundMatching": {

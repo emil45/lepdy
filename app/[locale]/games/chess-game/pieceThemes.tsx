@@ -7,7 +7,7 @@ type PieceRenderObject = Record<string, (props?: {
   svgStyle?: React.CSSProperties;
 }) => React.JSX.Element>;
 
-export type ThemeName = 'staunty' | 'horsey';
+export type ThemeName = 'staunty' | 'horsey' | 'anarcandy' | 'pixel' | 'shapes' | 'xkcd';
 
 export const PIECE_CODES = [
   'wK', 'wQ', 'wR', 'wB', 'wN', 'wP',
@@ -33,6 +33,9 @@ function buildPieceRenderObject(theme: string): PieceRenderObject {
 
 export const pieceThemes: Record<ThemeName, PieceRenderObject> = {
   staunty: buildPieceRenderObject('staunty'),
-  // horsey theme will be added in plan 02
   horsey: buildPieceRenderObject('horsey'),
+  anarcandy: buildPieceRenderObject('anarcandy'),
+  pixel: buildPieceRenderObject('pixel'),
+  shapes: buildPieceRenderObject('shapes'),
+  xkcd: buildPieceRenderObject('xkcd'),
 };

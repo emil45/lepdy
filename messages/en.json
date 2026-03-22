@@ -151,7 +151,11 @@
     "settings": {
       "pieceTheme": "Piece Theme",
       "staunty": "Classic",
-      "horsey": "Playful"
+      "horsey": "Playful",
+      "anarcandy": "Candy",
+      "pixel": "Pixel",
+      "shapes": "Shapes",
+      "xkcd": "Doodle"
     }
   },
   "soundMatching": {

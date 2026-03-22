@@ -16,7 +16,7 @@ interface ChessSettingsDrawerProps {
   onSelectTheme: (name: ThemeName) => void;
 }
 
-const THEMES: ThemeName[] = ['staunty', 'horsey'];
+const THEMES: ThemeName[] = ['staunty', 'horsey', 'anarcandy', 'pixel', 'shapes', 'xkcd'];
 
 export default function ChessSettingsDrawer({
   open,
