@@ -23,8 +23,8 @@ Requirements for Infinite Replayability milestone. Each maps to roadmap phases.
 
 ### Session
 
-- [ ] **SESS-01**: User plays structured 10-puzzle sessions with a clear start and end
-- [ ] **SESS-02**: User sees a consecutive-correct streak counter during play ("4 in a row!")
+- [x] **SESS-01**: User plays structured 10-puzzle sessions with a clear start and end
+- [x] **SESS-02**: User sees a consecutive-correct streak counter during play ("4 in a row!")
 - [ ] **SESS-03**: User sees a session complete screen with 1-3 stars based on accuracy
 - [ ] **SESS-04**: User can play a daily featured puzzle that is the same for all players each day
 
@@ -65,8 +65,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DIFF-02 | Phase 15 | Complete |
 | DIFF-03 | Phase 15 | Complete |
 | DIFF-04 | Phase 17 | Pending |
-| SESS-01 | Phase 16 | Pending |
-| SESS-02 | Phase 16 | Pending |
+| SESS-01 | Phase 16 | Complete |
+| SESS-02 | Phase 16 | Complete |
 | SESS-03 | Phase 17 | Pending |
 | SESS-04 | Phase 18 | Pending |
 

@@ -102,7 +102,7 @@ Plans:
   4. Board rendering, FEN animation, square highlighting, and hint behavior are unchanged from v1.2
 **Plans**: 2 plans
 Plans:
-- [ ] 16-01-PLAN.md — usePuzzleSession hook, StreakBadge component, translation keys
+- [x] 16-01-PLAN.md — usePuzzleSession hook, StreakBadge component, translation keys
 - [ ] 16-02-PLAN.md — Refactor puzzle components to pure renderers, wire session into ChessGameContent
 
 ### Phase 17: Session Complete + Progression UI
@@ -154,6 +154,6 @@ Plans:
 | 13. Theme Selector | v1.2 | 1/1 | Complete | 2026-03-22 |
 | 14. Puzzle Pool Expansion | v1.3 | 2/2 | Complete    | 2026-03-22 |
 | 15. Generator + Progress Hook | v1.3 | 2/2 | Complete   | 2026-03-22 |
-| 16. Session Hook + Puzzle Refactor | v1.3 | 0/2 | Not started | - |
+| 16. Session Hook + Puzzle Refactor | v1.3 | 1/2 | In Progress|  |
 | 17. Session Complete + Progression UI | v1.3 | 0/? | Not started | - |
 | 18. Daily Featured Puzzle | v1.3 | 0/? | Not started | - |

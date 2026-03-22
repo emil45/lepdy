@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Infinite Replayability
-status: Phase complete — ready for verification
-stopped_at: Completed 15-02-PLAN.md — Hebrew piece name + audio + progress wiring in both puzzle components
-last_updated: "2026-03-22T20:22:56.049Z"
+status: Ready to execute
+stopped_at: Completed 16-01-PLAN.md — usePuzzleSession hook and StreakBadge component
+last_updated: "2026-03-22T20:43:58.911Z"
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 6
+  completed_plans: 5
 ---
 
 # Project State
@@ -19,11 +19,11 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 15 — generator-progress-hook
+**Current focus:** Phase 16 — session-hook-puzzle-refactor
 
 ## Current Position
 
-Phase: 15 (generator-progress-hook) — EXECUTING
+Phase: 16 (session-hook-puzzle-refactor) — EXECUTING
 Plan: 2 of 2
 
 ## Performance Metrics
@@ -45,6 +45,7 @@ Plan: 2 of 2
 | Phase 14-puzzle-pool-expansion P02 | 15 | 2 tasks | 3 files |
 | Phase 15-generator-progress-hook P01 | 5 | 2 tasks | 4 files |
 | Phase 15-generator-progress-hook P02 | 6 | 2 tasks | 3 files |
+| Phase 16-session-hook-puzzle-refactor P01 | 5 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -65,6 +66,9 @@ Recent decisions affecting current work:
 - [Phase 15-01]: sessionTiers returned as MutableRefObject (not .current) to satisfy react-hooks/refs lint rule — callers access .current in callbacks/effects
 - [Phase 15-01]: seenIds in GeneratorState is session-only in-memory (never persisted to localStorage) — resets per browser session intentionally
 - [Phase 15-02]: Hebrew name always visible on MovementPuzzle; shown post-answer on CapturePuzzle to serve as learning moment after correct capture
+- [Phase 16-01]: Session queue: 5 movement + 5 capture interleaved, movement slots rotate through king/rook/bishop/queen/knight by order
+- [Phase 16-01]: sessionStorage stores only puzzle IDs, hydrates on mount with discard-on-miss strategy to handle stale data
+- [Phase 16-01]: completeLevel NOT wired in usePuzzleSession — Plan 02 handles this in ChessGameContent where level context available
 
 ### Pending Todos
 
@@ -79,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T20:22:56.047Z
-Stopped at: Completed 15-02-PLAN.md — Hebrew piece name + audio + progress wiring in both puzzle components
+Last session: 2026-03-22T20:43:58.909Z
+Stopped at: Completed 16-01-PLAN.md — usePuzzleSession hook and StreakBadge component
 Resume file: None
