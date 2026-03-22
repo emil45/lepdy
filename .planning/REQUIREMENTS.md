@@ -23,12 +23,12 @@
 
 ### Movement Puzzles (Level 2)
 
-- [ ] **MOVE-01**: User sees a single piece on an otherwise empty board and taps where it can move
-- [ ] **MOVE-02**: Correct taps are celebrated with animation and sound
-- [ ] **MOVE-03**: Wrong taps get gentle "try again" feedback (no harsh punishment)
-- [ ] **MOVE-04**: After 2 wrong attempts, a hint highlights valid squares
-- [ ] **MOVE-05**: Movement puzzles exist for all 6 piece types
-- [ ] **MOVE-06**: No timer pressure during puzzles
+- [x] **MOVE-01**: User sees a single piece on an otherwise empty board and taps where it can move
+- [x] **MOVE-02**: Correct taps are celebrated with animation and sound
+- [x] **MOVE-03**: Wrong taps get gentle "try again" feedback (no harsh punishment)
+- [x] **MOVE-04**: After 2 wrong attempts, a hint highlights valid squares
+- [x] **MOVE-05**: Movement puzzles exist for all 6 piece types
+- [x] **MOVE-06**: No timer pressure during puzzles
 
 ### Capture Puzzles (Level 3)
 
@@ -46,9 +46,9 @@
 
 ### Feedback & Polish
 
-- [ ] **FEED-01**: Correct answers trigger celebration animation (stars/sparkles) and cheerful sound
-- [ ] **FEED-02**: Wrong answers show encouraging "try again" message — no buzzer, no score penalty
-- [ ] **FEED-03**: Hint system activates after 2 wrong taps on the same puzzle
+- [x] **FEED-01**: Correct answers trigger celebration animation (stars/sparkles) and cheerful sound
+- [x] **FEED-02**: Wrong answers show encouraging "try again" message — no buzzer, no score penalty
+- [x] **FEED-03**: Hint system activates after 2 wrong taps on the same puzzle
 
 ### Integration
 
@@ -100,12 +100,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INTRO-02 | Phase 4 | Complete |
 | INTRO-03 | Phase 4 | Complete |
 | INTRO-04 | Phase 4 | Complete |
-| MOVE-01 | Phase 5 | Pending |
-| MOVE-02 | Phase 5 | Pending |
-| MOVE-03 | Phase 5 | Pending |
-| MOVE-04 | Phase 5 | Pending |
-| MOVE-05 | Phase 5 | Pending |
-| MOVE-06 | Phase 5 | Pending |
+| MOVE-01 | Phase 5 | Complete |
+| MOVE-02 | Phase 5 | Complete |
+| MOVE-03 | Phase 5 | Complete |
+| MOVE-04 | Phase 5 | Complete |
+| MOVE-05 | Phase 5 | Complete |
+| MOVE-06 | Phase 5 | Complete |
 | CAPT-01 | Phase 6 | Pending |
 | CAPT-02 | Phase 6 | Pending |
 | CAPT-03 | Phase 6 | Pending |
@@ -114,9 +114,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROG-02 | Phase 3 | Complete |
 | PROG-03 | Phase 3 | Complete |
 | PROG-04 | Phase 3 | Complete |
-| FEED-01 | Phase 5 | Pending |
-| FEED-02 | Phase 5 | Pending |
-| FEED-03 | Phase 5 | Pending |
+| FEED-01 | Phase 5 | Complete |
+| FEED-02 | Phase 5 | Complete |
+| FEED-03 | Phase 5 | Complete |
 | INTG-01 | Phase 3 | Complete |
 | INTG-02 | Phase 3 | Complete |
 | INTG-03 | Phase 1 | Complete |

@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-03-22T08:19:17.027Z"
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-03-22T08:48:30.457Z"
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 7
-  completed_plans: 7
+  total_plans: 9
+  completed_plans: 8
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 04 — level-1-piece-introduction
+**Current focus:** Phase 05 — level-2-movement-puzzles
 
 ## Current Position
 
-Phase: 5
-Plan: Not started
+Phase: 05 (level-2-movement-puzzles) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Plan: Not started
 | Phase 03 P01 | 2min | 2 tasks | 5 files |
 | Phase 03-game-shell P02 | 2min | 2 tasks | 2 files |
 | Phase 04-level-1-piece-introduction P01 | 3min | 2 tasks | 3 files |
+| Phase 05 P01 | 1 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,8 @@ Recent decisions affecting current work:
 - [Phase 03-02]: View routing uses useState<ChessView> union type not Next.js router — keeps single-page feel for game shell
 - [Phase 03-02]: ChessBoard removed from game shell phase — level placeholders show Coming soon until Phases 4-6 wire real content
 - [Phase 04-01]: completeLevel prop pattern: ChessGameContent owns useChessProgress and passes completeLevel down to level components — avoids dual hook instances with stale state
+- [Phase 05]: Direct Chessboard import from react-chessboard in MovementPuzzle (not ChessBoard.tsx wrapper) — puzzle mode is read-only, no chess.js move execution needed
+- [Phase 05]: No WRONG_ANSWER audio on wrong taps in MovementPuzzle — gentle try-again text only per FEED-02; hints after 2 wrong taps per MOVE-03/MOVE-04
 
 ### Pending Todos
 
@@ -87,6 +90,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T08:15:08.993Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-03-22T08:48:30.456Z
+Stopped at: Completed 05-01-PLAN.md
 Resume file: None
