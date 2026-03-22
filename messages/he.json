@@ -147,6 +147,11 @@
       "tapToMove": "לאן {piece} יכול ללכת? לחץ!",
       "tapToCapture": "איזה כלי יכול לתפוס את ה{piece}? לחץ עליו!",
       "learnedChess": "למדת שחמט!"
+    },
+    "settings": {
+      "pieceTheme": "סגנון כלים",
+      "staunty": "קלאסי",
+      "horsey": "שובב"
     }
   },
   "soundMatching": {

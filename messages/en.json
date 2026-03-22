@@ -147,6 +147,11 @@
       "tapToMove": "Where can the {piece} move? Tap!",
       "tapToCapture": "Which piece can capture the {piece}? Tap it!",
       "learnedChess": "You learned chess!"
+    },
+    "settings": {
+      "pieceTheme": "Piece Theme",
+      "staunty": "Classic",
+      "horsey": "Playful"
     }
   },
   "soundMatching": {

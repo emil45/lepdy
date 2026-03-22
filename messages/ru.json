@@ -147,6 +147,11 @@
       "tapToMove": "Куда может пойти {piece}? Нажми!",
       "tapToCapture": "Какая фигура может взять {piece}? Нажми на неё!",
       "learnedChess": "Ты выучил шахматы!"
+    },
+    "settings": {
+      "pieceTheme": "Стиль фигур",
+      "staunty": "Классический",
+      "horsey": "Игривый"
     }
   },
   "soundMatching": {
