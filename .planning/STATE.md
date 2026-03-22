@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Board Facelift
 status: unknown
-stopped_at: Completed 11-board-theme-01-PLAN.md
-last_updated: "2026-03-22T15:17:28.659Z"
+stopped_at: Completed 12-custom-piece-svgs-01-PLAN.md
+last_updated: "2026-03-22T15:39:25.576Z"
 progress:
   total_phases: 3
   completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
+  total_plans: 3
+  completed_plans: 2
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 11 — Board Theme
+**Current focus:** Phase 12 — Custom Piece SVGs
 
 ## Current Position
 
-Phase: 11 (Board Theme) — EXECUTING
-Plan: 1 of 1
+Phase: 12 (Custom Piece SVGs) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -47,6 +47,7 @@ Plan: 1 of 1
 - Trend: Stable
 
 | Phase 11-board-theme P01 | 1 | 2 tasks | 2 files |
+| Phase 12-custom-piece-svgs P01 | 4 | 2 tasks | 17 files |
 
 ## Accumulated Context
 
@@ -59,6 +60,8 @@ Recent decisions affecting current work:
 - [Phase 08]: Board + instruction co-located in beige card — keeps instruction visually tied to its context
 - [Phase 10]: chess_level unlock type uses includes(unlockValue) on completedLevels array
 - [Phase 11-board-theme]: react-chessboard pastel theming via lightSquareStyle/darkSquareStyle/notation props in options object — no CSS overrides needed
+- [Phase 12-custom-piece-svgs]: PieceRenderObject type defined inline — react-chessboard/dist/types subpath not resolvable by TypeScript bundler
+- [Phase 12-custom-piece-svgs]: buildPieceRenderObject factory pattern: adding a theme = drop SVGs + add one registry line
 
 ### Pending Todos
 
@@ -71,6 +74,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T15:17:28.658Z
-Stopped at: Completed 11-board-theme-01-PLAN.md
+Last session: 2026-03-22T15:39:25.574Z
+Stopped at: Completed 12-custom-piece-svgs-01-PLAN.md
 Resume file: None

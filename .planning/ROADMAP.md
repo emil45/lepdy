@@ -71,7 +71,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 12-01: Build extensible piece theme architecture and integrate staunty SVGs
+- [x] 12-01: Build extensible piece theme architecture and integrate staunty SVGs
 - [ ] 12-02: Add horsey SVGs as a second registered theme and verify responsive rendering
 
 ### Phase 13: Theme Selector
@@ -102,5 +102,5 @@ Plans:
 | 9. Puzzle Animations | v1.1 | 1/1 | Complete | 2026-03-22 |
 | 10. Sticker Integration | v1.1 | 1/1 | Complete | 2026-03-22 |
 | 11. Board Theme | v1.2 | 1/1 | Complete    | 2026-03-22 |
-| 12. Custom Piece SVGs | v1.2 | 0/2 | Not started | - |
+| 12. Custom Piece SVGs | v1.2 | 1/2 | In Progress|  |
 | 13. Theme Selector | v1.2 | 0/1 | Not started | - |
