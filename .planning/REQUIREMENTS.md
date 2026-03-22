@@ -1,11 +1,42 @@
 # Requirements: Lepdy Chess
 
-**Defined:** 2026-03-22
+**Defined:** 2026-03-23
 **Core Value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
 
-## v1.3 Requirements
+## v1.4 Requirements
 
-Requirements for Infinite Replayability milestone. Each maps to roadmap phases.
+Requirements for Complete Puzzle Experience milestone. Each maps to roadmap phases.
+
+### Menu & Navigation
+
+- [ ] **MENU-01**: User sees a clear hub menu with large icon+label tiles replacing the broken 1/2/3/daily structure
+- [ ] **MENU-02**: User can navigate to Learn, Practice, Challenge, and Daily Puzzle from the hub menu
+- [ ] **MENU-03**: User sees their per-piece mastery bands displayed on the hub menu
+
+### Practice Mode
+
+- [ ] **PRAC-01**: User can select a specific chess piece from a 6-piece grid showing SVG, Hebrew name, and mastery band
+- [ ] **PRAC-02**: User plays infinite adaptive drills for the selected piece with no session limit
+- [ ] **PRAC-03**: User hears Hebrew piece name audio on the practice piece picker screen
+
+### Checkmate Puzzles
+
+- [ ] **MATE-01**: User can solve checkmate-in-1 puzzles ("find the move that checkmates")
+- [ ] **MATE-02**: At least 20 curated mate-in-1 positions validated by chess.js across multiple piece types
+- [ ] **MATE-03**: Checkmate puzzles appear in Challenge sessions alongside movement and capture puzzles
+
+### Sound & Celebrations
+
+- [ ] **SFX-01**: User hears a positive sound effect on correct puzzle answers
+- [ ] **SFX-02**: User hears a gentle sound effect on wrong puzzle answers
+- [ ] **SFX-03**: User sees mini-celebration (confetti/animation) at 3, 5, and 10 correct streak during sessions
+
+### Progress & Engagement
+
+- [ ] **PROG-01**: User sees a mastery map showing all 6 pieces with current mastery band on the menu
+- [ ] **PROG-02**: User sees a per-piece breakdown on the session complete screen (which pieces practiced, how many correct)
+
+## v1.3 Requirements (Complete)
 
 ### Puzzle Generation
 
@@ -30,25 +61,34 @@ Requirements for Infinite Replayability milestone. Each maps to roadmap phases.
 
 ## Future Requirements
 
-### Tactical Puzzles
+### Advanced Puzzle Types
 
+- **CHECK-01**: User can solve check puzzles ("move this piece to put the king in check")
+- **MATE-04**: User can solve checkmate-in-2 puzzles for ages 8-9 who have mastered mate-in-1
 - **TACT-01**: User can solve fork puzzles (ages 8+)
 - **TACT-02**: User can solve pin puzzles (ages 8+)
 - **TACT-03**: User can solve multi-piece sequence puzzles
 
-### Parent Features
+### Engagement
 
-- **PARE-01**: Parent can view child's progress dashboard
-- **PARE-02**: Parent can see time spent per session
+- **ENG-01**: User sees a "finish this session" prompt when returning after abandoning mid-session
+- **ENG-02**: Parent can view a progress dashboard showing session count, pieces mastered, time played
+
+### Challenge Modes
+
+- **CHAL-01**: User can play timed puzzle challenge (optional speed mode for ages 8+)
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Lives/hearts/energy system | Punishment discourages young learners — Duolingo removed hearts in May 2025 for this reason |
+| Full chess game (AI opponent) | Lepdy is puzzle-based learning; kids go to lichess/chess.com for real games |
+| "Find the best move" puzzles | Too many valid-feeling wrong answers for ages 5-9; creates confusion |
+| Checkmate-in-2+ | Ages 5-9 cannot hold multi-move calculation trees; defer until user data confirms readiness |
+| Timer pressure on puzzles | Ages 5-9 under time pressure shows elevated stress and abandonment |
+| Leaderboard / global ranking | Social comparison creates anxiety for ages 5-9; personal mastery instead |
+| Lives/hearts/energy system | Punishment discourages young learners (Duolingo removed May 2025) |
 | Glicko/ELO numeric rating | Meaningless to ages 5-9; a dropped rating causes abandonment |
-| Competitive leaderboard | Creates anxiety, not motivation for this age group |
-| Stockfish/external puzzle APIs | Wrong puzzle type for beginner domain; adds server dependency |
 | Push notifications | Beyond scope of web game; no service worker infrastructure |
 
 ## Traceability
@@ -57,6 +97,20 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
+| MENU-01 | — | Pending |
+| MENU-02 | — | Pending |
+| MENU-03 | — | Pending |
+| PRAC-01 | — | Pending |
+| PRAC-02 | — | Pending |
+| PRAC-03 | — | Pending |
+| MATE-01 | — | Pending |
+| MATE-02 | — | Pending |
+| MATE-03 | — | Pending |
+| SFX-01 | — | Pending |
+| SFX-02 | — | Pending |
+| SFX-03 | — | Pending |
+| PROG-01 | — | Pending |
+| PROG-02 | — | Pending |
 | PGEN-01 | Phase 14 | Complete |
 | PGEN-02 | Phase 14 | Complete |
 | PGEN-03 | Phase 15 | Complete |
@@ -71,10 +125,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SESS-04 | Phase 18 | Complete |
 
 **Coverage:**
-- v1.3 requirements: 12 total
-- Mapped to phases: 12
-- Unmapped: 0 ✓
+- v1.4 requirements: 14 total
+- Mapped to phases: 0
+- Unmapped: 14 ⚠️
 
 ---
-*Requirements defined: 2026-03-22*
-*Last updated: 2026-03-22 — traceability filled in after v1.3 roadmap creation*
+*Requirements defined: 2026-03-23*
+*Last updated: 2026-03-23 after v1.4 milestone definition*
