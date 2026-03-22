@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 05-02-PLAN.md
-last_updated: "2026-03-22T08:55:12.598Z"
+stopped_at: Completed 06-01-PLAN.md
+last_updated: "2026-03-22T09:12:34.549Z"
 progress:
   total_phases: 6
   completed_phases: 5
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 11
+  completed_plans: 10
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 05 — level-2-movement-puzzles
+**Current focus:** Phase 06 — level-3-capture-puzzles
 
 ## Current Position
 
-Phase: 6
-Plan: Not started
+Phase: 06 (level-3-capture-puzzles) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -55,6 +55,7 @@ Plan: Not started
 | Phase 04-level-1-piece-introduction P01 | 3min | 2 tasks | 3 files |
 | Phase 05 P01 | 1 | 2 tasks | 4 files |
 | Phase 05-level-2-movement-puzzles P02 | 4min | 2 tasks | 2 files |
+| Phase 06-level-3-capture-puzzles P01 | 2min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,8 @@ Recent decisions affecting current work:
 - [Phase 05]: Direct Chessboard import from react-chessboard in MovementPuzzle (not ChessBoard.tsx wrapper) — puzzle mode is read-only, no chess.js move execution needed
 - [Phase 05]: No WRONG_ANSWER audio on wrong taps in MovementPuzzle — gentle try-again text only per FEED-02; hints after 2 wrong taps per MOVE-03/MOVE-04
 - [Phase 05-level-2]: dynamic import with ssr:false for MovementPuzzle — react-chessboard is SSR-unsafe, same pattern as ChessBoard.tsx
+- [Phase 06-01]: targetPieceId derived from FEN analysis at targetSquare — pawn x6 (difficulty 1), queen x1 and rook x1 (difficulty 2)
+- [Phase 06-01]: CapturePuzzle ignores empty square taps (not in distractorSquares) — cleaner hit detection for capture puzzle mode
 
 ### Pending Todos
 
@@ -92,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T08:51:19.858Z
-Stopped at: Completed 05-02-PLAN.md
+Last session: 2026-03-22T09:12:34.547Z
+Stopped at: Completed 06-01-PLAN.md
 Resume file: None

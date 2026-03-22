@@ -104,7 +104,7 @@ Plans:
   4. All puzzles use hand-curated FEN positions — no special moves (castling, en passant, promotion) appear in any puzzle
 **Plans**: 2 plans
 Plans:
-- [ ] 06-01-PLAN.md — CapturePuzzle component, puzzle data enhancement, translation keys
+- [x] 06-01-PLAN.md — CapturePuzzle component, puzzle data enhancement, translation keys
 - [ ] 06-02-PLAN.md — Wire into ChessGameContent, E2E smoke tests
 
 ## Progress
@@ -119,4 +119,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Game Shell | 2/2 | Complete   | 2026-03-21 |
 | 4. Level 1 — Piece Introduction | 1/1 | Complete   | 2026-03-22 |
 | 5. Level 2 — Movement Puzzles | 2/2 | Complete   | 2026-03-22 |
-| 6. Level 3 — Capture Puzzles | 0/2 | Planning complete | - |
+| 6. Level 3 — Capture Puzzles | 1/2 | In Progress|  |
