@@ -10,9 +10,12 @@ import { useTranslations } from 'next-intl';
 import LockIcon from '@mui/icons-material/Lock';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import StarIcon from '@mui/icons-material/Star';
+import dynamic from 'next/dynamic';
 import BackButton from '@/components/BackButton';
 import { useChessProgress } from '@/hooks/useChessProgress';
 import PieceIntroduction from './PieceIntroduction';
+
+const MovementPuzzle = dynamic(() => import('./MovementPuzzle'), { ssr: false });
 
 type ChessView = 'map' | 'level-1' | 'level-2' | 'level-3';
 
@@ -83,6 +86,10 @@ export default function ChessGameContent() {
 
   if (currentView === 'level-1') {
     return <PieceIntroduction onComplete={() => setCurrentView('map')} completeLevel={completeLevel} />;
+  }
+
+  if (currentView === 'level-2') {
+    return <MovementPuzzle onComplete={() => setCurrentView('map')} completeLevel={completeLevel} />;
   }
 
   if (currentView !== 'map') {
