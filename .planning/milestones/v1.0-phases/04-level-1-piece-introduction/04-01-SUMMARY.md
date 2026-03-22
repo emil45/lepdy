@@ -116,3 +116,12 @@ None - no external service configuration required.
 ---
 *Phase: 04-level-1-piece-introduction*
 *Completed: 2026-03-22*
+
+## Self-Check: PASSED
+
+- FOUND: `app/[locale]/games/chess-game/PieceIntroduction.tsx`
+- FOUND: `app/[locale]/games/chess-game/ChessGameContent.tsx`
+- FOUND: `.planning/phases/04-level-1-piece-introduction/04-01-SUMMARY.md`
+- FOUND: commit `eb74405` (Task 1)
+- FOUND: commit `dc6e321` (Task 2)
+- FOUND: commit `2cb6dc3` (docs/metadata)
