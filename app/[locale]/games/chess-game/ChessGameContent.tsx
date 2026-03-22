@@ -17,15 +17,18 @@ import RoundFunButton from '@/components/RoundFunButton';
 import { useChessProgress } from '@/hooks/useChessProgress';
 import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
 import { usePuzzleSession } from '@/hooks/usePuzzleSession';
+import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
+import { playRandomCelebration } from '@/utils/audio';
 import ChessSettingsDrawer from './ChessSettingsDrawer';
 import PieceIntroduction from './PieceIntroduction';
 import StreakBadge from './StreakBadge';
 import SessionCompleteScreen from './SessionCompleteScreen';
+import DailyPuzzleCard from './DailyPuzzleCard';
 
 const MovementPuzzle = dynamic(() => import('./MovementPuzzle'), { ssr: false });
 const CapturePuzzle = dynamic(() => import('./CapturePuzzle'), { ssr: false });
 
-type ChessView = 'map' | 'level-1' | 'session';
+type ChessView = 'map' | 'level-1' | 'session' | 'daily';
 
 const LEVELS = [
   { num: 1, nameKey: 'levels.pieceIntro' as const, emoji: '\u2654', color: '#9ed6ea' },
@@ -95,6 +98,7 @@ export default function ChessGameContent() {
   const { isLevelUnlocked, isLevelCompleted, completeLevel } = useChessProgress();
   const { theme, selectTheme } = useChessPieceTheme();
   const { currentPuzzle, sessionIndex, consecutiveCorrect, firstTryCount, isSessionComplete, onAnswer, startNewSession, sessionTiers, currentTiersByPiece } = usePuzzleSession();
+  const { dateKey, dailyPuzzle, isCompleted: isDailyCompleted, markCompleted: markDailyCompleted } = useDailyPuzzle();
 
   // Call completeLevel for both puzzle levels when session completes
   useEffect(() => {
@@ -177,6 +181,43 @@ export default function ChessGameContent() {
     );
   }
 
+  if (currentView === 'daily') {
+    const handleDailyAnswer = (correct: boolean) => {
+      if (correct) {
+        markDailyCompleted();
+        playRandomCelebration();
+        // Return to map after puzzle animation settles
+        setTimeout(() => setCurrentView('map'), 800);
+      }
+    };
+
+    if (dailyPuzzle.type === 'movement') {
+      return (
+        <Fade in={true} timeout={300}>
+          <div>
+            <MovementPuzzle
+              puzzle={dailyPuzzle.puzzle}
+              onAnswer={handleDailyAnswer}
+              onExit={() => setCurrentView('map')}
+            />
+          </div>
+        </Fade>
+      );
+    }
+
+    return (
+      <Fade in={true} timeout={300}>
+        <div>
+          <CapturePuzzle
+            puzzle={dailyPuzzle.puzzle}
+            onAnswer={handleDailyAnswer}
+            onExit={() => setCurrentView('map')}
+          />
+        </div>
+      </Fade>
+    );
+  }
+
   return (
     <Fade in={true} timeout={300}>
       <Box sx={{ py: 2, px: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
@@ -190,6 +231,11 @@ export default function ChessGameContent() {
           {t('title')}
         </Typography>
         <Box sx={{ width: '100%', maxWidth: 520, mt: 2 }}>
+          <DailyPuzzleCard
+            dateLabel={new Date(dateKey + 'T00:00:00Z').toLocaleDateString()}
+            isCompleted={isDailyCompleted}
+            onSelect={() => setCurrentView('daily')}
+          />
           {LEVELS.map((level) => (
             <LevelMapCard
               key={level.num}
