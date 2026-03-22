@@ -68,7 +68,7 @@ Plans:
   3. Piece SVGs render without clipping or distortion at 320px board width (smallest supported) and 480px board width (largest supported)
   4. A child can tell each piece type apart at both board sizes — pieces are visually distinct
   5. Adding a third piece theme requires only dropping SVGs into a folder and adding a single theme registration entry — no other code changes
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 12-01: Build extensible piece theme architecture and integrate staunty SVGs
@@ -101,6 +101,6 @@ Plans:
 | 8. Navigation & UI Polish | v1.1 | 2/2 | Complete | 2026-03-22 |
 | 9. Puzzle Animations | v1.1 | 1/1 | Complete | 2026-03-22 |
 | 10. Sticker Integration | v1.1 | 1/1 | Complete | 2026-03-22 |
-| 11. Board Theme | v1.2 | 1/1 | Complete   | 2026-03-22 |
+| 11. Board Theme | v1.2 | 1/1 | Complete    | 2026-03-22 |
 | 12. Custom Piece SVGs | v1.2 | 0/2 | Not started | - |
 | 13. Theme Selector | v1.2 | 0/1 | Not started | - |
