@@ -114,3 +114,10 @@ Each task was committed atomically:
 ---
 *Phase: 15-generator-progress-hook*
 *Completed: 2026-03-22*
+
+## Self-Check: PASSED
+
+- FOUND: utils/puzzleGenerator.ts
+- FOUND: hooks/usePuzzleProgress.ts
+- FOUND: commit 2f1b880 (Task 1)
+- FOUND: commit 2bb4b06 (Task 2)
