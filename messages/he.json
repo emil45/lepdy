@@ -166,6 +166,11 @@
       "pixel": "פיקסל",
       "shapes": "צורות",
       "xkcd": "שרבוט"
+    },
+    "daily": {
+      "label": "פאזל יומי",
+      "comeBackTomorrow": "!תחזור מחר",
+      "completed": "!סיימת"
     }
   },
   "soundMatching": {

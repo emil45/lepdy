@@ -166,6 +166,11 @@
       "pixel": "Пиксель",
       "shapes": "Фигуры",
       "xkcd": "Каракули"
+    },
+    "daily": {
+      "label": "Ежедневная задача",
+      "comeBackTomorrow": "Вернись завтра!",
+      "completed": "Готово!"
     }
   },
   "soundMatching": {

@@ -166,6 +166,11 @@
       "pixel": "Pixel",
       "shapes": "Shapes",
       "xkcd": "Doodle"
+    },
+    "daily": {
+      "label": "Daily Puzzle",
+      "comeBackTomorrow": "Come back tomorrow!",
+      "completed": "Done!"
     }
   },
   "soundMatching": {
