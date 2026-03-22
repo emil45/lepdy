@@ -130,8 +130,8 @@ Plans:
   4. Daily puzzle rotates at midnight and the next day's puzzle is different
 **Plans**: 2 plans
 Plans:
-- [ ] 18-01-PLAN.md — [to be planned]
-- [ ] 18-02-PLAN.md — [to be planned]
+- [ ] 18-01-PLAN.md — useDailyPuzzle hook, DailyPuzzleCard component, translation keys
+- [ ] 18-02-PLAN.md — Wire daily puzzle into ChessGameContent with daily view and map card
 
 ## Progress
 
