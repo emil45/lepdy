@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Infinite Replayability
-status: Ready to plan
-stopped_at: Completed 14-02-PLAN.md — puzzle pool expansion (61 movement + 34 capture, 0 errors)
-last_updated: "2026-03-22T19:39:14.126Z"
+status: Ready to execute
+stopped_at: Completed 15-01-PLAN.md — puzzle generator utility and usePuzzleProgress hook
+last_updated: "2026-03-22T20:16:04.581Z"
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 4
+  completed_plans: 3
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 14 — puzzle-pool-expansion
+**Current focus:** Phase 15 — generator-progress-hook
 
 ## Current Position
 
-Phase: 15
-Plan: Not started
+Phase: 15 (generator-progress-hook) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -43,6 +43,7 @@ Plan: Not started
 | v1.2 Phases 11-13 | 4 plans | ~12 min | ~3 min |
 | Phase 14-puzzle-pool-expansion P01 | 5 | 2 tasks | 2 files |
 | Phase 14-puzzle-pool-expansion P02 | 15 | 2 tasks | 3 files |
+| Phase 15-generator-progress-hook P01 | 5 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -60,6 +61,8 @@ Recent decisions affecting current work:
 - [v1.3 arch]: usePuzzleSession hook sources puzzles; MovementPuzzle/CapturePuzzle rendering unchanged
 - [Phase 14-01]: Dummy king placement prefers squares the piece cannot reach; falls back with dummy-square exclusion from comparison to handle all-corners-reachable cases (queen/rook on a1)
 - [Phase 14-02]: All puzzle validTargets computed via chess.js moves() with findSafeKingCorner dummy-king strategy — naive corner placement gives wrong results for rook/queen on a-file
+- [Phase 15-01]: sessionTiers returned as MutableRefObject (not .current) to satisfy react-hooks/refs lint rule — callers access .current in callbacks/effects
+- [Phase 15-01]: seenIds in GeneratorState is session-only in-memory (never persisted to localStorage) — resets per browser session intentionally
 
 ### Pending Todos
 
@@ -74,6 +77,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T19:36:34.378Z
-Stopped at: Completed 14-02-PLAN.md — puzzle pool expansion (61 movement + 34 capture, 0 errors)
+Last session: 2026-03-22T20:16:04.578Z
+Stopped at: Completed 15-01-PLAN.md — puzzle generator utility and usePuzzleProgress hook
 Resume file: None

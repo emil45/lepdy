@@ -88,7 +88,7 @@ Plans:
   6. Returning user's existing level-completion progress is preserved after the hook migration (no data loss)
 **Plans**: 2 plans
 Plans:
-- [ ] 15-01-PLAN.md — Puzzle generator utility, progress hook, and feature flag config
+- [x] 15-01-PLAN.md — Puzzle generator utility, progress hook, and feature flag config
 - [ ] 15-02-PLAN.md — Hebrew piece name + audio on MovementPuzzle and CapturePuzzle
 
 ### Phase 16: Session Hook + Puzzle Refactor
@@ -153,7 +153,7 @@ Plans:
 | 12. Custom Piece SVGs | v1.2 | 2/2 | Complete | 2026-03-22 |
 | 13. Theme Selector | v1.2 | 1/1 | Complete | 2026-03-22 |
 | 14. Puzzle Pool Expansion | v1.3 | 2/2 | Complete    | 2026-03-22 |
-| 15. Generator + Progress Hook | v1.3 | 0/2 | Not started | - |
+| 15. Generator + Progress Hook | v1.3 | 1/2 | In Progress|  |
 | 16. Session Hook + Puzzle Refactor | v1.3 | 0/? | Not started | - |
 | 17. Session Complete + Progression UI | v1.3 | 0/? | Not started | - |
 | 18. Daily Featured Puzzle | v1.3 | 0/? | Not started | - |

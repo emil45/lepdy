@@ -11,14 +11,14 @@ Requirements for Infinite Replayability milestone. Each maps to roadmap phases.
 
 - [x] **PGEN-01**: User gets a randomly selected movement puzzle every time (never runs out)
 - [x] **PGEN-02**: User gets a randomly selected capture puzzle every time (never runs out)
-- [ ] **PGEN-03**: User never sees the same puzzle twice within a session (15-puzzle dedup window)
+- [x] **PGEN-03**: User never sees the same puzzle twice within a session (15-puzzle dedup window)
 - [ ] **PGEN-04**: User sees the Hebrew piece name and can hear pronunciation on every generated puzzle
 
 ### Difficulty
 
-- [ ] **DIFF-01**: User encounters puzzles at 3 difficulty tiers (easy, medium, hard) with increasing board complexity
-- [ ] **DIFF-02**: User automatically advances to harder puzzles after demonstrating mastery (consecutive correct answers)
-- [ ] **DIFF-03**: User automatically gets easier puzzles after struggling (consecutive wrong answers)
+- [x] **DIFF-01**: User encounters puzzles at 3 difficulty tiers (easy, medium, hard) with increasing board complexity
+- [x] **DIFF-02**: User automatically advances to harder puzzles after demonstrating mastery (consecutive correct answers)
+- [x] **DIFF-03**: User automatically gets easier puzzles after struggling (consecutive wrong answers)
 - [ ] **DIFF-04**: User sees their current mastery level as a named band per piece type ("Rook Beginner → Knight Expert")
 
 ### Session
@@ -59,11 +59,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | PGEN-01 | Phase 14 | Complete |
 | PGEN-02 | Phase 14 | Complete |
-| PGEN-03 | Phase 15 | Pending |
+| PGEN-03 | Phase 15 | Complete |
 | PGEN-04 | Phase 15 | Pending |
-| DIFF-01 | Phase 15 | Pending |
-| DIFF-02 | Phase 15 | Pending |
-| DIFF-03 | Phase 15 | Pending |
+| DIFF-01 | Phase 15 | Complete |
+| DIFF-02 | Phase 15 | Complete |
+| DIFF-03 | Phase 15 | Complete |
 | DIFF-04 | Phase 17 | Pending |
 | SESS-01 | Phase 16 | Pending |
 | SESS-02 | Phase 16 | Pending |
