@@ -181,8 +181,10 @@ export function usePuzzleSession(): UsePuzzleSessionReturn {
       // Update streak with functional setState to avoid stale closure
       setConsecutiveCorrect((prev) => (correct ? prev + 1 : 0));
 
-      // Advance head index
-      setHeadIndex((prev) => prev + 1);
+      // Advance head index only on correct — wrong answers let child retry same puzzle
+      if (correct) {
+        setHeadIndex((prev) => prev + 1);
+      }
     },
     [isInitialized, headIndex, queue, recordCorrect, recordWrong]
   );
