@@ -1,5 +1,18 @@
 # Milestones
 
+## v1.2 Board Facelift (Shipped: 2026-03-22)
+
+**Phases completed:** 3 phases, 4 plans, 8 tasks
+
+**Key accomplishments:**
+
+- Pastel board squares (beigePastel/purplePastel) and 50%-opacity coordinate labels applied to both MovementPuzzle and CapturePuzzle via react-chessboard options props
+- Staunty SVG pieces from lichess integrated into chess board and piece introduction via extensible factory-pattern theme registry
+- Horsey SVGs from lichess added as second piece theme, proving extensibility with only 1 line of code + 12 SVG files
+- MUI settings drawer with SVG knight thumbnails lets users switch between Classic/Playful chess piece themes, with selection persisted to localStorage via useChessPieceTheme hook
+
+---
+
 ## v1.1 Polish & Fixes (Shipped: 2026-03-22)
 
 **Phases completed:** 4 phases, 5 plans, 10 tasks

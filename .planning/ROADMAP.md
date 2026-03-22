@@ -4,7 +4,7 @@
 
 - ✅ **v1.0 Lepdy Chess** — Phases 1-6 (shipped 2026-03-22)
 - ✅ **v1.1 Polish & Fixes** — Phases 7-10 (shipped 2026-03-22)
-- 🚧 **v1.2 Board Facelift** — Phases 11-13 (in progress)
+- ✅ **v1.2 Board Facelift** — Phases 11-13 (shipped 2026-03-22)
 
 ## Phases
 
@@ -32,60 +32,21 @@
 - [x] **Phase 10: Sticker Integration** - 3 chess stickers wired into Lepdy sticker collection
 
 **Total:** 4 phases, 5 plans
+**Archive:** `.planning/milestones/v1.1-ROADMAP.md`
 
 </details>
 
-### 🚧 v1.2 Board Facelift (In Progress)
+<details>
+<summary>✅ v1.2 Board Facelift (Phases 11-13) — SHIPPED 2026-03-22</summary>
 
-**Milestone Goal:** Replace the default react-chessboard visuals with Lepdy's playful pastel style — custom board colors and kid-friendly SVG chess pieces with a theme selector
+- [x] **Phase 11: Board Theme** - Pastel board square colors and complementary coordinate labels
+- [x] **Phase 12: Custom Piece SVGs** - Two kid-friendly SVG piece themes (staunty + horsey) via extensible theme architecture
+- [x] **Phase 13: Theme Selector** - Settings drawer piece theme selector with localStorage persistence
 
-- [x] **Phase 11: Board Theme** - Pastel board square colors and complementary coordinate labels (completed 2026-03-22)
-- [x] **Phase 12: Custom Piece SVGs** - Two kid-friendly SVG piece themes (staunty + horsey) via an extensible theme architecture (completed 2026-03-22)
-- [x] **Phase 13: Theme Selector** - Settings drawer piece theme selector with localStorage persistence (completed 2026-03-22)
+**Total:** 3 phases, 4 plans
+**Archive:** `.planning/milestones/v1.2-ROADMAP.md`
 
-## Phase Details
-
-### Phase 11: Board Theme
-**Goal**: The chess board uses Lepdy's pastel color palette instead of the default brown/beige squares
-**Depends on**: Phase 10
-**Requirements**: BOARD-01, BOARD-02
-**Success Criteria** (what must be TRUE):
-  1. The board's light squares and dark squares use a pastel color pair from Lepdy's existing palette (not the default tan/brown)
-  2. The board coordinate labels (a-h, 1-8) are visible and use a color that complements the new pastel squares without clashing
-  3. The board looks visually consistent with the surrounding chess game UI (cards, buttons, backgrounds)
-**Plans**: 1 plan
-
-Plans:
-- [x] 11-01: Apply pastel square colors and coordinate label color to the chess board
-
-### Phase 12: Custom Piece SVGs
-**Goal**: All chess pieces use kid-friendly SVG designs sourced from lichess, delivered through an extensible theme architecture that makes adding future themes trivial
-**Depends on**: Phase 11
-**Requirements**: PIECE-01, PIECE-02, PIECE-03, PIECE-04
-**Success Criteria** (what must be TRUE):
-  1. All 12 pieces (6 white + 6 black) render using the staunty SVG theme from lichess — the default react-chessboard pieces are no longer visible
-  2. All 12 pieces (6 white + 6 black) render using the horsey SVG theme from lichess when horsey is selected
-  3. Piece SVGs render without clipping or distortion at 320px board width (smallest supported) and 480px board width (largest supported)
-  4. A child can tell each piece type apart at both board sizes — pieces are visually distinct
-  5. Adding a third piece theme requires only dropping SVGs into a folder and adding a single theme registration entry — no other code changes
-**Plans**: 2 plans
-
-Plans:
-- [x] 12-01: Build extensible piece theme architecture and integrate staunty SVGs
-- [x] 12-02: Add horsey SVGs as a second registered theme and verify responsive rendering
-
-### Phase 13: Theme Selector
-**Goal**: Users can choose their preferred piece theme from within the chess game and the choice is remembered
-**Depends on**: Phase 12
-**Requirements**: SET-01, SET-02
-**Success Criteria** (what must be TRUE):
-  1. The chess game settings drawer contains a piece theme selector that lists all available themes (staunty, horsey)
-  2. Tapping a theme in the selector immediately switches the pieces on the board
-  3. After closing and reopening the chess game (or refreshing the browser), the previously selected theme is still active
-**Plans**: 1 plan
-
-Plans:
-- [x] 13-01: Add piece theme selector to chess game settings drawer with localStorage persistence
+</details>
 
 ## Progress
 
@@ -101,6 +62,6 @@ Plans:
 | 8. Navigation & UI Polish | v1.1 | 2/2 | Complete | 2026-03-22 |
 | 9. Puzzle Animations | v1.1 | 1/1 | Complete | 2026-03-22 |
 | 10. Sticker Integration | v1.1 | 1/1 | Complete | 2026-03-22 |
-| 11. Board Theme | v1.2 | 1/1 | Complete    | 2026-03-22 |
-| 12. Custom Piece SVGs | v1.2 | 2/2 | Complete    | 2026-03-22 |
-| 13. Theme Selector | v1.2 | 1/1 | Complete   | 2026-03-22 |
+| 11. Board Theme | v1.2 | 1/1 | Complete | 2026-03-22 |
+| 12. Custom Piece SVGs | v1.2 | 2/2 | Complete | 2026-03-22 |
+| 13. Theme Selector | v1.2 | 1/1 | Complete | 2026-03-22 |

@@ -51,18 +51,12 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 
 ### Active
 
-(Defined in REQUIREMENTS.md for v1.2)
-
-## Current Milestone: v1.2 Board Facelift
-
-**Goal:** Replace the default react-chessboard visuals with Lepdy's playful pastel style — custom board square colors and kid-friendly SVG chess pieces
-
-**Target features:**
-- Pastel board square colors matching Lepdy's palette (light/dark pastel pair)
-- Custom kid-friendly SVG chess piece designs (rounded, colorful, toy-like)
-- Consistent visual integration with the surrounding chess game UI
+(No active milestone — run `/gsd:new-milestone` to start next)
 
 ## Shipped Milestones
+
+### v1.2 Board Facelift (shipped 2026-03-22)
+Replaced default react-chessboard visuals with Lepdy's pastel board colors and kid-friendly SVG chess pieces (staunty + horsey themes) with extensible theme architecture and in-game theme selector.
 
 ### v1.1 Polish & Fixes (shipped 2026-03-22)
 Fixed bugs, polished UI to match Lepdy's playful style, added piece animations, and integrated chess stickers.
@@ -74,7 +68,7 @@ Chess learning game with 3 progressive levels, Hebrew vocabulary, and kid-friend
 
 - Full chess game (AI opponent or multiplayer) — too complex for v1, goal is learning fundamentals
 - Leaderboard / competitive scoring — this is about personal progress, not competition
-- Custom piece themes or board skins — keep it simple, classic board
+- Custom piece themes or board skins — delivered in v1.2 (2 themes + extensible architecture)
 - Online multiplayer — not aligned with Lepdy's learning model
 - Advanced tactics (forks, pins, checkmate patterns) — beyond "ready to play" goal
 - Adaptive difficulty — v1 uses fixed puzzle sets per level
@@ -82,7 +76,7 @@ Chess learning game with 3 progressive levels, Hebrew vocabulary, and kid-friend
 ## Context
 
 - Lepdy is a live Hebrew learning app at lepdy.com for kids
-- Chess game shipped through v1.1 with polished UI, animations, and sticker integration
+- Chess game shipped through v1.2 with pastel board, custom SVG piece themes, and in-game theme selector
 - Existing games: guess-game, memory-match, simon-game, speed-challenge, word-builder, counting-game, letter-rain, **chess-game**
 - 39 E2E tests pass (Playwright)
 - Audio files not yet recorded — game works without them (INTRO-03)
@@ -110,5 +104,9 @@ Chess learning game with 3 progressive levels, Hebrew vocabulary, and kid-friend
 | FEN manipulation for puzzle animation | Update board position to trigger react-chessboard's built-in slide animation | ✓ Good — zero dependencies, 200ms animation |
 | chess_level sticker unlock type | Reuses existing sticker detector pattern, no chess-specific sticker logic needed | ✓ Good — clean integration |
 
+| Factory pattern for piece theme registry | One loop generates all 12 piece render functions per theme — adding a theme = 1 line | ✓ Good — PIECE-04 proven by horsey |
+| SVGs from lichess (CC BY-NC-SA 4.0) | Self-hosted, no CDN dependency, kid-friendly designs | ✓ Good — attribution in CREDITS.md |
+| useChessPieceTheme as standalone hook (no context) | Each component reads localStorage independently — works because settings and puzzles are mutually exclusive React subtrees | ✓ Good — simple, correct |
+
 ---
-*Last updated: 2026-03-22 after v1.2 milestone started*
+*Last updated: 2026-03-22 after v1.2 Board Facelift shipped*
