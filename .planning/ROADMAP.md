@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Game Shell** - Routing, level map, progression system, and games list integration (completed 2026-03-21)
 - [x] **Phase 4: Level 1 — Piece Introduction** - Each piece introduced individually with Hebrew name and optional audio (completed 2026-03-22)
 - [x] **Phase 5: Level 2 — Movement Puzzles** - Tap-to-move puzzles with legal move highlights, hints, and feedback (completed 2026-03-22)
-- [ ] **Phase 6: Level 3 — Capture Puzzles** - Capture identification puzzles completing the full learning arc
+- [x] **Phase 6: Level 3 — Capture Puzzles** - Capture identification puzzles completing the full learning arc (completed 2026-03-22)
 
 ## Phase Details
 
@@ -105,7 +105,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 06-01-PLAN.md — CapturePuzzle component, puzzle data enhancement, translation keys
-- [ ] 06-02-PLAN.md — Wire into ChessGameContent, E2E smoke tests
+- [x] 06-02-PLAN.md — Wire into ChessGameContent, E2E smoke tests
 
 ## Progress
 
@@ -119,4 +119,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Game Shell | 2/2 | Complete   | 2026-03-21 |
 | 4. Level 1 — Piece Introduction | 1/1 | Complete   | 2026-03-22 |
 | 5. Level 2 — Movement Puzzles | 2/2 | Complete   | 2026-03-22 |
-| 6. Level 3 — Capture Puzzles | 1/2 | In Progress|  |
+| 6. Level 3 — Capture Puzzles | 2/2 | Complete   | 2026-03-22 |
