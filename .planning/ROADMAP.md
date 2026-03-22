@@ -88,7 +88,10 @@ Plans:
   3. Tapping a wrong square shows a gentle "try again" message with no buzzer and no score penalty
   4. After 2 wrong taps on the same puzzle, valid destination squares are highlighted as a hint
   5. Puzzles exist for all 6 piece types and no puzzle introduces timer pressure
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 05-01-PLAN.md — MovementPuzzle component with puzzle state machine, translation keys
+- [ ] 05-02-PLAN.md — Wire into ChessGameContent, E2E smoke tests
 
 ### Phase 6: Level 3 — Capture Puzzles
 **Goal**: A child can identify which piece on the board can capture a target piece, completing the full learning arc
@@ -112,5 +115,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. Board Infrastructure | 1/2 | In Progress|  |
 | 3. Game Shell | 2/2 | Complete   | 2026-03-21 |
 | 4. Level 1 — Piece Introduction | 1/1 | Complete   | 2026-03-22 |
-| 5. Level 2 — Movement Puzzles | 0/? | Not started | - |
+| 5. Level 2 — Movement Puzzles | 0/2 | Planning complete | - |
 | 6. Level 3 — Capture Puzzles | 0/? | Not started | - |
