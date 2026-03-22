@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Infinite Replayability
-status: Ready to execute
-stopped_at: Completed 14-01-PLAN.md — validation script + capture-rook-1 fix
-last_updated: "2026-03-22T19:20:58.615Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 14-02-PLAN.md — puzzle pool expansion (61 movement + 34 capture, 0 errors)
+last_updated: "2026-03-22T19:36:34.380Z"
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -42,6 +42,7 @@ Plan: 2 of 2
 | v1.1 Phases 7-10 | 5 plans | ~12 min | ~2.4 min |
 | v1.2 Phases 11-13 | 4 plans | ~12 min | ~3 min |
 | Phase 14-puzzle-pool-expansion P01 | 5 | 2 tasks | 2 files |
+| Phase 14-puzzle-pool-expansion P02 | 15 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -58,6 +59,7 @@ Recent decisions affecting current work:
 - [v1.3 arch]: No new npm dependencies — chess.js `moves()` is the full generation engine
 - [v1.3 arch]: usePuzzleSession hook sources puzzles; MovementPuzzle/CapturePuzzle rendering unchanged
 - [Phase 14-01]: Dummy king placement prefers squares the piece cannot reach; falls back with dummy-square exclusion from comparison to handle all-corners-reachable cases (queen/rook on a1)
+- [Phase 14-02]: All puzzle validTargets computed via chess.js moves() with findSafeKingCorner dummy-king strategy — naive corner placement gives wrong results for rook/queen on a-file
 
 ### Pending Todos
 
@@ -72,6 +74,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T19:20:58.613Z
-Stopped at: Completed 14-01-PLAN.md — validation script + capture-rook-1 fix
+Last session: 2026-03-22T19:36:34.378Z
+Stopped at: Completed 14-02-PLAN.md — puzzle pool expansion (61 movement + 34 capture, 0 errors)
 Resume file: None
