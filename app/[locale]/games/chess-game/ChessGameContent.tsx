@@ -79,10 +79,10 @@ function LevelMapCard({ levelNumber, levelName, emoji, bgColor, isUnlocked, isCo
 export default function ChessGameContent() {
   const [currentView, setCurrentView] = useState<ChessView>('map');
   const t = useTranslations('chessGame');
-  const { isLevelUnlocked, isLevelCompleted } = useChessProgress();
+  const { isLevelUnlocked, isLevelCompleted, completeLevel } = useChessProgress();
 
   if (currentView === 'level-1') {
-    return <PieceIntroduction onComplete={() => setCurrentView('map')} />;
+    return <PieceIntroduction onComplete={() => setCurrentView('map')} completeLevel={completeLevel} />;
   }
 
   if (currentView !== 'map') {

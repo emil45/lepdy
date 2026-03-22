@@ -74,6 +74,43 @@ test.describe('Chess game shell', () => {
   });
 });
 
+test.describe('Chess piece introduction', () => {
+  test('shows piece card when entering level 1', async ({ page }) => {
+    await page.goto('/games/chess-game');
+    // Click the first level card (Level 1 — always unlocked)
+    await page.locator('[data-testid="level-card"]').first().click();
+    // Verify piece introduction UI appears
+    await expect(page.locator('[data-testid="audio-button"]')).toBeVisible();
+    await expect(page.locator('[data-testid="next-button"]')).toBeVisible();
+    await expect(page.locator('[data-testid="step-counter"]')).toContainText('1 / 6');
+  });
+
+  test('navigates through all 6 pieces with Next button', async ({ page }) => {
+    await page.goto('/games/chess-game');
+    await page.locator('[data-testid="level-card"]').first().click();
+    // Verify starts at 1/6
+    await expect(page.locator('[data-testid="step-counter"]')).toContainText('1 / 6');
+    // Click Next 5 times to reach piece 6
+    for (let i = 0; i < 5; i++) {
+      await page.locator('[data-testid="next-button"]').click();
+    }
+    await expect(page.locator('[data-testid="step-counter"]')).toContainText('6 / 6');
+  });
+
+  test('completing all pieces returns to level map with Level 1 complete', async ({ page }) => {
+    await page.goto('/games/chess-game');
+    await page.locator('[data-testid="level-card"]').first().click();
+    // Click Next 6 times (5 to advance + 1 to complete)
+    for (let i = 0; i < 6; i++) {
+      await page.locator('[data-testid="next-button"]').click();
+    }
+    // Wait for celebration to auto-return to level map (3s timeout + buffer)
+    await expect(page.locator('[data-testid="level-card"]').first()).toBeVisible({ timeout: 5000 });
+    // Level 1 should now show completed indicator
+    await expect(page.locator('[data-testid="level-card-completed"]').first()).toBeVisible();
+  });
+});
+
 test.describe('Info pages load', () => {
   const pages = ['learn', 'about', 'safety', 'contact'];
   for (const p of pages) {

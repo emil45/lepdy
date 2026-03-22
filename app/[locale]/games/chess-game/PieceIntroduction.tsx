@@ -11,18 +11,17 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useTranslations } from 'next-intl';
 import Confetti from 'react-confetti';
 import { chessPieces } from '@/data/chessPieces';
-import { useChessProgress } from '@/hooks/useChessProgress';
 import { playAudio, playSound, AudioSounds } from '@/utils/audio';
 
 interface PieceIntroductionProps {
   onComplete: () => void;
+  completeLevel: (levelNum: number) => void;
 }
 
-export default function PieceIntroduction({ onComplete }: PieceIntroductionProps) {
+export default function PieceIntroduction({ onComplete, completeLevel }: PieceIntroductionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const t = useTranslations('chessGame');
-  const { completeLevel } = useChessProgress();
 
   const currentPiece = chessPieces[currentIndex];
 
