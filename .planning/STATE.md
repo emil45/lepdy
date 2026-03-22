@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-03-22T08:48:30.457Z"
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-03-22T08:51:19.859Z"
 progress:
   total_phases: 6
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -54,6 +54,7 @@ Plan: 2 of 2
 | Phase 03-game-shell P02 | 2min | 2 tasks | 2 files |
 | Phase 04-level-1-piece-introduction P01 | 3min | 2 tasks | 3 files |
 | Phase 05 P01 | 1 | 2 tasks | 4 files |
+| Phase 05-level-2-movement-puzzles P02 | 4min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,7 @@ Recent decisions affecting current work:
 - [Phase 04-01]: completeLevel prop pattern: ChessGameContent owns useChessProgress and passes completeLevel down to level components — avoids dual hook instances with stale state
 - [Phase 05]: Direct Chessboard import from react-chessboard in MovementPuzzle (not ChessBoard.tsx wrapper) — puzzle mode is read-only, no chess.js move execution needed
 - [Phase 05]: No WRONG_ANSWER audio on wrong taps in MovementPuzzle — gentle try-again text only per FEED-02; hints after 2 wrong taps per MOVE-03/MOVE-04
+- [Phase 05-level-2]: dynamic import with ssr:false for MovementPuzzle — react-chessboard is SSR-unsafe, same pattern as ChessBoard.tsx
 
 ### Pending Todos
 
@@ -90,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T08:48:30.456Z
-Stopped at: Completed 05-01-PLAN.md
+Last session: 2026-03-22T08:51:19.858Z
+Stopped at: Completed 05-02-PLAN.md
 Resume file: None
