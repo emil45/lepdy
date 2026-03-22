@@ -47,7 +47,7 @@ test.describe('Game pages load', () => {
 test.describe('Chess game shell', () => {
   test('chess game button visible on games page', async ({ page }) => {
     await page.goto('/games');
-    await expect(page.locator('a[href="/games/chess-game"], button:has-text("שחמט")')).toBeVisible();
+    await expect(page.locator('a[href="/games/chess-game"]')).toBeVisible();
   });
 
   test('level map shows three levels', async ({ page }) => {
