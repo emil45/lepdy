@@ -152,7 +152,7 @@ Plans:
 | 11. Board Theme | v1.2 | 1/1 | Complete | 2026-03-22 |
 | 12. Custom Piece SVGs | v1.2 | 2/2 | Complete | 2026-03-22 |
 | 13. Theme Selector | v1.2 | 1/1 | Complete | 2026-03-22 |
-| 14. Puzzle Pool Expansion | v1.3 | 2/2 | Complete   | 2026-03-22 |
+| 14. Puzzle Pool Expansion | v1.3 | 2/2 | Complete    | 2026-03-22 |
 | 15. Generator + Progress Hook | v1.3 | 0/? | Not started | - |
 | 16. Session Hook + Puzzle Refactor | v1.3 | 0/? | Not started | - |
 | 17. Session Complete + Progression UI | v1.3 | 0/? | Not started | - |
