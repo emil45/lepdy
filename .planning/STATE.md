@@ -1,9 +1,9 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: unknown
-stopped_at: Completed 06-02-PLAN.md
+milestone: v1.1
+milestone_name: Polish & Fixes
+status: defining-requirements
+stopped_at: —
 last_updated: "2026-03-22T09:28:57.186Z"
 progress:
   total_phases: 6
@@ -19,12 +19,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 06 — level-3-capture-puzzles
+**Current focus:** Defining requirements for v1.1
 
 ## Current Position
 
-Phase: 06
-Plan: Not started
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-22 — Milestone v1.1 started
 
 ## Performance Metrics
 

@@ -33,7 +33,20 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 
 ### Active
 
-(None — next milestone requirements TBD)
+(Defined in REQUIREMENTS.md for v1.1)
+
+## Current Milestone: v1.1 Polish & Fixes
+
+**Goal:** Fix v1.0 bugs and polish the chess game UI to match Lepdy's playful visual style
+
+**Target features:**
+- Lepdy-style pastel UI with animations and game polish
+- Piece movement animation on correct puzzle answers
+- Fix broken translation keys (double namespace prefix)
+- Back/exit navigation from every screen (puzzles, piece intro, level map)
+- Fix RTL-aware next/back button direction in piece intro
+- Align chess game back button with other games
+- Clean up orphaned code from v1.0
 
 ### Out of Scope
 
@@ -75,4 +88,4 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 | Prop-thread completeLevel from parent | Prevents stale state across views with useState routing | ✓ Good — fixed Phase 4 bug |
 
 ---
-*Last updated: 2026-03-22 after v1.0 milestone*
+*Last updated: 2026-03-22 after v1.1 milestone started*
