@@ -12,6 +12,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import StarIcon from '@mui/icons-material/Star';
 import BackButton from '@/components/BackButton';
 import { useChessProgress } from '@/hooks/useChessProgress';
+import PieceIntroduction from './PieceIntroduction';
 
 type ChessView = 'map' | 'level-1' | 'level-2' | 'level-3';
 
@@ -79,6 +80,10 @@ export default function ChessGameContent() {
   const [currentView, setCurrentView] = useState<ChessView>('map');
   const t = useTranslations('chessGame');
   const { isLevelUnlocked, isLevelCompleted } = useChessProgress();
+
+  if (currentView === 'level-1') {
+    return <PieceIntroduction onComplete={() => setCurrentView('map')} />;
+  }
 
   if (currentView !== 'map') {
     const levelNum = parseInt(currentView.split('-')[1]);
