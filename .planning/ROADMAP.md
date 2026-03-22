@@ -56,7 +56,7 @@
 - [x] **Phase 14: Puzzle Pool Expansion** - Expand curated puzzles to 60+ movement and 30+ capture, tagged by difficulty tier (completed 2026-03-22)
 - [x] **Phase 15: Generator + Progress Hook** - Build puzzle generator with dedup ring buffer and extend useChessProgress with difficulty bands and migration (completed 2026-03-22)
 - [x] **Phase 16: Session Hook + Puzzle Refactor** - Wire usePuzzleSession into MovementPuzzle and CapturePuzzle, replacing linear puzzle array with infinite random stream (completed 2026-03-22)
-- [ ] **Phase 17: Session Complete + Progression UI** - Star-based session complete screen and named mastery band display
+- [x] **Phase 17: Session Complete + Progression UI** - Star-based session complete screen and named mastery band display (completed 2026-03-22)
 - [ ] **Phase 18: Daily Featured Puzzle** - Date-seeded daily puzzle that is the same for all players each day
 
 ## Phase Details
@@ -116,8 +116,8 @@ Plans:
   4. User can start a new session immediately from the session complete screen
 **Plans**: 2 plans
 Plans:
-- [ ] 17-01-PLAN.md — Hook extension (firstTryCount, tier forwarding) + Firebase flags + translation keys
-- [ ] 17-02-PLAN.md — SessionCompleteScreen component with stars, mastery chips, tier advancement, confetti
+- [x] 17-01-PLAN.md — Hook extension (firstTryCount, tier forwarding) + Firebase flags + translation keys
+- [x] 17-02-PLAN.md — SessionCompleteScreen component with stars, mastery chips, tier advancement, confetti
 
 ### Phase 18: Daily Featured Puzzle
 **Goal**: Kids have a reason to return to the game every day because there is always a new featured puzzle waiting for them
@@ -155,5 +155,5 @@ Plans:
 | 14. Puzzle Pool Expansion | v1.3 | 2/2 | Complete    | 2026-03-22 |
 | 15. Generator + Progress Hook | v1.3 | 2/2 | Complete   | 2026-03-22 |
 | 16. Session Hook + Puzzle Refactor | v1.3 | 1/2 | Complete    | 2026-03-22 |
-| 17. Session Complete + Progression UI | v1.3 | 0/2 | Not started | - |
+| 17. Session Complete + Progression UI | v1.3 | 2/2 | Complete   | 2026-03-22 |
 | 18. Daily Featured Puzzle | v1.3 | 0/? | Not started | - |
