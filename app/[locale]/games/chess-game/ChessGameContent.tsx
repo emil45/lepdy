@@ -5,7 +5,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
-import Button from '@mui/material/Button';
 import Fade from '@mui/material/Fade';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useTranslations } from 'next-intl';
@@ -21,6 +20,7 @@ import { usePuzzleSession } from '@/hooks/usePuzzleSession';
 import ChessSettingsDrawer from './ChessSettingsDrawer';
 import PieceIntroduction from './PieceIntroduction';
 import StreakBadge from './StreakBadge';
+import SessionCompleteScreen from './SessionCompleteScreen';
 
 const MovementPuzzle = dynamic(() => import('./MovementPuzzle'), { ssr: false });
 const CapturePuzzle = dynamic(() => import('./CapturePuzzle'), { ssr: false });
@@ -94,7 +94,7 @@ export default function ChessGameContent() {
   const t = useTranslations('chessGame');
   const { isLevelUnlocked, isLevelCompleted, completeLevel } = useChessProgress();
   const { theme, selectTheme } = useChessPieceTheme();
-  const { currentPuzzle, sessionIndex, consecutiveCorrect, isSessionComplete, onAnswer, startNewSession } = usePuzzleSession();
+  const { currentPuzzle, sessionIndex, consecutiveCorrect, firstTryCount, isSessionComplete, onAnswer, startNewSession, sessionTiers, currentTiersByPiece } = usePuzzleSession();
 
   // Call completeLevel for both puzzle levels when session completes
   useEffect(() => {
@@ -118,22 +118,13 @@ export default function ChessGameContent() {
     // Session complete screen
     if (isSessionComplete) {
       return (
-        <Fade in={true} timeout={300}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', gap: 2 }}>
-            <Typography variant="h4" sx={{ fontWeight: 'bold', textAlign: 'center', px: 2 }}>
-              {t('ui.sessionComplete')}
-            </Typography>
-            <Typography variant="h6" sx={{ color: 'text.secondary' }}>
-              {t('ui.puzzleProgress', { current: 10, total: 10 })}
-            </Typography>
-            <Button variant="contained" onClick={() => { startNewSession(); }}>
-              {t('ui.newSession')}
-            </Button>
-            <Button variant="outlined" onClick={() => { startNewSession(); setCurrentView('map'); }}>
-              {t('ui.back')}
-            </Button>
-          </Box>
-        </Fade>
+        <SessionCompleteScreen
+          firstTryCount={firstTryCount}
+          sessionTiers={sessionTiers}
+          currentTiersByPiece={currentTiersByPiece}
+          onStartNew={startNewSession}
+          onBackToMap={() => { startNewSession(); setCurrentView('map'); }}
+        />
       );
     }
 
