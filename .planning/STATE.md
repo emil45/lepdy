@@ -1,15 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.2
-milestone_name: Board Facelift
-status: v1.2 milestone complete
-stopped_at: Completed 13-theme-selector-01-PLAN.md (Phase 13 complete)
-last_updated: "2026-03-22T16:35:13.012Z"
+milestone: v1.3
+milestone_name: Infinite Replayability
+status: Defining requirements
+stopped_at: null
+last_updated: "2026-03-22T17:00:00.000Z"
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 4
-  completed_plans: 4
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
@@ -19,20 +19,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 13 — Theme Selector
+**Current focus:** Not started (defining requirements)
 
 ## Current Position
 
-Phase: 13
-Plan: Not started
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-22 — Milestone v1.3 started
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 19 (v1.0 + v1.1 + v1.2 phases 11-12)
+- Total plans completed: 20 (v1.0 + v1.1 + v1.2)
 - Average duration: ~3 min
-- Total execution time: ~57 min
+- Total execution time: ~60 min
 
 **By Phase:**
 
@@ -40,16 +42,7 @@ Plan: Not started
 |-------|-------|-------|----------|
 | v1.0 Phases 1-6 | 11 plans | ~33 min | ~3 min |
 | v1.1 Phases 7-10 | 5 plans | ~12 min | ~2.4 min |
-
-**Recent Trend:**
-
-- Last 5 plans: 3, 2, 2, 3, 2 min
-- Trend: Stable
-
-| Phase 11-board-theme P01 | 1 | 2 tasks | 2 files |
-| Phase 12-custom-piece-svgs P01 | 4 | 2 tasks | 17 files |
-| Phase 12-custom-piece-svgs P02 | 3 | 2 tasks | 13 files |
-| Phase 13-theme-selector P01 | 5 | 2 tasks | 5 files |
+| v1.2 Phases 11-13 | 4 plans | ~12 min | ~3 min |
 
 ## Accumulated Context
 
@@ -72,11 +65,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 1]: Hebrew chess piece names sourced from forum, not Israeli Chess Federation. Must verify before recording audio. Does not block v1.2 execution.
+- [Phase 1]: Hebrew chess piece names sourced from forum, not Israeli Chess Federation. Must verify before recording audio. Does not block v1.3 execution.
 - [Phase 12]: react-chessboard customPieces prop accepts React components — theme system should wrap each SVG file in a component that renders at full cell dimensions.
 
 ## Session Continuity
 
-Last session: 2026-03-22T16:16:21.614Z
-Stopped at: Completed 13-theme-selector-01-PLAN.md (Phase 13 complete)
+Last session: 2026-03-22T17:00:00.000Z
+Stopped at: Milestone v1.3 started — defining requirements
 Resume file: None

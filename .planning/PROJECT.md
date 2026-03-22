@@ -51,7 +51,16 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 
 ### Active
 
-(No active milestone — run `/gsd:new-milestone` to start next)
+## Current Milestone: v1.3 Infinite Replayability
+
+**Goal:** Transform the chess game from a finite 3-level experience into an endlessly replayable learning game that gives kids a reason to come back every time.
+
+**Target features:**
+- Revamped game structure — keep the learning phase, but puzzles become infinite
+- Randomly generated puzzles so every visit feels fresh
+- Escalating difficulty that grows with the kid
+- Progression system that motivates continued play (research needed for best approach)
+- Perfect UX — seamless experience, not a menu of modes
 
 ## Shipped Milestones
 
@@ -109,4 +118,22 @@ Chess learning game with 3 progressive levels, Hebrew vocabulary, and kid-friend
 | useChessPieceTheme as standalone hook (no context) | Each component reads localStorage independently — works because settings and puzzles are mutually exclusive React subtrees | ✓ Good — simple, correct |
 
 ---
-*Last updated: 2026-03-22 after v1.2 Board Facelift shipped*
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd:transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
+---
+*Last updated: 2026-03-22 after v1.3 Infinite Replayability milestone started*
