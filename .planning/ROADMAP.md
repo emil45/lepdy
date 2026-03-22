@@ -70,7 +70,10 @@
   2. Capture puzzle pool contains 30+ puzzles with at least 10 puzzles in each of 3 difficulty tiers
   3. Every puzzle record has a difficulty field (1/2/3) and the existing board/targetSquare/validTargets shape is preserved
   4. Each pool position can be independently verified as solvable and unambiguous for a child age 5-9
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 14-01-PLAN.md — Validation script + capture-rook-1 bug fix
+- [ ] 14-02-PLAN.md — Author 42 movement + 22 capture puzzles
 
 ### Phase 15: Generator + Progress Hook
 **Goal**: The game engine can randomly select puzzles at the right difficulty, skip recently seen puzzles, and remember how the player is progressing across sessions
@@ -83,7 +86,10 @@
   4. User who answers 5 consecutive puzzles correctly is automatically given harder puzzles in the next session
   5. User who answers 3 consecutive puzzles incorrectly is automatically given easier puzzles in the next session
   6. Returning user's existing level-completion progress is preserved after the hook migration (no data loss)
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 14-01-PLAN.md — Validation script + capture-rook-1 bug fix
+- [ ] 14-02-PLAN.md — Author 42 movement + 22 capture puzzles
 
 ### Phase 16: Session Hook + Puzzle Refactor
 **Goal**: Kids play structured 10-puzzle sessions with a live streak counter, sourced entirely from the infinite random generator instead of a fixed ordered list
@@ -94,7 +100,10 @@
   2. User sees a consecutive-correct counter update in real time during a session (e.g., "4 in a row!")
   3. User who navigates away and returns mid-session resumes without duplicate puzzles from that session
   4. Board rendering, FEN animation, square highlighting, and hint behavior are unchanged from v1.2
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 14-01-PLAN.md — Validation script + capture-rook-1 bug fix
+- [ ] 14-02-PLAN.md — Author 42 movement + 22 capture puzzles
 
 ### Phase 17: Session Complete + Progression UI
 **Goal**: Kids see a satisfying end-of-session reward and a named mastery level per piece that gives them a concrete goal to work toward
@@ -105,7 +114,10 @@
   2. User sees their current mastery band per piece type (e.g., "Rook Beginner", "Knight Expert") on the level map or within puzzle flow
   3. User sees "Getting harder!" feedback when their difficulty tier advances
   4. User can start a new session immediately from the session complete screen
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 14-01-PLAN.md — Validation script + capture-rook-1 bug fix
+- [ ] 14-02-PLAN.md — Author 42 movement + 22 capture puzzles
 
 ### Phase 18: Daily Featured Puzzle
 **Goal**: Kids have a reason to return to the game every day because there is always a new featured puzzle waiting for them
@@ -116,7 +128,10 @@
   2. User can access the daily puzzle from the chess level map as a distinct entry point
   3. User who has already completed today's daily puzzle sees a "Come back tomorrow" state instead of being able to replay it
   4. Daily puzzle rotates at midnight and the next day's puzzle is different
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 14-01-PLAN.md — Validation script + capture-rook-1 bug fix
+- [ ] 14-02-PLAN.md — Author 42 movement + 22 capture puzzles
 
 ## Progress
 
@@ -137,7 +152,7 @@
 | 11. Board Theme | v1.2 | 1/1 | Complete | 2026-03-22 |
 | 12. Custom Piece SVGs | v1.2 | 2/2 | Complete | 2026-03-22 |
 | 13. Theme Selector | v1.2 | 1/1 | Complete | 2026-03-22 |
-| 14. Puzzle Pool Expansion | v1.3 | 0/? | Not started | - |
+| 14. Puzzle Pool Expansion | v1.3 | 0/2 | Not started | - |
 | 15. Generator + Progress Hook | v1.3 | 0/? | Not started | - |
 | 16. Session Hook + Puzzle Refactor | v1.3 | 0/? | Not started | - |
 | 17. Session Complete + Progression UI | v1.3 | 0/? | Not started | - |
