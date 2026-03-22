@@ -44,20 +44,20 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BOARD-01 | TBD | Pending |
-| BOARD-02 | TBD | Pending |
-| PIECE-01 | TBD | Pending |
-| PIECE-02 | TBD | Pending |
-| PIECE-03 | TBD | Pending |
-| PIECE-04 | TBD | Pending |
-| SET-01 | TBD | Pending |
-| SET-02 | TBD | Pending |
+| BOARD-01 | Phase 11 | Pending |
+| BOARD-02 | Phase 11 | Pending |
+| PIECE-01 | Phase 12 | Pending |
+| PIECE-02 | Phase 12 | Pending |
+| PIECE-03 | Phase 12 | Pending |
+| PIECE-04 | Phase 12 | Pending |
+| SET-01 | Phase 13 | Pending |
+| SET-02 | Phase 13 | Pending |
 
 **Coverage:**
 - v1.2 requirements: 8 total
-- Mapped to phases: 0
-- Unmapped: 8 ⚠️
+- Mapped to phases: 8
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-22*
-*Last updated: 2026-03-22 after scope expansion (piece theme selector)*
+*Last updated: 2026-03-22 after roadmap expanded to 3 phases (11-13)*
