@@ -27,7 +27,7 @@
 **Milestone Goal:** Fix v1.0 bugs and polish the chess game UI to match Lepdy's playful visual style
 
 - [ ] **Phase 7: Bug Fixes & Cleanup** — Remove broken translation keys and orphaned v1.0 files
-- [ ] **Phase 8: Navigation & UI Polish** — Consistent back navigation on all screens, RTL-aware controls, and Lepdy pastel styling with smooth transitions
+- [x] **Phase 8: Navigation & UI Polish** — Consistent back navigation on all screens, RTL-aware controls, and Lepdy pastel styling with smooth transitions (completed 2026-03-22)
 - [ ] **Phase 9: Puzzle Animations** — Piece movement animation on correct puzzle answers
 - [ ] **Phase 10: Sticker Integration** — Chess level completions earn stickers via the existing Lepdy sticker system
 
@@ -55,10 +55,10 @@ Plans:
   3. The chess game main page back button looks and behaves identically to the back button on other Lepdy game pages
   4. The Next/Back arrows in piece introduction point in the correct direction — left arrow advances in Hebrew (RTL), right arrow advances in English and Russian (LTR)
   5. The chess game uses Lepdy's pastel color palette with rounded cards and soft shadows, and screens transition with a smooth fade or slide instead of an instant swap
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
 - [x] 08-01-PLAN.md — Add X exit buttons to all sub-screens and fix RTL arrow direction
-- [ ] 08-02-PLAN.md — Apply Lepdy pastel styling with soft shadows and fade transitions
+- [x] 08-02-PLAN.md — Apply Lepdy pastel styling with soft shadows and fade transitions
 
 ### Phase 9: Puzzle Animations
 **Goal**: Correct puzzle answers show the piece physically moving to the target square before celebrating
@@ -92,6 +92,6 @@ Plans:
 | 5. Level 2 — Movement Puzzles | v1.0 | 2/2 | Complete | 2026-03-22 |
 | 6. Level 3 — Capture Puzzles | v1.0 | 2/2 | Complete | 2026-03-22 |
 | 7. Bug Fixes & Cleanup | v1.1 | 0/1 | Not started | - |
-| 8. Navigation & UI Polish | v1.1 | 1/2 | In Progress|  |
+| 8. Navigation & UI Polish | v1.1 | 2/2 | Complete   | 2026-03-22 |
 | 9. Puzzle Animations | v1.1 | 0/TBD | Not started | - |
 | 10. Sticker Integration | v1.1 | 0/TBD | Not started | - |
