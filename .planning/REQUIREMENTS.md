@@ -12,7 +12,7 @@ Requirements for Infinite Replayability milestone. Each maps to roadmap phases.
 - [x] **PGEN-01**: User gets a randomly selected movement puzzle every time (never runs out)
 - [x] **PGEN-02**: User gets a randomly selected capture puzzle every time (never runs out)
 - [x] **PGEN-03**: User never sees the same puzzle twice within a session (15-puzzle dedup window)
-- [ ] **PGEN-04**: User sees the Hebrew piece name and can hear pronunciation on every generated puzzle
+- [x] **PGEN-04**: User sees the Hebrew piece name and can hear pronunciation on every generated puzzle
 
 ### Difficulty
 
@@ -60,7 +60,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PGEN-01 | Phase 14 | Complete |
 | PGEN-02 | Phase 14 | Complete |
 | PGEN-03 | Phase 15 | Complete |
-| PGEN-04 | Phase 15 | Pending |
+| PGEN-04 | Phase 15 | Complete |
 | DIFF-01 | Phase 15 | Complete |
 | DIFF-02 | Phase 15 | Complete |
 | DIFF-03 | Phase 15 | Complete |

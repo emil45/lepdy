@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Infinite Replayability
-status: Ready to execute
-stopped_at: Completed 15-01-PLAN.md — puzzle generator utility and usePuzzleProgress hook
-last_updated: "2026-03-22T20:16:04.581Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 15-02-PLAN.md — Hebrew piece name + audio + progress wiring in both puzzle components
+last_updated: "2026-03-22T20:22:56.049Z"
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -44,6 +44,7 @@ Plan: 2 of 2
 | Phase 14-puzzle-pool-expansion P01 | 5 | 2 tasks | 2 files |
 | Phase 14-puzzle-pool-expansion P02 | 15 | 2 tasks | 3 files |
 | Phase 15-generator-progress-hook P01 | 5 | 2 tasks | 4 files |
+| Phase 15-generator-progress-hook P02 | 6 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,7 @@ Recent decisions affecting current work:
 - [Phase 14-02]: All puzzle validTargets computed via chess.js moves() with findSafeKingCorner dummy-king strategy — naive corner placement gives wrong results for rook/queen on a-file
 - [Phase 15-01]: sessionTiers returned as MutableRefObject (not .current) to satisfy react-hooks/refs lint rule — callers access .current in callbacks/effects
 - [Phase 15-01]: seenIds in GeneratorState is session-only in-memory (never persisted to localStorage) — resets per browser session intentionally
+- [Phase 15-02]: Hebrew name always visible on MovementPuzzle; shown post-answer on CapturePuzzle to serve as learning moment after correct capture
 
 ### Pending Todos
 
@@ -77,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T20:16:04.578Z
-Stopped at: Completed 15-01-PLAN.md — puzzle generator utility and usePuzzleProgress hook
+Last session: 2026-03-22T20:22:56.047Z
+Stopped at: Completed 15-02-PLAN.md — Hebrew piece name + audio + progress wiring in both puzzle components
 Resume file: None

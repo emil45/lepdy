@@ -54,7 +54,7 @@
 **Milestone Goal:** Transform the chess game from a finite 3-level experience into an endlessly replayable learning game — random puzzles, escalating difficulty, structured sessions, and named mastery progression — so kids have a reason to return every time.
 
 - [x] **Phase 14: Puzzle Pool Expansion** - Expand curated puzzles to 60+ movement and 30+ capture, tagged by difficulty tier (completed 2026-03-22)
-- [ ] **Phase 15: Generator + Progress Hook** - Build puzzle generator with dedup ring buffer and extend useChessProgress with difficulty bands and migration
+- [x] **Phase 15: Generator + Progress Hook** - Build puzzle generator with dedup ring buffer and extend useChessProgress with difficulty bands and migration (completed 2026-03-22)
 - [ ] **Phase 16: Session Hook + Puzzle Refactor** - Wire usePuzzleSession into MovementPuzzle and CapturePuzzle, replacing linear puzzle array with infinite random stream
 - [ ] **Phase 17: Session Complete + Progression UI** - Star-based session complete screen and named mastery band display
 - [ ] **Phase 18: Daily Featured Puzzle** - Date-seeded daily puzzle that is the same for all players each day
@@ -89,7 +89,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 15-01-PLAN.md — Puzzle generator utility, progress hook, and feature flag config
-- [ ] 15-02-PLAN.md — Hebrew piece name + audio on MovementPuzzle and CapturePuzzle
+- [x] 15-02-PLAN.md — Hebrew piece name + audio on MovementPuzzle and CapturePuzzle
 
 ### Phase 16: Session Hook + Puzzle Refactor
 **Goal**: Kids play structured 10-puzzle sessions with a live streak counter, sourced entirely from the infinite random generator instead of a fixed ordered list
@@ -153,7 +153,7 @@ Plans:
 | 12. Custom Piece SVGs | v1.2 | 2/2 | Complete | 2026-03-22 |
 | 13. Theme Selector | v1.2 | 1/1 | Complete | 2026-03-22 |
 | 14. Puzzle Pool Expansion | v1.3 | 2/2 | Complete    | 2026-03-22 |
-| 15. Generator + Progress Hook | v1.3 | 1/2 | In Progress|  |
+| 15. Generator + Progress Hook | v1.3 | 2/2 | Complete   | 2026-03-22 |
 | 16. Session Hook + Puzzle Refactor | v1.3 | 0/? | Not started | - |
 | 17. Session Complete + Progression UI | v1.3 | 0/? | Not started | - |
 | 18. Daily Featured Puzzle | v1.3 | 0/? | Not started | - |
