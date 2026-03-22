@@ -126,14 +126,14 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
 
     // Always: target square gets red/orange ring
     styles[puzzle.targetSquare] = {
-      boxShadow: 'inset 0 0 0 4px rgba(220, 60, 0, 0.85)',
+      boxShadow: 'inset 0 0 0 4px rgba(220, 80, 40, 0.7)',
       borderRadius: '4px',
     };
 
     // After 2 wrong taps: correct piece square gets green glow hint
     if (showHints) {
       styles[puzzle.correctPieceSquare] = {
-        boxShadow: 'inset 0 0 0 4px rgba(0, 180, 0, 0.85)',
+        boxShadow: 'inset 0 0 0 4px rgba(76, 175, 80, 0.7)',
         borderRadius: '4px',
       };
     }
@@ -233,6 +233,10 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
               boardOrientation: 'white' as const,
               animationDurationInMs: 200,
               boardStyle: { width: `${boardWidth}px`, maxWidth: '480px' },
+              lightSquareStyle: { backgroundColor: '#f5ede1' },
+              darkSquareStyle: { backgroundColor: '#dbc3e2' },
+              darkSquareNotationStyle: { color: 'rgba(67, 66, 67, 0.5)' },
+              lightSquareNotationStyle: { color: 'rgba(67, 66, 67, 0.5)' },
             }}
           />
         </Box>
