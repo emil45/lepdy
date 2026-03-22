@@ -68,7 +68,9 @@ Plans:
   1. When a child taps the correct movement square, the selected piece visibly slides to that square before the celebration fires
   2. When a child taps the correct capturing piece, that piece visibly moves to the target square before the celebration fires
   3. The animation completes in under one second and does not block the next puzzle from loading
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 09-01-PLAN.md — Create FEN helper and add piece slide animations to both puzzle types
 
 ### Phase 10: Sticker Integration
 **Goal**: Completing each chess level earns a sticker, visible in the Lepdy stickers collection
@@ -93,5 +95,5 @@ Plans:
 | 6. Level 3 — Capture Puzzles | v1.0 | 2/2 | Complete | 2026-03-22 |
 | 7. Bug Fixes & Cleanup | v1.1 | 0/1 | Not started | - |
 | 8. Navigation & UI Polish | v1.1 | 2/2 | Complete   | 2026-03-22 |
-| 9. Puzzle Animations | v1.1 | 0/TBD | Not started | - |
+| 9. Puzzle Animations | v1.1 | 0/1 | Not started | - |
 | 10. Sticker Integration | v1.1 | 0/TBD | Not started | - |
