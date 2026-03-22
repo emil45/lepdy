@@ -1,5 +1,19 @@
 # Milestones
 
+## v1.1 Polish & Fixes (Shipped: 2026-03-22)
+
+**Phases completed:** 4 phases, 5 plans, 10 tasks
+
+**Key accomplishments:**
+
+- Fixed chess piece double-namespace translation bug and removed 3 orphaned Phase 2 files plus 5 unused i18n keys across all 3 locales
+- X exit buttons on all 3 chess sub-screens plus RTL-aware Next/Back arrows in PieceIntroduction walkthrough
+- Fade transitions on all chess view switches and soft-shadow pastel cards on all chess game components
+- FEN manipulation helper (`moveFenPiece`) and slide-animation wiring for both puzzle types using react-chessboard's built-in 200ms animation triggered by updating a `displayFen` state prop
+- 3 chess stickers on Page 4 (Games) unlocked by completing chess levels 1-3, wired via useChessProgress into existing sticker system with translations in Hebrew, English, and Russian
+
+---
+
 ## v1.0 Lepdy Chess (Shipped: 2026-03-22)
 
 **Phases completed:** 6 phases, 11 plans, 22 tasks

@@ -31,22 +31,27 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 - ✓ i18n support via next-intl — v1.0
 - ✓ Kid-friendly feedback: celebration on correct, gentle "try again" on wrong, hints after 2 attempts — v1.0
 
+- ✓ Translation key double-namespace bug fixed — v1.1
+- ✓ Orphaned Phase 2 files removed, unused translation keys cleaned — v1.1
+- ✓ Exit navigation on all chess screens (X button, no browser back needed) — v1.1
+- ✓ RTL-aware Next/Back arrows in piece introduction — v1.1
+- ✓ BackButton on chess main page matches other Lepdy games — v1.1
+- ✓ Pastel color palette, rounded cards, soft shadows across chess game — v1.1
+- ✓ Smooth fade transitions between chess game views (300ms) — v1.1
+- ✓ Piece slide animation on correct puzzle answers (movement + capture) — v1.1
+- ✓ 3 chess stickers (one per level) integrated into Lepdy sticker collection — v1.1
+
 ### Active
 
-(Defined in REQUIREMENTS.md for v1.1)
+(No active milestone — run `/gsd:new-milestone` to start next)
 
-## Current Milestone: v1.1 Polish & Fixes
+## Shipped Milestones
 
-**Goal:** Fix v1.0 bugs and polish the chess game UI to match Lepdy's playful visual style
+### v1.1 Polish & Fixes (shipped 2026-03-22)
+Fixed bugs, polished UI to match Lepdy's playful style, added piece animations, and integrated chess stickers.
 
-**Target features:**
-- Lepdy-style pastel UI with animations and game polish
-- Piece movement animation on correct puzzle answers
-- Fix broken translation keys (double namespace prefix)
-- Back/exit navigation from every screen (puzzles, piece intro, level map)
-- Fix RTL-aware next/back button direction in piece intro
-- Align chess game back button with other games
-- Clean up orphaned code from v1.0
+### v1.0 MVP (shipped 2026-03-22)
+Chess learning game with 3 progressive levels, Hebrew vocabulary, and kid-friendly feedback.
 
 ### Out of Scope
 
@@ -60,12 +65,11 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 ## Context
 
 - Lepdy is a live Hebrew learning app at lepdy.com for kids
-- Chess game shipped as v1.0 with ~1,500 LOC TypeScript across 6 phases
+- Chess game shipped through v1.1 with polished UI, animations, and sticker integration
 - Existing games: guess-game, memory-match, simon-game, speed-challenge, word-builder, counting-game, letter-rain, **chess-game**
 - 39 E2E tests pass (Playwright)
 - Audio files not yet recorded — game works without them (INTRO-03)
-- Phase 2 ChessBoard wrapper is orphaned — Phases 5-6 import react-chessboard directly
-- 5 unused translation keys in chessGame.ui.* namespace
+- 48 stickers total across 6 pages (3 chess stickers added in v1.1)
 
 ## Constraints
 
@@ -83,9 +87,11 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 | Classic 8x8 board (not simplified) | Kids should learn real chess, not a simplified version | ✓ Good — real board, real pieces |
 | No leaderboard | Focus on personal learning progress, not competition | ✓ Good — reduces complexity |
 | Audio + text for Hebrew piece names | Matches Lepdy's learning pattern across all categories | ✓ Good — consistent UX |
-| Direct react-chessboard import for puzzles | Puzzle mode is read-only, no chess.js move execution needed | ✓ Good — simpler, orphaned ChessBoard wrapper |
+| Direct react-chessboard import for puzzles | Puzzle mode is read-only, no chess.js move execution needed | ✓ Good — simpler, wrapper removed in v1.1 |
 | Single useChessProgress hook (no context provider) | Simpler shape than category progress, no migration logic needed | ✓ Good — less overhead |
 | Prop-thread completeLevel from parent | Prevents stale state across views with useState routing | ✓ Good — fixed Phase 4 bug |
+| FEN manipulation for puzzle animation | Update board position to trigger react-chessboard's built-in slide animation | ✓ Good — zero dependencies, 200ms animation |
+| chess_level sticker unlock type | Reuses existing sticker detector pattern, no chess-specific sticker logic needed | ✓ Good — clean integration |
 
 ---
-*Last updated: 2026-03-22 after v1.1 milestone started*
+*Last updated: 2026-03-22 after v1.1 milestone complete*
