@@ -15,7 +15,7 @@ export interface ChessPieceConfig {
 export const chessPieces: ChessPieceConfig[] = [
   {
     id: 'king',
-    translationKey: 'chessGame.pieces.king',
+    translationKey: 'pieces.king',
     audioFile: 'melech.mp3',
     audioPath: '/audio/chess/he/melech.mp3',
     symbol: '\u2654',
@@ -26,7 +26,7 @@ export const chessPieces: ChessPieceConfig[] = [
   },
   {
     id: 'rook',
-    translationKey: 'chessGame.pieces.rook',
+    translationKey: 'pieces.rook',
     audioFile: 'tzariach.mp3',
     audioPath: '/audio/chess/he/tzariach.mp3',
     symbol: '\u2656',
@@ -37,7 +37,7 @@ export const chessPieces: ChessPieceConfig[] = [
   },
   {
     id: 'bishop',
-    translationKey: 'chessGame.pieces.bishop',
+    translationKey: 'pieces.bishop',
     audioFile: 'ratz.mp3',
     audioPath: '/audio/chess/he/ratz.mp3',
     symbol: '\u2657',
@@ -48,7 +48,7 @@ export const chessPieces: ChessPieceConfig[] = [
   },
   {
     id: 'queen',
-    translationKey: 'chessGame.pieces.queen',
+    translationKey: 'pieces.queen',
     audioFile: 'malka.mp3',
     audioPath: '/audio/chess/he/malka.mp3',
     symbol: '\u2655',
@@ -59,7 +59,7 @@ export const chessPieces: ChessPieceConfig[] = [
   },
   {
     id: 'knight',
-    translationKey: 'chessGame.pieces.knight',
+    translationKey: 'pieces.knight',
     audioFile: 'parash.mp3',
     audioPath: '/audio/chess/he/parash.mp3',
     symbol: '\u2658',
@@ -70,7 +70,7 @@ export const chessPieces: ChessPieceConfig[] = [
   },
   {
     id: 'pawn',
-    translationKey: 'chessGame.pieces.pawn',
+    translationKey: 'pieces.pawn',
     audioFile: 'chayal.mp3',
     audioPath: '/audio/chess/he/chayal.mp3',
     symbol: '\u2659',
