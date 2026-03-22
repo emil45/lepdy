@@ -11,6 +11,7 @@ import Confetti from 'react-confetti';
 import { chessPieces } from '@/data/chessPieces';
 import { movementPuzzles } from '@/data/chessPuzzles';
 import { playRandomCelebration, playSound, AudioSounds } from '@/utils/audio';
+import { moveFenPiece } from '@/utils/chessFen';
 
 // Build the ordered puzzle list at module level: King, Rook, Bishop, Queen, Knight, Pawn
 // Each group sorted by difficulty (1, 2, 3), 3 puzzles per piece = 18 total
@@ -42,6 +43,7 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
   const [isAdvancing, setIsAdvancing] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [showCorrectConfetti, setShowCorrectConfetti] = useState(false);
+  const [displayFen, setDisplayFen] = useState(ORDERED_PUZZLES[0].fen);
 
   // Responsive board sizing
   const containerRef = useRef<HTMLDivElement>(null);
@@ -56,6 +58,11 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
     observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
+
+  // Reset displayFen when puzzle changes so the new puzzle starts from its own FEN
+  useEffect(() => {
+    setDisplayFen(ORDERED_PUZZLES[puzzleIndex].fen);
+  }, [puzzleIndex]);
 
   // Derived puzzle values
   const puzzle = ORDERED_PUZZLES[puzzleIndex];
@@ -80,11 +87,13 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
 
       if (puzzle.validTargets.includes(square)) {
         // Correct tap
+        setIsAdvancing(true);
+        const newFen = moveFenPiece(puzzle.fen, puzzle.pieceSquare, square);
+        setDisplayFen(newFen);
         setFlashSquare(square);
         setFlashType('correct');
         setShowCorrectConfetti(true);
         playRandomCelebration();
-        setIsAdvancing(true);
 
         setTimeout(() => {
           if (puzzleIndex === ORDERED_PUZZLES.length - 1) {
@@ -232,7 +241,7 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
         <Box ref={containerRef} sx={{ direction: 'ltr', width: '100%', maxWidth: 480, margin: '0 auto' }}>
           <Chessboard
             options={{
-              position: puzzle.fen,
+              position: displayFen,
               allowDragging: false,
               onSquareClick: ({ square }: { square: string }) => handlePuzzleSquareClick(square),
               squareStyles,
