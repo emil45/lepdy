@@ -15,6 +15,7 @@ export interface CapturePuzzle {
   targetSquare: string;
   correctPieceSquare: string;
   correctPieceId: ChessPieceId;
+  targetPieceId: ChessPieceId;
   distractorSquares: string[];
   difficulty: 1 | 2 | 3;
 }
@@ -286,6 +287,7 @@ export const capturePuzzles: CapturePuzzle[] = [
     targetSquare: 'a5',
     correctPieceSquare: 'a1',
     correctPieceId: 'rook',
+    targetPieceId: 'pawn',
     distractorSquares: ['c3'],
     difficulty: 1,
   },
@@ -295,6 +297,7 @@ export const capturePuzzles: CapturePuzzle[] = [
     targetSquare: 'd3',
     correctPieceSquare: 'f1',
     correctPieceId: 'bishop',
+    targetPieceId: 'pawn',
     distractorSquares: ['a4'],
     difficulty: 1,
   },
@@ -304,6 +307,7 @@ export const capturePuzzles: CapturePuzzle[] = [
     targetSquare: 'e4',
     correctPieceSquare: 'c3',
     correctPieceId: 'knight',
+    targetPieceId: 'pawn',
     distractorSquares: ['h1'],
     difficulty: 1,
   },
@@ -313,6 +317,7 @@ export const capturePuzzles: CapturePuzzle[] = [
     targetSquare: 'd6',
     correctPieceSquare: 'd1',
     correctPieceId: 'queen',
+    targetPieceId: 'pawn',
     distractorSquares: ['g3'],
     difficulty: 1,
   },
@@ -322,6 +327,7 @@ export const capturePuzzles: CapturePuzzle[] = [
     targetSquare: 'f5',
     correctPieceSquare: 'e4',
     correctPieceId: 'king',
+    targetPieceId: 'pawn',
     distractorSquares: ['a1'],
     difficulty: 1,
   },
@@ -331,6 +337,7 @@ export const capturePuzzles: CapturePuzzle[] = [
     targetSquare: 'd5',
     correctPieceSquare: 'c4',
     correctPieceId: 'pawn',
+    targetPieceId: 'pawn',
     distractorSquares: ['a1'],
     difficulty: 1,
   },
@@ -340,6 +347,7 @@ export const capturePuzzles: CapturePuzzle[] = [
     targetSquare: 'e7',
     correctPieceSquare: 'e1',
     correctPieceId: 'rook',
+    targetPieceId: 'queen',
     distractorSquares: ['b3', 'f4'],
     difficulty: 2,
   },
@@ -349,6 +357,7 @@ export const capturePuzzles: CapturePuzzle[] = [
     targetSquare: 'g5',
     correctPieceSquare: 'f3',
     correctPieceId: 'knight',
+    targetPieceId: 'rook',
     distractorSquares: ['a2', 'd4'],
     difficulty: 2,
   },

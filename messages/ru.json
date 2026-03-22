@@ -149,7 +149,9 @@
       "tapToHear": "Нажми, чтобы послушать",
       "findSquare": "Найди правильную клетку",
       "whichCaptures": "Какая фигура может взять?",
-      "tapToMove": "Куда может пойти {piece}? Нажми!"
+      "tapToMove": "Куда может пойти {piece}? Нажми!",
+      "tapToCapture": "Какая фигура может взять {piece}? Нажми на неё!",
+      "learnedChess": "Ты выучил шахматы!"
     }
   },
   "soundMatching": {

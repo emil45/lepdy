@@ -149,7 +149,9 @@
       "tapToHear": "לחצו לשמוע",
       "findSquare": "מצאו את המשבצת הנכונה",
       "whichCaptures": "מי יכול לתפוס?",
-      "tapToMove": "לאן {piece} יכול ללכת? לחץ!"
+      "tapToMove": "לאן {piece} יכול ללכת? לחץ!",
+      "tapToCapture": "איזה כלי יכול לתפוס את ה{piece}? לחץ עליו!",
+      "learnedChess": "למדת שחמט!"
     }
   },
   "soundMatching": {
