@@ -5,7 +5,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
-import Button from '@mui/material/Button';
 import { useTranslations } from 'next-intl';
 import LockIcon from '@mui/icons-material/Lock';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -16,6 +15,7 @@ import { useChessProgress } from '@/hooks/useChessProgress';
 import PieceIntroduction from './PieceIntroduction';
 
 const MovementPuzzle = dynamic(() => import('./MovementPuzzle'), { ssr: false });
+const CapturePuzzle = dynamic(() => import('./CapturePuzzle'), { ssr: false });
 
 type ChessView = 'map' | 'level-1' | 'level-2' | 'level-3';
 
@@ -92,25 +92,8 @@ export default function ChessGameContent() {
     return <MovementPuzzle onComplete={() => setCurrentView('map')} completeLevel={completeLevel} />;
   }
 
-  if (currentView !== 'map') {
-    const levelNum = parseInt(currentView.split('-')[1]);
-    const levelIdx = levelNum - 1;
-
-    return (
-      <Box sx={{ py: 2, px: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
-        <Box sx={{ width: '100%', maxWidth: 520, mb: 2 }}>
-          <Button variant="outlined" onClick={() => setCurrentView('map')}>
-            {t('ui.back')}
-          </Button>
-        </Box>
-        <Typography variant="h5" component="h1" sx={{ mb: 2, fontWeight: 'bold', textAlign: 'center' }}>
-          {t(LEVELS[levelIdx].nameKey)}
-        </Typography>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Coming soon...
-        </Typography>
-      </Box>
-    );
+  if (currentView === 'level-3') {
+    return <CapturePuzzle onComplete={() => setCurrentView('map')} completeLevel={completeLevel} />;
   }
 
   return (
