@@ -146,7 +146,11 @@
       "levelComplete": "Level Complete!",
       "tapToMove": "Where can the {piece} move? Tap!",
       "tapToCapture": "Which piece can capture the {piece}? Tap it!",
-      "learnedChess": "You learned chess!"
+      "learnedChess": "You learned chess!",
+      "sessionComplete": "Session Complete!",
+      "inARow": "{count} in a row!",
+      "puzzleProgress": "{current}/{total}",
+      "newSession": "Start New Session"
     },
     "settings": {
       "pieceTheme": "Piece Theme",

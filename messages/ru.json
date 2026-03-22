@@ -146,7 +146,11 @@
       "levelComplete": "Уровень пройден!",
       "tapToMove": "Куда может пойти {piece}? Нажми!",
       "tapToCapture": "Какая фигура может взять {piece}? Нажми на неё!",
-      "learnedChess": "Ты выучил шахматы!"
+      "learnedChess": "Ты выучил шахматы!",
+      "sessionComplete": "Сессия завершена!",
+      "inARow": "{count} подряд!",
+      "puzzleProgress": "{current}/{total}",
+      "newSession": "Начать заново"
     },
     "settings": {
       "pieceTheme": "Стиль фигур",

@@ -146,7 +146,11 @@
       "levelComplete": "השלב הושלם!",
       "tapToMove": "לאן {piece} יכול ללכת? לחץ!",
       "tapToCapture": "איזה כלי יכול לתפוס את ה{piece}? לחץ עליו!",
-      "learnedChess": "למדת שחמט!"
+      "learnedChess": "למדת שחמט!",
+      "sessionComplete": "הפעילות הושלמה!",
+      "inARow": "{count} ברצף!",
+      "puzzleProgress": "{current}/{total}",
+      "newSession": "התחל מחדש"
     },
     "settings": {
       "pieceTheme": "סגנון כלים",
