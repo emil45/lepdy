@@ -1,0 +1,230 @@
+'use client';
+
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { Chessboard } from 'react-chessboard';
+import { useTranslations } from 'next-intl';
+import Confetti from 'react-confetti';
+import { chessPieces } from '@/data/chessPieces';
+import { capturePuzzles } from '@/data/chessPuzzles';
+import { playRandomCelebration, playSound, AudioSounds } from '@/utils/audio';
+
+// Sort puzzles by difficulty ascending
+const ORDERED_PUZZLES = [...capturePuzzles].sort((a, b) => a.difficulty - b.difficulty);
+
+interface CapturePuzzleProps {
+  onComplete: () => void;
+  completeLevel: (levelNum: number) => void;
+}
+
+export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzzleProps) {
+  const t = useTranslations('chessGame');
+
+  const [puzzleIndex, setPuzzleIndex] = useState(0);
+  const [, setWrongTapCount] = useState(0);
+  const [showHints, setShowHints] = useState(false);
+  const [flashSquare, setFlashSquare] = useState<string | null>(null);
+  const [flashType, setFlashType] = useState<'correct' | 'wrong' | null>(null);
+  const [showTryAgain, setShowTryAgain] = useState(false);
+  const [isAdvancing, setIsAdvancing] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
+  const [showCorrectConfetti, setShowCorrectConfetti] = useState(false);
+
+  // Responsive board sizing
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [boardWidth, setBoardWidth] = useState(480);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      const w = entries[0].contentRect.width;
+      setBoardWidth(Math.min(Math.max(w, 320), 480));
+    });
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  // Derived puzzle values
+  const puzzle = ORDERED_PUZZLES[puzzleIndex];
+  const targetPieceConfig = chessPieces.find((p) => p.id === puzzle.targetPieceId)!;
+
+  const resetFeedbackState = useCallback(() => {
+    setWrongTapCount(0);
+    setShowHints(false);
+    setFlashSquare(null);
+    setFlashType(null);
+    setShowTryAgain(false);
+    setShowCorrectConfetti(false);
+    setIsAdvancing(false);
+  }, []);
+
+  const handleSquareClick = useCallback(
+    (square: string) => {
+      if (isAdvancing || isComplete) return;
+      // Ignore taps on the target piece itself
+      if (square === puzzle.targetSquare) return;
+
+      if (square === puzzle.correctPieceSquare) {
+        // Correct tap
+        setFlashSquare(square);
+        setFlashType('correct');
+        setShowCorrectConfetti(true);
+        playRandomCelebration();
+        setIsAdvancing(true);
+
+        setTimeout(() => {
+          if (puzzleIndex === ORDERED_PUZZLES.length - 1) {
+            // Last puzzle — level complete
+            completeLevel(3);
+            playSound(AudioSounds.CELEBRATION);
+            setIsComplete(true);
+            setTimeout(() => onComplete(), 3000);
+          } else {
+            setPuzzleIndex((prev) => prev + 1);
+            resetFeedbackState();
+          }
+        }, 1500);
+      } else if (puzzle.distractorSquares.includes(square)) {
+        // Wrong tap — no sound per FEED-02, gentle feedback only
+        setFlashSquare(square);
+        setFlashType('wrong');
+        setShowTryAgain(true);
+        setWrongTapCount((prev) => {
+          const next = prev + 1;
+          if (next >= 2) setShowHints(true);
+          return next;
+        });
+
+        setTimeout(() => {
+          setFlashSquare(null);
+          setFlashType(null);
+        }, 600);
+
+        setTimeout(() => {
+          setShowTryAgain(false);
+        }, 1200);
+      }
+      // Empty squares — do nothing
+    },
+    [isAdvancing, isComplete, puzzle, puzzleIndex, completeLevel, onComplete, resetFeedbackState]
+  );
+
+  const squareStyles = useMemo(() => {
+    const styles: Record<string, React.CSSProperties> = {};
+
+    // Always: target square gets red/orange ring
+    styles[puzzle.targetSquare] = {
+      boxShadow: 'inset 0 0 0 4px rgba(220, 60, 0, 0.85)',
+      borderRadius: '4px',
+    };
+
+    // After 2 wrong taps: correct piece square gets green glow hint
+    if (showHints) {
+      styles[puzzle.correctPieceSquare] = {
+        boxShadow: 'inset 0 0 0 4px rgba(0, 180, 0, 0.85)',
+        borderRadius: '4px',
+      };
+    }
+
+    // Flash correct square green
+    if (flashSquare && flashType === 'correct') {
+      styles[flashSquare] = { backgroundColor: 'rgba(0, 200, 0, 0.5)' };
+    }
+
+    // Flash wrong square orange
+    if (flashSquare && flashType === 'wrong') {
+      styles[flashSquare] = { backgroundColor: 'rgba(255, 100, 0, 0.4)' };
+    }
+
+    return styles;
+  }, [puzzle.targetSquare, puzzle.correctPieceSquare, showHints, flashSquare, flashType]);
+
+  // Level complete screen — enhanced with "You learned chess!" message
+  if (isComplete) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          gap: 3,
+        }}
+      >
+        <Confetti recycle={false} numberOfPieces={300} />
+        <Typography sx={{ fontSize: 96, lineHeight: 1 }}>&#x2605;</Typography>
+        <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', textAlign: 'center', px: 2 }}>
+          {t('ui.levelComplete')}
+        </Typography>
+        <Typography variant="h5" sx={{ textAlign: 'center', px: 2, color: 'success.main' }}>
+          {t('ui.learnedChess')}
+        </Typography>
+      </Box>
+    );
+  }
+
+  return (
+    <Box
+      sx={{
+        py: 2,
+        px: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        minHeight: '100vh',
+      }}
+    >
+      {/* Overall progress: "1 / 8" */}
+      <Typography
+        data-testid="puzzle-progress"
+        variant="body2"
+        sx={{ color: 'text.secondary', mb: 0.5 }}
+      >
+        {puzzleIndex + 1} / {ORDERED_PUZZLES.length}
+      </Typography>
+
+      {/* Instruction text */}
+      <Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 2, px: 1 }}>
+        {t('ui.tapToCapture', { piece: t(targetPieceConfig.translationKey as Parameters<typeof t>[0]) })}
+      </Typography>
+
+      {/* Board — always LTR regardless of locale */}
+      <Box ref={containerRef} sx={{ direction: 'ltr', width: '100%', maxWidth: 480, margin: '0 auto' }}>
+        <Chessboard
+          options={{
+            position: puzzle.fen,
+            allowDragging: false,
+            onSquareClick: ({ square }: { square: string }) => handleSquareClick(square),
+            squareStyles,
+            boardOrientation: 'white' as const,
+            animationDurationInMs: 200,
+            boardStyle: { width: `${boardWidth}px`, maxWidth: '480px' },
+          }}
+        />
+      </Box>
+
+      {/* Try again overlay — shown after wrong tap */}
+      {showTryAgain && (
+        <Typography
+          data-testid="try-again-text"
+          variant="h6"
+          sx={{ mt: 2, color: 'warning.main', fontWeight: 'bold', textAlign: 'center' }}
+        >
+          {t('ui.tryAgain')}
+        </Typography>
+      )}
+
+      {/* Per-puzzle confetti burst on correct tap */}
+      {showCorrectConfetti && (
+        <Confetti
+          recycle={false}
+          numberOfPieces={80}
+          gravity={0.3}
+          style={{ position: 'fixed', top: 0, left: 0 }}
+        />
+      )}
+    </Box>
+  );
+}
