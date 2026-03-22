@@ -97,20 +97,20 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MENU-01 | — | Pending |
-| MENU-02 | — | Pending |
-| MENU-03 | — | Pending |
-| PRAC-01 | — | Pending |
-| PRAC-02 | — | Pending |
-| PRAC-03 | — | Pending |
-| MATE-01 | — | Pending |
-| MATE-02 | — | Pending |
-| MATE-03 | — | Pending |
-| SFX-01 | — | Pending |
-| SFX-02 | — | Pending |
-| SFX-03 | — | Pending |
-| PROG-01 | — | Pending |
-| PROG-02 | — | Pending |
+| MENU-01 | Phase 19 | Pending |
+| MENU-02 | Phase 19 | Pending |
+| MENU-03 | Phase 23 | Pending |
+| PRAC-01 | Phase 20 | Pending |
+| PRAC-02 | Phase 20 | Pending |
+| PRAC-03 | Phase 20 | Pending |
+| MATE-01 | Phase 21 | Pending |
+| MATE-02 | Phase 21 | Pending |
+| MATE-03 | Phase 22 | Pending |
+| SFX-01 | Phase 19 | Pending |
+| SFX-02 | Phase 19 | Pending |
+| SFX-03 | Phase 19 | Pending |
+| PROG-01 | Phase 23 | Pending |
+| PROG-02 | Phase 23 | Pending |
 | PGEN-01 | Phase 14 | Complete |
 | PGEN-02 | Phase 14 | Complete |
 | PGEN-03 | Phase 15 | Complete |
@@ -126,9 +126,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 **Coverage:**
 - v1.4 requirements: 14 total
-- Mapped to phases: 0
-- Unmapped: 14 ⚠️
+- Mapped to phases: 14
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-23*
-*Last updated: 2026-03-23 after v1.4 milestone definition*
+*Last updated: 2026-03-23 after v1.4 roadmap creation*

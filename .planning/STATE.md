@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Complete Puzzle Experience
-status: Defining requirements
-stopped_at: ""
+status: Ready to plan
+stopped_at: "Roadmap created — ready to begin Phase 19 planning"
 last_updated: "2026-03-23"
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -19,14 +19,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Defining requirements for v1.4
+**Current focus:** Phase 19 — Menu Redesign + Sound & Celebrations
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-23 — Milestone v1.4 started
+Phase: 19 of 23 (Menu Redesign + Sound & Celebrations)
+Plan: 0 of TBD in current phase
+Status: Ready to plan
+Last activity: 2026-03-23 — v1.4 roadmap created, 5 phases covering 14 requirements
+
+Progress: [████████░░░░░░░░░░░░] 39% (18/23 phases complete across all milestones)
 
 ## Performance Metrics
 
@@ -52,10 +54,11 @@ Last activity: 2026-03-23 — Milestone v1.4 started
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- [v1.4 scoping]: No AI opponent / play mode — Lepdy is puzzle-based learning; kids go to lichess/chess.com for real games
-- [v1.4 scoping]: Full UX rethink — menu structure, practice mode, new puzzle types, visual polish
+- [v1.4 research]: No new npm deps — all v1.4 capabilities covered by installed stack
+- [v1.4 research]: Extend existing contracts, do not duplicate them (pieceFilter on buildSessionQueue, not a new hook)
+- [v1.4 research]: Add assertNever to ChessView union in Phase 19 to protect all future view routing
+- [v1.4 research]: usePuzzleProgress lifted to ChessGameContent — never instantiated in child components
 - [v1.3 carry-over]: Per-piece adaptive difficulty, session system, daily puzzle all working
-- [v1.3 carry-over]: 95 validated puzzles across 3 difficulty tiers
 
 ### Pending Todos
 
@@ -63,10 +66,12 @@ None yet.
 
 ### Blockers/Concerns
 
+- [Phase 21]: 20+ mate-in-1 positions need to be authored or sourced — content work. Resolve during plan-phase: hand-compose, public domain, or generate-and-validate offline.
+- [Phase 21]: Hebrew instruction text for checkmate puzzles needs grammatical gender agreement review. Flag for native-speaker check before phase ships.
 - [Phase 1 carry-over]: Hebrew chess piece names sourced from forum, not Israeli Chess Federation. Must verify before recording audio.
 
 ## Session Continuity
 
 Last session: 2026-03-23
-Stopped at: Defining requirements for v1.4
+Stopped at: v1.4 roadmap created — ready to begin Phase 19 planning
 Resume file: None

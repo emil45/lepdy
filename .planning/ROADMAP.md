@@ -6,6 +6,7 @@
 - ✅ **v1.1 Polish & Fixes** — Phases 7-10 (shipped 2026-03-22)
 - ✅ **v1.2 Board Facelift** — Phases 11-13 (shipped 2026-03-22)
 - ✅ **v1.3 Infinite Replayability** — Phases 14-18 (shipped 2026-03-22)
+- 🚧 **v1.4 Complete Puzzle Experience** — Phases 19-23 (in progress)
 
 ## Phases
 
@@ -62,6 +63,16 @@
 **Archive:** `.planning/milestones/v1.3-ROADMAP.md`
 
 </details>
+
+### 🚧 v1.4 Complete Puzzle Experience (In Progress)
+
+**Milestone Goal:** Transform the chess game from a working prototype into a polished, engaging kids puzzle app that a child wants to revisit daily and a parent would proudly recommend.
+
+- [ ] **Phase 19: Menu Redesign + Sound & Celebrations** - New hub menu replacing broken 1/2/3/daily structure, correct/wrong sound effects, and streak milestone celebrations
+- [ ] **Phase 20: Practice Mode** - Per-piece drill mode with piece selector screen and infinite adaptive puzzles
+- [ ] **Phase 21: Checkmate Puzzle Data + Renderers** - 20+ curated mate-in-1 positions with dedicated renderer component
+- [ ] **Phase 22: Wire Checkmate Into Sessions** - Checkmate puzzles integrated into Challenge sessions via feature flag
+- [ ] **Phase 23: Progress & Engagement Layer** - Mastery map on hub menu and per-piece breakdown on session complete screen
 
 ## Phase Details
 
@@ -137,9 +148,68 @@ Plans:
 - [x] 18-01-PLAN.md — useDailyPuzzle hook, DailyPuzzleCard component, translation keys
 - [x] 18-02-PLAN.md — Wire daily puzzle into ChessGameContent with daily view and map card
 
+### Phase 19: Menu Redesign + Sound & Celebrations
+**Goal**: Kids land on a clear, inviting hub with distinct navigation tiles that replace the confusing numbered level structure, hear satisfying audio feedback on every puzzle answer, and experience mini-celebrations at streak milestones
+**Depends on**: Phase 18
+**Requirements**: MENU-01, MENU-02, SFX-01, SFX-02, SFX-03
+**Success Criteria** (what must be TRUE):
+  1. User sees a hub screen with 3-4 large, labeled navigation tiles (Learn, Practice, Challenge, Daily) instead of numbered levels
+  2. User can navigate from the hub to any mode (Learn, Practice, Challenge, Daily Puzzle) in one tap
+  3. User hears a positive sound when answering a puzzle correctly
+  4. User hears a gentle sound when answering a puzzle incorrectly
+  5. User sees a mini-celebration (confetti burst or animation) at 3, 5, and 10 consecutive correct answers in a session
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 20: Practice Mode
+**Goal**: Kids can pick any single chess piece and drill unlimited adaptive puzzles for just that piece, building confidence in the pieces they find hardest
+**Depends on**: Phase 19
+**Requirements**: PRAC-01, PRAC-02, PRAC-03
+**Success Criteria** (what must be TRUE):
+  1. User can select a specific piece from a 6-piece grid showing its SVG image, Hebrew name, and current mastery band
+  2. User hears the Hebrew name audio when tapping a piece on the piece picker screen
+  3. User can play unlimited puzzles for the selected piece with no session limit (no 10-puzzle cap)
+  4. User's per-piece adaptive difficulty tier advances or de-escalates based on practice answers, same as in Challenge sessions
+  5. User can exit practice back to the piece picker (not straight to the hub menu)
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 21: Checkmate Puzzle Data + Renderers
+**Goal**: The game has a validated set of mate-in-1 positions and a dedicated puzzle component that teaches kids the concept of checkmate with clear instruction
+**Depends on**: Phase 20
+**Requirements**: MATE-01, MATE-02
+**Success Criteria** (what must be TRUE):
+  1. User can tap a puzzle board to make a move that results in checkmate, with clear "checkmate!" confirmation feedback
+  2. At least 20 mate-in-1 positions are available covering multiple piece types (queen, rook, bishop, knight combinations)
+  3. Every checkmate position is verified by chess.js isCheckmate() before being committed to the data file
+  4. User sees clear Hebrew instruction text explaining the goal ("put the king in checkmate in one move")
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 22: Wire Checkmate Into Sessions
+**Goal**: Checkmate puzzles appear in Challenge sessions alongside movement and capture puzzles, giving kids a new puzzle type to encounter during regular play
+**Depends on**: Phase 21
+**Requirements**: MATE-03
+**Success Criteria** (what must be TRUE):
+  1. User encounters checkmate-in-1 puzzles during a standard Challenge session
+  2. Checkmate puzzles can be disabled via Firebase Remote Config without a code deploy
+  3. Amplitude events track checkmate puzzle correct/wrong answers separately from movement and capture puzzles
+**Plans**: TBD
+
+### Phase 23: Progress & Engagement Layer
+**Goal**: Kids see a concrete, visual representation of what they have mastered and what they are still learning, making abstract progress feel real and rewarding
+**Depends on**: Phase 22
+**Requirements**: MENU-03, PROG-01, PROG-02
+**Success Criteria** (what must be TRUE):
+  1. User sees all 6 chess pieces displayed on the hub menu with their current mastery band (Beginner/Intermediate/Expert) as a named label
+  2. User sees a per-piece breakdown on the session complete screen showing which pieces were practiced and how many were answered correctly
+  3. Mastery is displayed as a named state label only — no numeric counter toward the next tier that could incentivize rapid tapping
+**Plans**: TBD
+**UI hint**: yes
+
 ## Progress
 
-**Execution Order:** 14 → 15 → 16 → 17 → 18
+**Execution Order:** 14 → 15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -156,8 +226,13 @@ Plans:
 | 11. Board Theme | v1.2 | 1/1 | Complete | 2026-03-22 |
 | 12. Custom Piece SVGs | v1.2 | 2/2 | Complete | 2026-03-22 |
 | 13. Theme Selector | v1.2 | 1/1 | Complete | 2026-03-22 |
-| 14. Puzzle Pool Expansion | v1.3 | 2/2 | Complete    | 2026-03-22 |
-| 15. Generator + Progress Hook | v1.3 | 2/2 | Complete   | 2026-03-22 |
-| 16. Session Hook + Puzzle Refactor | v1.3 | 1/2 | Complete    | 2026-03-22 |
-| 17. Session Complete + Progression UI | v1.3 | 2/2 | Complete    | 2026-03-22 |
-| 18. Daily Featured Puzzle | v1.3 | 2/2 | Complete    | 2026-03-22 |
+| 14. Puzzle Pool Expansion | v1.3 | 2/2 | Complete | 2026-03-22 |
+| 15. Generator + Progress Hook | v1.3 | 2/2 | Complete | 2026-03-22 |
+| 16. Session Hook + Puzzle Refactor | v1.3 | 1/2 | Complete | 2026-03-22 |
+| 17. Session Complete + Progression UI | v1.3 | 2/2 | Complete | 2026-03-22 |
+| 18. Daily Featured Puzzle | v1.3 | 2/2 | Complete | 2026-03-22 |
+| 19. Menu Redesign + Sound & Celebrations | v1.4 | 0/TBD | Not started | - |
+| 20. Practice Mode | v1.4 | 0/TBD | Not started | - |
+| 21. Checkmate Puzzle Data + Renderers | v1.4 | 0/TBD | Not started | - |
+| 22. Wire Checkmate Into Sessions | v1.4 | 0/TBD | Not started | - |
+| 23. Progress & Engagement Layer | v1.4 | 0/TBD | Not started | - |
