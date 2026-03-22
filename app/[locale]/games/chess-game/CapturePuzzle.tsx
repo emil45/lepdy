@@ -10,9 +10,11 @@ import { useTranslations } from 'next-intl';
 import Confetti from 'react-confetti';
 import { chessPieces } from '@/data/chessPieces';
 import { capturePuzzles } from '@/data/chessPuzzles';
-import { playRandomCelebration, playSound, AudioSounds } from '@/utils/audio';
+import { playAudio, playRandomCelebration, playSound, AudioSounds } from '@/utils/audio';
 import { moveFenPiece } from '@/utils/chessFen';
 import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import { usePuzzleProgress } from '@/hooks/usePuzzleProgress';
 
 // Sort puzzles by difficulty ascending
 const ORDERED_PUZZLES = [...capturePuzzles].sort((a, b) => a.difficulty - b.difficulty);
@@ -25,6 +27,7 @@ interface CapturePuzzleProps {
 export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzzleProps) {
   const t = useTranslations('chessGame');
   const { pieces } = useChessPieceTheme();
+  const { recordCorrect, recordWrong } = usePuzzleProgress();
 
   const [puzzleIndex, setPuzzleIndex] = useState(0);
   const [, setWrongTapCount] = useState(0);
@@ -59,6 +62,10 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
   // Derived puzzle values
   const puzzle = ORDERED_PUZZLES[puzzleIndex];
   const targetPieceConfig = chessPieces.find((p) => p.id === puzzle.targetPieceId)!;
+  const correctPieceConfig = useMemo(
+    () => chessPieces.find((p) => p.id === puzzle.correctPieceId)!,
+    [puzzle.correctPieceId]
+  );
 
   const resetFeedbackState = useCallback(() => {
     setWrongTapCount(0);
@@ -78,6 +85,7 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
 
       if (square === puzzle.correctPieceSquare) {
         // Correct tap
+        recordCorrect(puzzle.correctPieceId);
         setIsAdvancing(true);
         const newFen = moveFenPiece(puzzle.fen, puzzle.correctPieceSquare, puzzle.targetSquare);
         setDisplayFen(newFen);
@@ -100,6 +108,7 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
         }, 1500);
       } else if (puzzle.distractorSquares.includes(square)) {
         // Wrong tap — no sound per FEED-02, gentle feedback only
+        recordWrong(puzzle.correctPieceId);
         setFlashSquare(square);
         setFlashType('wrong');
         setShowTryAgain(true);
@@ -120,7 +129,7 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
       }
       // Empty squares — do nothing
     },
-    [isAdvancing, isComplete, puzzle, puzzleIndex, completeLevel, onComplete, resetFeedbackState]
+    [isAdvancing, isComplete, puzzle, puzzleIndex, completeLevel, onComplete, resetFeedbackState, recordCorrect, recordWrong]
   );
 
   const squareStyles = useMemo(() => {
@@ -244,6 +253,26 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
           />
         </Box>
       </Box>
+
+      {/* Hebrew piece name reveal — shown after correct answer */}
+      {isAdvancing && (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center', mt: 2 }}>
+          <Typography
+            variant="h5"
+            sx={{ fontWeight: 'bold', cursor: 'pointer' }}
+            onClick={() => playAudio(`chess/he/${correctPieceConfig.audioFile}`)}
+          >
+            {t(correctPieceConfig.translationKey as Parameters<typeof t>[0])}
+          </Typography>
+          <IconButton
+            onClick={() => playAudio(`chess/he/${correctPieceConfig.audioFile}`)}
+            aria-label="play audio"
+            data-testid="piece-name-audio-button"
+          >
+            <VolumeUpIcon />
+          </IconButton>
+        </Box>
+      )}
 
       {/* Try again overlay — shown after wrong tap */}
       {showTryAgain && (

@@ -123,9 +123,23 @@ test.describe('Chess movement puzzles', () => {
     // Click Level 2 card (second level card)
     await page.locator('[data-testid="level-card"]').nth(1).click();
     // Verify puzzle progress counter appears
-    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 18');
+    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 61');
     // Verify piece group label appears
     await expect(page.locator('[data-testid="piece-group-label"]')).toBeVisible();
+  });
+
+  test('movement puzzle shows Hebrew piece name audio button', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('lepdy_chess_progress', JSON.stringify({
+        completedLevels: [1],
+        currentLevel: 2
+      }));
+    });
+    await page.goto('/games/chess-game');
+    // Click Level 2 card to enter movement puzzles
+    await page.locator('[data-testid="level-card"]').nth(1).click();
+    // Verify the piece name audio button is visible
+    await expect(page.locator('[data-testid="piece-name-audio-button"]')).toBeVisible();
   });
 
   test('Wrong tap shows try again feedback', async ({ page }) => {
@@ -160,8 +174,8 @@ test.describe('Chess movement puzzles', () => {
     await page.waitForTimeout(700); // wait for flash to clear
     await page.locator('[data-square="h8"]').click();
     // After 2 wrong taps, hint squares should be highlighted
-    // Verify the puzzle progress still shows 1/18 (no advancement)
-    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 18');
+    // Verify the puzzle progress still shows 1/61 (no advancement)
+    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 61');
   });
 });
 
@@ -178,7 +192,7 @@ test.describe('Chess capture puzzles', () => {
     await page.locator('[data-testid="level-card"]').nth(2).click();
     // Verify puzzle progress counter appears
     await expect(page.locator('[data-testid="puzzle-progress"]')).toBeVisible();
-    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 8');
+    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 34');
   });
 
   test('Wrong tap on distractor shows try again feedback', async ({ page }) => {
@@ -191,8 +205,8 @@ test.describe('Chess capture puzzles', () => {
     await page.goto('/games/chess-game');
     await page.locator('[data-testid="level-card"]').nth(2).click();
     await expect(page.locator('[data-testid="puzzle-progress"]')).toBeVisible();
-    // First capture puzzle: capture-rook-1, distractor at c3
-    await page.locator('[data-square="c3"]').click();
+    // First capture puzzle: capture-rook-1, distractor at c2
+    await page.locator('[data-square="c2"]').click();
     // Verify try again text appears
     await expect(page.locator('[data-testid="try-again-text"]')).toBeVisible();
   });
@@ -207,12 +221,12 @@ test.describe('Chess capture puzzles', () => {
     await page.goto('/games/chess-game');
     await page.locator('[data-testid="level-card"]').nth(2).click();
     await expect(page.locator('[data-testid="puzzle-progress"]')).toBeVisible();
-    // Click distractor c3 twice (first capture puzzle has distractor at c3)
-    await page.locator('[data-square="c3"]').click();
+    // Click distractor c2 twice (first capture puzzle has distractor at c2)
+    await page.locator('[data-square="c2"]').click();
     await page.waitForTimeout(700); // wait for flash to clear
-    await page.locator('[data-square="c3"]').click();
-    // After 2 wrong taps, puzzle hasn't advanced — still shows 1/8
-    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 8');
+    await page.locator('[data-square="c2"]').click();
+    // After 2 wrong taps, puzzle hasn't advanced — still shows 1/34
+    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 34');
   });
 });
 
