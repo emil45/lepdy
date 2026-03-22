@@ -53,7 +53,7 @@
   1. The board's light squares and dark squares use a pastel color pair from Lepdy's existing palette (not the default tan/brown)
   2. The board coordinate labels (a-h, 1-8) are visible and use a color that complements the new pastel squares without clashing
   3. The board looks visually consistent with the surrounding chess game UI (cards, buttons, backgrounds)
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
 - [ ] 11-01: Apply pastel square colors and coordinate label color to the chess board
