@@ -88,8 +88,8 @@ Plans:
   6. Returning user's existing level-completion progress is preserved after the hook migration (no data loss)
 **Plans**: 2 plans
 Plans:
-- [x] 14-01-PLAN.md — Validation script + capture-rook-1 bug fix
-- [ ] 14-02-PLAN.md — Author 42 movement + 22 capture puzzles
+- [ ] 15-01-PLAN.md — Puzzle generator utility, progress hook, and feature flag config
+- [ ] 15-02-PLAN.md — Hebrew piece name + audio on MovementPuzzle and CapturePuzzle
 
 ### Phase 16: Session Hook + Puzzle Refactor
 **Goal**: Kids play structured 10-puzzle sessions with a live streak counter, sourced entirely from the infinite random generator instead of a fixed ordered list
@@ -102,8 +102,8 @@ Plans:
   4. Board rendering, FEN animation, square highlighting, and hint behavior are unchanged from v1.2
 **Plans**: 2 plans
 Plans:
-- [ ] 14-01-PLAN.md — Validation script + capture-rook-1 bug fix
-- [ ] 14-02-PLAN.md — Author 42 movement + 22 capture puzzles
+- [ ] 16-01-PLAN.md — [to be planned]
+- [ ] 16-02-PLAN.md — [to be planned]
 
 ### Phase 17: Session Complete + Progression UI
 **Goal**: Kids see a satisfying end-of-session reward and a named mastery level per piece that gives them a concrete goal to work toward
@@ -116,8 +116,8 @@ Plans:
   4. User can start a new session immediately from the session complete screen
 **Plans**: 2 plans
 Plans:
-- [ ] 14-01-PLAN.md — Validation script + capture-rook-1 bug fix
-- [ ] 14-02-PLAN.md — Author 42 movement + 22 capture puzzles
+- [ ] 17-01-PLAN.md — [to be planned]
+- [ ] 17-02-PLAN.md — [to be planned]
 
 ### Phase 18: Daily Featured Puzzle
 **Goal**: Kids have a reason to return to the game every day because there is always a new featured puzzle waiting for them
@@ -130,8 +130,8 @@ Plans:
   4. Daily puzzle rotates at midnight and the next day's puzzle is different
 **Plans**: 2 plans
 Plans:
-- [ ] 14-01-PLAN.md — Validation script + capture-rook-1 bug fix
-- [ ] 14-02-PLAN.md — Author 42 movement + 22 capture puzzles
+- [ ] 18-01-PLAN.md — [to be planned]
+- [ ] 18-02-PLAN.md — [to be planned]
 
 ## Progress
 
@@ -153,7 +153,7 @@ Plans:
 | 12. Custom Piece SVGs | v1.2 | 2/2 | Complete | 2026-03-22 |
 | 13. Theme Selector | v1.2 | 1/1 | Complete | 2026-03-22 |
 | 14. Puzzle Pool Expansion | v1.3 | 2/2 | Complete    | 2026-03-22 |
-| 15. Generator + Progress Hook | v1.3 | 0/? | Not started | - |
+| 15. Generator + Progress Hook | v1.3 | 0/2 | Not started | - |
 | 16. Session Hook + Puzzle Refactor | v1.3 | 0/? | Not started | - |
 | 17. Session Complete + Progression UI | v1.3 | 0/? | Not started | - |
 | 18. Daily Featured Puzzle | v1.3 | 0/? | Not started | - |
