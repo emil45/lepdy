@@ -6,6 +6,8 @@ import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import Fade from '@mui/material/Fade';
+import IconButton from '@mui/material/IconButton';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { useTranslations } from 'next-intl';
 import LockIcon from '@mui/icons-material/Lock';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -13,6 +15,8 @@ import StarIcon from '@mui/icons-material/Star';
 import dynamic from 'next/dynamic';
 import BackButton from '@/components/BackButton';
 import { useChessProgress } from '@/hooks/useChessProgress';
+import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
+import ChessSettingsDrawer from './ChessSettingsDrawer';
 import PieceIntroduction from './PieceIntroduction';
 
 const MovementPuzzle = dynamic(() => import('./MovementPuzzle'), { ssr: false });
@@ -83,8 +87,10 @@ function LevelMapCard({ levelNumber, levelName, emoji, bgColor, isUnlocked, isCo
 
 export default function ChessGameContent() {
   const [currentView, setCurrentView] = useState<ChessView>('map');
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const t = useTranslations('chessGame');
   const { isLevelUnlocked, isLevelCompleted, completeLevel } = useChessProgress();
+  const { theme, selectTheme } = useChessPieceTheme();
 
   if (currentView === 'level-1') {
     return (
@@ -119,8 +125,15 @@ export default function ChessGameContent() {
   return (
     <Fade in={true} timeout={300}>
       <Box sx={{ py: 2, px: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
-        <Box sx={{ width: '100%', maxWidth: 520, mb: 2 }}>
+        <Box sx={{ width: '100%', maxWidth: 520, mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <BackButton href="/games" />
+          <IconButton
+            onClick={() => setSettingsOpen(true)}
+            sx={{ color: 'secondary.main' }}
+            aria-label="settings"
+          >
+            <SettingsIcon />
+          </IconButton>
         </Box>
         <Typography variant="h4" component="h1" sx={{ mb: 2, fontWeight: 'bold', textAlign: 'center' }}>
           {t('title')}
@@ -139,6 +152,12 @@ export default function ChessGameContent() {
             />
           ))}
         </Box>
+        <ChessSettingsDrawer
+          open={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+          currentTheme={theme}
+          onSelectTheme={selectTheme}
+        />
       </Box>
     </Fade>
   );
