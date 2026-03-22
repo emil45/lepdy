@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
+import Fade from '@mui/material/Fade';
 import { useTranslations } from 'next-intl';
 import LockIcon from '@mui/icons-material/Lock';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -45,6 +46,7 @@ function LevelMapCard({ levelNumber, levelName, emoji, bgColor, isUnlocked, isCo
         mb: 2,
         opacity: isUnlocked ? 1 : 0.5,
         bgcolor: isUnlocked ? bgColor : 'grey.300',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
       }}
     >
       <CardActionArea
@@ -85,39 +87,59 @@ export default function ChessGameContent() {
   const { isLevelUnlocked, isLevelCompleted, completeLevel } = useChessProgress();
 
   if (currentView === 'level-1') {
-    return <PieceIntroduction onComplete={() => setCurrentView('map')} completeLevel={completeLevel} />;
+    return (
+      <Fade in={true} timeout={300}>
+        <div>
+          <PieceIntroduction onComplete={() => setCurrentView('map')} completeLevel={completeLevel} />
+        </div>
+      </Fade>
+    );
   }
 
   if (currentView === 'level-2') {
-    return <MovementPuzzle onComplete={() => setCurrentView('map')} completeLevel={completeLevel} />;
+    return (
+      <Fade in={true} timeout={300}>
+        <div>
+          <MovementPuzzle onComplete={() => setCurrentView('map')} completeLevel={completeLevel} />
+        </div>
+      </Fade>
+    );
   }
 
   if (currentView === 'level-3') {
-    return <CapturePuzzle onComplete={() => setCurrentView('map')} completeLevel={completeLevel} />;
+    return (
+      <Fade in={true} timeout={300}>
+        <div>
+          <CapturePuzzle onComplete={() => setCurrentView('map')} completeLevel={completeLevel} />
+        </div>
+      </Fade>
+    );
   }
 
   return (
-    <Box sx={{ py: 2, px: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
-      <Box sx={{ width: '100%', maxWidth: 520, mb: 2 }}>
-        <BackButton href="/games" />
+    <Fade in={true} timeout={300}>
+      <Box sx={{ py: 2, px: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh' }}>
+        <Box sx={{ width: '100%', maxWidth: 520, mb: 2 }}>
+          <BackButton href="/games" />
+        </Box>
+        <Typography variant="h4" component="h1" sx={{ mb: 2, fontWeight: 'bold', textAlign: 'center' }}>
+          {t('title')}
+        </Typography>
+        <Box sx={{ width: '100%', maxWidth: 520, mt: 2 }}>
+          {LEVELS.map((level) => (
+            <LevelMapCard
+              key={level.num}
+              levelNumber={level.num}
+              levelName={t(level.nameKey)}
+              emoji={level.emoji}
+              bgColor={level.color}
+              isUnlocked={isLevelUnlocked(level.num)}
+              isCompleted={isLevelCompleted(level.num)}
+              onSelect={() => setCurrentView(`level-${level.num}` as ChessView)}
+            />
+          ))}
+        </Box>
       </Box>
-      <Typography variant="h4" component="h1" sx={{ mb: 2, fontWeight: 'bold', textAlign: 'center' }}>
-        {t('title')}
-      </Typography>
-      <Box sx={{ width: '100%', maxWidth: 520, mt: 2 }}>
-        {LEVELS.map((level) => (
-          <LevelMapCard
-            key={level.num}
-            levelNumber={level.num}
-            levelName={t(level.nameKey)}
-            emoji={level.emoji}
-            bgColor={level.color}
-            isUnlocked={isLevelUnlocked(level.num)}
-            isCompleted={isLevelCompleted(level.num)}
-            onSelect={() => setCurrentView(`level-${level.num}` as ChessView)}
-          />
-        ))}
-      </Box>
-    </Box>
+    </Fade>
   );
 }
