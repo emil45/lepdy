@@ -9,36 +9,36 @@ import { Chessboard } from 'react-chessboard';
 import { useTranslations } from 'next-intl';
 import Confetti from 'react-confetti';
 import { chessPieces } from '@/data/chessPieces';
-import { capturePuzzles } from '@/data/chessPuzzles';
-import { playAudio, playRandomCelebration, playSound, AudioSounds } from '@/utils/audio';
+import { CapturePuzzle as CapturePuzzleData } from '@/data/chessPuzzles';
+import { playAudio, playRandomCelebration } from '@/utils/audio';
 import { moveFenPiece } from '@/utils/chessFen';
 import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-import { usePuzzleProgress } from '@/hooks/usePuzzleProgress';
-
-// Sort puzzles by difficulty ascending
-const ORDERED_PUZZLES = [...capturePuzzles].sort((a, b) => a.difficulty - b.difficulty);
 
 interface CapturePuzzleProps {
-  onComplete: () => void;
-  completeLevel: (levelNum: number) => void;
+  puzzle: CapturePuzzleData;
+  onAnswer: (correct: boolean) => void;
+  onExit: () => void;
 }
 
-export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzzleProps) {
+export default function CapturePuzzle({ puzzle, onAnswer, onExit }: CapturePuzzleProps) {
   const t = useTranslations('chessGame');
   const { pieces } = useChessPieceTheme();
-  const { recordCorrect, recordWrong } = usePuzzleProgress();
 
-  const [puzzleIndex, setPuzzleIndex] = useState(0);
   const [, setWrongTapCount] = useState(0);
   const [showHints, setShowHints] = useState(false);
   const [flashSquare, setFlashSquare] = useState<string | null>(null);
   const [flashType, setFlashType] = useState<'correct' | 'wrong' | null>(null);
   const [showTryAgain, setShowTryAgain] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
   const [showCorrectConfetti, setShowCorrectConfetti] = useState(false);
-  const [displayFen, setDisplayFen] = useState(ORDERED_PUZZLES[0].fen);
+  // displayFen is animated during correct answer; resets to puzzle.fen when puzzle.id changes
+  const [displayFenPuzzleId, setDisplayFenPuzzleId] = useState(puzzle.id);
+  const [displayFen, setDisplayFen] = useState(puzzle.fen);
+  if (displayFenPuzzleId !== puzzle.id) {
+    setDisplayFenPuzzleId(puzzle.id);
+    setDisplayFen(puzzle.fen);
+  }
 
   // Responsive board sizing
   const containerRef = useRef<HTMLDivElement>(null);
@@ -54,13 +54,7 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
     return () => observer.disconnect();
   }, []);
 
-  // Reset displayFen when puzzle changes so the new puzzle starts from its own FEN
-  useEffect(() => {
-    setDisplayFen(ORDERED_PUZZLES[puzzleIndex].fen);
-  }, [puzzleIndex]);
-
   // Derived puzzle values
-  const puzzle = ORDERED_PUZZLES[puzzleIndex];
   const targetPieceConfig = chessPieces.find((p) => p.id === puzzle.targetPieceId)!;
   const correctPieceConfig = useMemo(
     () => chessPieces.find((p) => p.id === puzzle.correctPieceId)!,
@@ -79,13 +73,12 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
 
   const handleSquareClick = useCallback(
     (square: string) => {
-      if (isAdvancing || isComplete) return;
+      if (isAdvancing) return;
       // Ignore taps on the target piece itself
       if (square === puzzle.targetSquare) return;
 
       if (square === puzzle.correctPieceSquare) {
         // Correct tap
-        recordCorrect(puzzle.correctPieceId);
         setIsAdvancing(true);
         const newFen = moveFenPiece(puzzle.fen, puzzle.correctPieceSquare, puzzle.targetSquare);
         setDisplayFen(newFen);
@@ -95,20 +88,12 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
         playRandomCelebration();
 
         setTimeout(() => {
-          if (puzzleIndex === ORDERED_PUZZLES.length - 1) {
-            // Last puzzle — level complete
-            completeLevel(3);
-            playSound(AudioSounds.CELEBRATION);
-            setIsComplete(true);
-            setTimeout(() => onComplete(), 3000);
-          } else {
-            setPuzzleIndex((prev) => prev + 1);
-            resetFeedbackState();
-          }
+          resetFeedbackState();
+          onAnswer(true);
         }, 1500);
       } else if (puzzle.distractorSquares.includes(square)) {
         // Wrong tap — no sound per FEED-02, gentle feedback only
-        recordWrong(puzzle.correctPieceId);
+        onAnswer(false);
         setFlashSquare(square);
         setFlashType('wrong');
         setShowTryAgain(true);
@@ -129,7 +114,7 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
       }
       // Empty squares — do nothing
     },
-    [isAdvancing, isComplete, puzzle, puzzleIndex, completeLevel, onComplete, resetFeedbackState, recordCorrect, recordWrong]
+    [isAdvancing, puzzle, onAnswer, resetFeedbackState]
   );
 
   const squareStyles = useMemo(() => {
@@ -162,31 +147,6 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
     return styles;
   }, [puzzle.targetSquare, puzzle.correctPieceSquare, showHints, flashSquare, flashType]);
 
-  // Level complete screen — enhanced with "You learned chess!" message
-  if (isComplete) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '100vh',
-          gap: 3,
-        }}
-      >
-        <Confetti recycle={false} numberOfPieces={300} />
-        <Typography sx={{ fontSize: 96, lineHeight: 1 }}>&#x2605;</Typography>
-        <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', textAlign: 'center', px: 2 }}>
-          {t('ui.levelComplete')}
-        </Typography>
-        <Typography variant="h5" sx={{ textAlign: 'center', px: 2, color: 'success.main' }}>
-          {t('ui.learnedChess')}
-        </Typography>
-      </Box>
-    );
-  }
-
   return (
     <Box
       sx={{
@@ -201,7 +161,7 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
       {/* Exit button row */}
       <Box sx={{ width: '100%', maxWidth: 480, display: 'flex', justifyContent: 'flex-end' }}>
         <IconButton
-          onClick={onComplete}
+          onClick={onExit}
           aria-label="exit"
           data-testid="exit-button"
           sx={{ color: 'text.secondary' }}
@@ -209,15 +169,6 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
           <CloseIcon />
         </IconButton>
       </Box>
-
-      {/* Overall progress: "1 / 8" */}
-      <Typography
-        data-testid="puzzle-progress"
-        variant="body2"
-        sx={{ color: 'text.secondary', mb: 0.5 }}
-      >
-        {puzzleIndex + 1} / {ORDERED_PUZZLES.length}
-      </Typography>
 
       {/* Board card — instruction + board wrapped in soft-shadow beige card */}
       <Box sx={{

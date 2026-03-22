@@ -9,46 +9,36 @@ import { Chessboard } from 'react-chessboard';
 import { useTranslations } from 'next-intl';
 import Confetti from 'react-confetti';
 import { chessPieces } from '@/data/chessPieces';
-import { movementPuzzles } from '@/data/chessPuzzles';
-import { playAudio, playRandomCelebration, playSound, AudioSounds } from '@/utils/audio';
+import { MovementPuzzle as MovementPuzzleData } from '@/data/chessPuzzles';
+import { playAudio, playRandomCelebration } from '@/utils/audio';
 import { moveFenPiece } from '@/utils/chessFen';
 import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-import { usePuzzleProgress } from '@/hooks/usePuzzleProgress';
-
-// Build the ordered puzzle list at module level: King, Rook, Bishop, Queen, Knight, Pawn
-// Each group sorted by difficulty (1, 2, 3), 3 puzzles per piece = 18 total
-const PIECE_ORDER = chessPieces
-  .slice()
-  .sort((a, b) => a.order - b.order)
-  .map((p) => p.id);
-
-const ORDERED_PUZZLES = PIECE_ORDER.flatMap((pieceId) =>
-  movementPuzzles
-    .filter((p) => p.pieceId === pieceId)
-    .sort((a, b) => a.difficulty - b.difficulty)
-);
 
 interface MovementPuzzleProps {
-  onComplete: () => void;
-  completeLevel: (levelNum: number) => void;
+  puzzle: MovementPuzzleData;
+  onAnswer: (correct: boolean) => void;
+  onExit: () => void;
 }
 
-export default function MovementPuzzle({ onComplete, completeLevel }: MovementPuzzleProps) {
+export default function MovementPuzzle({ puzzle, onAnswer, onExit }: MovementPuzzleProps) {
   const t = useTranslations('chessGame');
   const { pieces } = useChessPieceTheme();
-  const { recordCorrect, recordWrong } = usePuzzleProgress();
 
-  const [puzzleIndex, setPuzzleIndex] = useState(0);
-  const [wrongTapCount, setWrongTapCount] = useState(0);
+  const [, setWrongTapCount] = useState(0);
   const [showHints, setShowHints] = useState(false);
   const [flashSquare, setFlashSquare] = useState<string | null>(null);
   const [flashType, setFlashType] = useState<'correct' | 'wrong' | null>(null);
   const [showTryAgain, setShowTryAgain] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
   const [showCorrectConfetti, setShowCorrectConfetti] = useState(false);
-  const [displayFen, setDisplayFen] = useState(ORDERED_PUZZLES[0].fen);
+  // displayFen is animated during correct answer; resets to puzzle.fen when puzzle.id changes
+  const [displayFenPuzzleId, setDisplayFenPuzzleId] = useState(puzzle.id);
+  const [displayFen, setDisplayFen] = useState(puzzle.fen);
+  if (displayFenPuzzleId !== puzzle.id) {
+    setDisplayFenPuzzleId(puzzle.id);
+    setDisplayFen(puzzle.fen);
+  }
 
   // Responsive board sizing
   const containerRef = useRef<HTMLDivElement>(null);
@@ -64,16 +54,8 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
     return () => observer.disconnect();
   }, []);
 
-  // Reset displayFen when puzzle changes so the new puzzle starts from its own FEN
-  useEffect(() => {
-    setDisplayFen(ORDERED_PUZZLES[puzzleIndex].fen);
-  }, [puzzleIndex]);
-
   // Derived puzzle values
-  const puzzle = ORDERED_PUZZLES[puzzleIndex];
   const pieceConfig = chessPieces.find((p) => p.id === puzzle.pieceId)!;
-  const piecePuzzles = ORDERED_PUZZLES.filter((p) => p.pieceId === puzzle.pieceId);
-  const indexWithinPiece = piecePuzzles.findIndex((p) => p.id === puzzle.id) + 1;
 
   const resetFeedbackState = useCallback(() => {
     setWrongTapCount(0);
@@ -87,12 +69,11 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
 
   const handlePuzzleSquareClick = useCallback(
     (square: string) => {
-      if (isAdvancing || isComplete) return;
+      if (isAdvancing) return;
       if (square === puzzle.pieceSquare) return;
 
       if (puzzle.validTargets.includes(square)) {
         // Correct tap
-        recordCorrect(puzzle.pieceId);
         setIsAdvancing(true);
         const newFen = moveFenPiece(puzzle.fen, puzzle.pieceSquare, square);
         setDisplayFen(newFen);
@@ -102,20 +83,12 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
         playRandomCelebration();
 
         setTimeout(() => {
-          if (puzzleIndex === ORDERED_PUZZLES.length - 1) {
-            // Last puzzle — level complete
-            completeLevel(2);
-            playSound(AudioSounds.CELEBRATION);
-            setIsComplete(true);
-            setTimeout(() => onComplete(), 3000);
-          } else {
-            setPuzzleIndex((prev) => prev + 1);
-            resetFeedbackState();
-          }
+          resetFeedbackState();
+          onAnswer(true);
         }, 1500);
       } else {
         // Wrong tap — no sound per FEED-02
-        recordWrong(puzzle.pieceId);
+        onAnswer(false);
         setFlashSquare(square);
         setFlashType('wrong');
         setShowTryAgain(true);
@@ -135,7 +108,7 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
         }, 1200);
       }
     },
-    [isAdvancing, isComplete, puzzle, puzzleIndex, completeLevel, onComplete, resetFeedbackState, recordCorrect, recordWrong]
+    [isAdvancing, puzzle, onAnswer, resetFeedbackState]
   );
 
   const squareStyles = useMemo(() => {
@@ -167,28 +140,6 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
     return styles;
   }, [puzzle.pieceSquare, showHints, puzzle.validTargets, flashSquare, flashType]);
 
-  // Level complete screen
-  if (isComplete) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '100vh',
-          gap: 3,
-        }}
-      >
-        <Confetti recycle={false} numberOfPieces={300} />
-        <Typography sx={{ fontSize: 96, lineHeight: 1 }}>&#x2605;</Typography>
-        <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', textAlign: 'center', px: 2 }}>
-          {t('ui.levelComplete')}
-        </Typography>
-      </Box>
-    );
-  }
-
   return (
     <Box
       sx={{
@@ -203,7 +154,7 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
       {/* Exit button row */}
       <Box sx={{ width: '100%', maxWidth: 480, display: 'flex', justifyContent: 'flex-end' }}>
         <IconButton
-          onClick={onComplete}
+          onClick={onExit}
           aria-label="exit"
           data-testid="exit-button"
           sx={{ color: 'text.secondary' }}
@@ -211,24 +162,6 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
           <CloseIcon />
         </IconButton>
       </Box>
-
-      {/* Overall progress: "3 / 18" */}
-      <Typography
-        data-testid="puzzle-progress"
-        variant="body2"
-        sx={{ color: 'text.secondary', mb: 0.5 }}
-      >
-        {puzzleIndex + 1} / {ORDERED_PUZZLES.length}
-      </Typography>
-
-      {/* Piece group label: "רץ 2/3" */}
-      <Typography
-        data-testid="piece-group-label"
-        variant="body2"
-        sx={{ color: 'text.secondary', mb: 1 }}
-      >
-        {t(pieceConfig.translationKey as Parameters<typeof t>[0])} {indexWithinPiece}/{piecePuzzles.length}
-      </Typography>
 
       {/* Board card — instruction + board wrapped in soft-shadow beige card */}
       <Box sx={{
