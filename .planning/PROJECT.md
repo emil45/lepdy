@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A new chess learning game for Lepdy, the Hebrew learning web app for kids. The game teaches chess through progressive levels — starting with learning piece names in Hebrew, then movement puzzles, then capture challenges — until kids are ready to play a real chess game. Targets ages 5-9.
+A chess learning game for Lepdy, the Hebrew learning web app for kids. The game teaches chess through 3 progressive levels — learning piece names in Hebrew, movement puzzles, and capture challenges. Shipped as part of the Lepdy games collection at lepdy.com. Targets ages 5-9.
 
 ## Core Value
 
@@ -18,22 +18,22 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 - ✓ Feature flag system (Firebase Remote Config) — existing
 - ✓ Analytics (Amplitude, GA4) — existing
 - ✓ Server/client component pattern for pages — existing
+- ✓ Classic 8x8 chess board with tap interaction, RTL-safe, SSR-safe — v1.0
+- ✓ Chess piece data structures with Hebrew names and audio path references — v1.0
+- ✓ All 6 chess pieces with Hebrew names, audio pronunciation, and visual display — v1.0
+- ✓ Level-based progression system (learn pieces → movement puzzles → capture puzzles) — v1.0
+- ✓ Level 1: Learn each piece — name, appearance, Hebrew audio — v1.0
+- ✓ Level 2: Movement puzzles — "tap where this piece can move" — v1.0
+- ✓ Level 3: Capture puzzles — "which piece can capture the target?" — v1.0
+- ✓ Progress tracking with localStorage persistence — v1.0
+- ✓ Game integrated into /games route and games list — v1.0
+- ✓ Chess i18n translation keys (Hebrew, English, Russian) — v1.0
+- ✓ i18n support via next-intl — v1.0
+- ✓ Kid-friendly feedback: celebration on correct, gentle "try again" on wrong, hints after 2 attempts — v1.0
 
 ### Active
 
-- [x] Classic 8x8 chess board rendered for kids with tap interaction, RTL-safe, SSR-safe — Validated in Phase 2: Board Infrastructure
-- [x] Chess piece data structures with Hebrew names and audio path references — Validated in Phase 1: Foundation
-- [x] All 6 chess pieces with Hebrew names, audio pronunciation, and visual display — Validated in Phase 4: Level 1 Piece Introduction
-- [x] Level-based progression system (learn pieces → movement puzzles → capture puzzles) — Validated across Phases 4-6
-- [x] Level 1: Learn each piece — name, appearance, Hebrew audio — Validated in Phase 4: Level 1 Piece Introduction
-- [x] Level 2: Movement puzzles — "tap where this piece can move" — Validated in Phase 5: Level 2 Movement Puzzles
-- [x] Level 3: Capture puzzles — "which piece can capture the target?" — Validated in Phase 6: Level 3 Capture Puzzles
-- [ ] Progress tracking — which levels are completed (local, no leaderboard)
-- [ ] Adaptive difficulty for ages 5-9
-- [ ] Game integrates into existing /games route and games list
-- [ ] Audio for Hebrew piece names (like other Lepdy categories)
-- [x] Chess i18n translation keys (Hebrew, English, Russian) — Validated in Phase 1: Foundation
-- [ ] i18n support (Hebrew, English, Russian) via existing next-intl setup
+(None — next milestone requirements TBD)
 
 ### Out of Scope
 
@@ -42,16 +42,17 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 - Custom piece themes or board skins — keep it simple, classic board
 - Online multiplayer — not aligned with Lepdy's learning model
 - Advanced tactics (forks, pins, checkmate patterns) — beyond "ready to play" goal
+- Adaptive difficulty — v1 uses fixed puzzle sets per level
 
 ## Context
 
 - Lepdy is a live Hebrew learning app at lepdy.com for kids
-- Existing games: guess-game, memory-match, simon-game, speed-challenge, word-builder, counting-game, letter-rain
-- Games follow a consistent pattern: page.tsx (server) + Content.tsx (client)
-- Audio system exists with `playSound()` for game effects and `playAudio()` for category items
-- Hebrew piece names will need new audio files recorded in `/public/audio/chess/he/`
-- Progress tracking can use existing context patterns (ProgressContext, etc.)
-- The game should feel like a natural extension of Lepdy — same visual language, same learning approach
+- Chess game shipped as v1.0 with ~1,500 LOC TypeScript across 6 phases
+- Existing games: guess-game, memory-match, simon-game, speed-challenge, word-builder, counting-game, letter-rain, **chess-game**
+- 39 E2E tests pass (Playwright)
+- Audio files not yet recorded — game works without them (INTRO-03)
+- Phase 2 ChessBoard wrapper is orphaned — Phases 5-6 import react-chessboard directly
+- 5 unused translation keys in chessGame.ui.* namespace
 
 ## Constraints
 
@@ -65,27 +66,13 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Level-based progression over free-pick | Guided journey ensures kids learn fundamentals in order | — Pending |
-| Classic 8x8 board (not simplified) | Kids should learn real chess, not a simplified version | — Pending |
-| No leaderboard | Focus on personal learning progress, not competition | — Pending |
-| Audio + text for Hebrew piece names | Matches Lepdy's learning pattern across all categories | — Pending |
-
-## Evolution
-
-This document evolves at phase transitions and milestone boundaries.
-
-**After each phase transition** (via `/gsd:transition`):
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
-
-**After each milestone** (via `/gsd:complete-milestone`):
-1. Full review of all sections
-2. Core Value check — still the right priority?
-3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
+| Level-based progression over free-pick | Guided journey ensures kids learn fundamentals in order | ✓ Good — natural learning flow |
+| Classic 8x8 board (not simplified) | Kids should learn real chess, not a simplified version | ✓ Good — real board, real pieces |
+| No leaderboard | Focus on personal learning progress, not competition | ✓ Good — reduces complexity |
+| Audio + text for Hebrew piece names | Matches Lepdy's learning pattern across all categories | ✓ Good — consistent UX |
+| Direct react-chessboard import for puzzles | Puzzle mode is read-only, no chess.js move execution needed | ✓ Good — simpler, orphaned ChessBoard wrapper |
+| Single useChessProgress hook (no context provider) | Simpler shape than category progress, no migration logic needed | ✓ Good — less overhead |
+| Prop-thread completeLevel from parent | Prevents stale state across views with useState routing | ✓ Good — fixed Phase 4 bug |
 
 ---
-*Last updated: 2026-03-22 after Phase 6: Level 3 Capture Puzzles complete — ALL PHASES DONE*
+*Last updated: 2026-03-22 after v1.0 milestone*
