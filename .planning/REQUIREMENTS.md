@@ -23,8 +23,8 @@
 
 ### Bug Fixes
 
-- [ ] **FIX-01**: Translation keys in `chessPieces.ts` remove the `chessGame.` prefix to fix double-namespace bug (displays key path instead of translated text)
-- [ ] **FIX-02**: Remove orphaned Phase 2 files (`ChessBoard.tsx`, `ChessBoardDynamic.tsx`, `useChessGame.ts`) and unused translation keys
+- [x] **FIX-01**: Translation keys in `chessPieces.ts` remove the `chessGame.` prefix to fix double-namespace bug (displays key path instead of translated text)
+- [x] **FIX-02**: Remove orphaned Phase 2 files (`ChessBoard.tsx`, `ChessBoardDynamic.tsx`, `useChessGame.ts`) and unused translation keys
 
 ### Stickers
 
@@ -53,8 +53,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FIX-01 | Phase 7 | Pending |
-| FIX-02 | Phase 7 | Pending |
+| FIX-01 | Phase 7 | Complete |
+| FIX-02 | Phase 7 | Complete |
 | NAV-01 | Phase 8 | Pending |
 | NAV-02 | Phase 8 | Pending |
 | UI-01 | Phase 8 | Pending |

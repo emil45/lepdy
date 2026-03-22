@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Polish & Fixes
-status: ready-to-plan
-stopped_at: Roadmap created for v1.1 (Phases 7-10)
-last_updated: "2026-03-22T00:00:00.000Z"
+status: unknown
+stopped_at: Completed 07-01-PLAN.md
+last_updated: "2026-03-22T11:56:35.674Z"
 progress:
-  total_phases: 10
-  completed_phases: 6
-  total_plans: 11
-  completed_plans: 11
+  total_phases: 4
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
 ---
 
 # Project State
@@ -19,16 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 7 — Bug Fixes & Cleanup
+**Current focus:** Phase 07 — bug-fixes-cleanup
 
 ## Current Position
 
-Phase: 7 of 10 (Bug Fixes & Cleanup)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-03-22 — v1.1 roadmap created (Phases 7-10)
-
-Progress: [██████░░░░░░░░░░░░░░] 6/10 phases complete (v1.0 shipped, v1.1 starting)
+Phase: 07 (bug-fixes-cleanup) — EXECUTING
+Plan: 1 of 1
 
 ## Performance Metrics
 
@@ -55,8 +51,11 @@ Progress: [██████░░░░░░░░░░░░░░] 6/10 ph
 | Phase 06 P02 | 3min | 2 tasks | 2 files |
 
 **Recent Trend:**
+
 - Last 5 plans: 4, 1, 3, 2, 4 min
 - Trend: Stable
+
+| Phase 07-bug-fixes-cleanup P01 | 3 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -69,6 +68,8 @@ Recent decisions affecting current work:
 - [Phase 02]: ChessBoard.tsx wrapper is orphaned — Phases 5-6 import react-chessboard directly (FIX-02 scope)
 - [Phase 05]: Direct Chessboard import in MovementPuzzle — puzzle mode is read-only, no chess.js move execution needed
 - [Phase 03]: View routing uses useState<ChessView> — keeps single-page feel for game shell
+- [Phase 07-bug-fixes-cleanup]: Orphaned Phase 2 chess files deleted — ChessBoard wrapper never used since Phases 5-6 switched to direct react-chessboard imports
+- [Phase 07-bug-fixes-cleanup]: 5 unused chessGame.ui translation keys removed (correct, hint, tapToHear, findSquare, whichCaptures) — confirmed no consumers in codebase
 
 ### Pending Todos
 
@@ -81,6 +82,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22
-Stopped at: v1.1 roadmap created, ready to plan Phase 7
+Last session: 2026-03-22T11:56:35.672Z
+Stopped at: Completed 07-01-PLAN.md
 Resume file: None

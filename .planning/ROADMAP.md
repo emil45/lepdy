@@ -43,7 +43,7 @@
   3. Unused translation keys under chessGame.ui.* are removed and the translation files still pass lint
 **Plans:** 1 plan
 Plans:
-- [ ] 07-01-PLAN.md — Fix translation key double-namespace and remove orphaned files/unused keys
+- [x] 07-01-PLAN.md — Fix translation key double-namespace and remove orphaned files/unused keys
 
 ### Phase 8: Navigation & UI Polish
 **Goal**: Every chess game screen has consistent back navigation and Lepdy's playful visual style
