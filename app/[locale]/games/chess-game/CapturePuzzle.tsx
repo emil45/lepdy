@@ -199,24 +199,34 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
         {puzzleIndex + 1} / {ORDERED_PUZZLES.length}
       </Typography>
 
-      {/* Instruction text */}
-      <Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 2, px: 1 }}>
-        {t('ui.tapToCapture', { piece: t(targetPieceConfig.translationKey as Parameters<typeof t>[0]) })}
-      </Typography>
+      {/* Board card — instruction + board wrapped in soft-shadow beige card */}
+      <Box sx={{
+        bgcolor: '#f5ede1',
+        borderRadius: 3,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        p: 2,
+        width: '100%',
+        maxWidth: 480,
+      }}>
+        {/* Instruction text */}
+        <Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 2, px: 1 }}>
+          {t('ui.tapToCapture', { piece: t(targetPieceConfig.translationKey as Parameters<typeof t>[0]) })}
+        </Typography>
 
-      {/* Board — always LTR regardless of locale */}
-      <Box ref={containerRef} sx={{ direction: 'ltr', width: '100%', maxWidth: 480, margin: '0 auto' }}>
-        <Chessboard
-          options={{
-            position: puzzle.fen,
-            allowDragging: false,
-            onSquareClick: ({ square }: { square: string }) => handleSquareClick(square),
-            squareStyles,
-            boardOrientation: 'white' as const,
-            animationDurationInMs: 200,
-            boardStyle: { width: `${boardWidth}px`, maxWidth: '480px' },
-          }}
-        />
+        {/* Board — always LTR regardless of locale */}
+        <Box ref={containerRef} sx={{ direction: 'ltr', width: '100%', maxWidth: 480, margin: '0 auto' }}>
+          <Chessboard
+            options={{
+              position: puzzle.fen,
+              allowDragging: false,
+              onSquareClick: ({ square }: { square: string }) => handleSquareClick(square),
+              squareStyles,
+              boardOrientation: 'white' as const,
+              animationDurationInMs: 200,
+              boardStyle: { width: `${boardWidth}px`, maxWidth: '480px' },
+            }}
+          />
+        </Box>
       </Box>
 
       {/* Try again overlay — shown after wrong tap */}
