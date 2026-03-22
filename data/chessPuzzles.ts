@@ -283,12 +283,12 @@ export const movementPuzzles: MovementPuzzle[] = [
 export const capturePuzzles: CapturePuzzle[] = [
   {
     id: 'capture-rook-1',
-    fen: '8/8/8/p7/8/2B5/8/R7',
+    fen: '8/8/8/p7/8/8/2B5/R7',
     targetSquare: 'a5',
     correctPieceSquare: 'a1',
     correctPieceId: 'rook',
     targetPieceId: 'pawn',
-    distractorSquares: ['c3'],
+    distractorSquares: ['c2'],
     difficulty: 1,
   },
   {
