@@ -135,13 +135,13 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
     const styles: Record<string, React.CSSProperties> = {};
 
     // Always highlight the piece's current square
-    styles[puzzle.pieceSquare] = { backgroundColor: 'rgba(255, 255, 0, 0.4)' };
+    styles[puzzle.pieceSquare] = { backgroundColor: 'rgba(255, 223, 100, 0.45)' };
 
     // Show green dot hints on all valid targets after 2 wrong taps
     if (showHints) {
       for (const sq of puzzle.validTargets) {
         styles[sq] = {
-          background: 'radial-gradient(circle, rgba(0,128,0,0.4) 25%, transparent 25%)',
+          background: 'radial-gradient(circle, rgba(76, 175, 80, 0.45) 25%, transparent 25%)',
           borderRadius: '50%',
         };
       }
@@ -248,6 +248,10 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
               boardOrientation: 'white' as const,
               animationDurationInMs: 200,
               boardStyle: { width: `${boardWidth}px`, maxWidth: '480px' },
+              lightSquareStyle: { backgroundColor: '#f5ede1' },
+              darkSquareStyle: { backgroundColor: '#dbc3e2' },
+              darkSquareNotationStyle: { color: 'rgba(67, 66, 67, 0.5)' },
+              lightSquareNotationStyle: { color: 'rgba(67, 66, 67, 0.5)' },
             }}
           />
         </Box>
