@@ -24,10 +24,10 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 - [x] Classic 8x8 chess board rendered for kids with tap interaction, RTL-safe, SSR-safe — Validated in Phase 2: Board Infrastructure
 - [x] Chess piece data structures with Hebrew names and audio path references — Validated in Phase 1: Foundation
 - [x] All 6 chess pieces with Hebrew names, audio pronunciation, and visual display — Validated in Phase 4: Level 1 Piece Introduction
-- [ ] Level-based progression system (learn pieces → movement puzzles → capture puzzles)
+- [x] Level-based progression system (learn pieces → movement puzzles → capture puzzles) — Validated across Phases 4-6
 - [x] Level 1: Learn each piece — name, appearance, Hebrew audio — Validated in Phase 4: Level 1 Piece Introduction
 - [x] Level 2: Movement puzzles — "tap where this piece can move" — Validated in Phase 5: Level 2 Movement Puzzles
-- [ ] Level 3: Capture puzzles — "which piece can capture the target?"
+- [x] Level 3: Capture puzzles — "which piece can capture the target?" — Validated in Phase 6: Level 3 Capture Puzzles
 - [ ] Progress tracking — which levels are completed (local, no leaderboard)
 - [ ] Adaptive difficulty for ages 5-9
 - [ ] Game integrates into existing /games route and games list
@@ -88,4 +88,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-22 after Phase 5: Level 2 Movement Puzzles complete*
+*Last updated: 2026-03-22 after Phase 6: Level 3 Capture Puzzles complete — ALL PHASES DONE*
