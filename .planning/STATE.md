@@ -1,9 +1,9 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Polish & Fixes
-status: unknown
-stopped_at: Completed 10-01-PLAN.md
+milestone: v1.2
+milestone_name: Board Facelift
+status: active
+stopped_at: Defining requirements
 last_updated: "2026-03-22T13:18:48.419Z"
 progress:
   total_phases: 4
@@ -19,12 +19,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 10 — sticker-integration
+**Current focus:** Defining requirements for v1.2
 
 ## Current Position
 
-Phase: 10
-Plan: Not started
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-22 — Milestone v1.2 started
 
 ## Performance Metrics
 

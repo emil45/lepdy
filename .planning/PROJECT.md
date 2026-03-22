@@ -43,7 +43,16 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 
 ### Active
 
-(No active milestone — run `/gsd:new-milestone` to start next)
+(Defined in REQUIREMENTS.md for v1.2)
+
+## Current Milestone: v1.2 Board Facelift
+
+**Goal:** Replace the default react-chessboard visuals with Lepdy's playful pastel style — custom board square colors and kid-friendly SVG chess pieces
+
+**Target features:**
+- Pastel board square colors matching Lepdy's palette (light/dark pastel pair)
+- Custom kid-friendly SVG chess piece designs (rounded, colorful, toy-like)
+- Consistent visual integration with the surrounding chess game UI
 
 ## Shipped Milestones
 
@@ -94,4 +103,4 @@ Chess learning game with 3 progressive levels, Hebrew vocabulary, and kid-friend
 | chess_level sticker unlock type | Reuses existing sticker detector pattern, no chess-specific sticker logic needed | ✓ Good — clean integration |
 
 ---
-*Last updated: 2026-03-22 after v1.1 milestone complete*
+*Last updated: 2026-03-22 after v1.2 milestone started*
