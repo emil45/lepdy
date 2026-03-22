@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, MutableRefObject } from 'react';
 import { movementPuzzles, capturePuzzles, MovementPuzzle, CapturePuzzle } from '@/data/chessPuzzles';
 import { chessPieces, ChessPieceId } from '@/data/chessPieces';
 import { defaultGeneratorState, selectNextPuzzle, GeneratorState } from '@/utils/puzzleGenerator';
-import { usePuzzleProgress } from '@/hooks/usePuzzleProgress';
+import { usePuzzleProgress, PiecePuzzleProgress } from '@/hooks/usePuzzleProgress';
 
 const SESSION_STORAGE_KEY = 'lepdy_chess_session';
 const SESSION_SIZE = 10;
@@ -20,6 +20,10 @@ export interface UsePuzzleSessionReturn {
   isSessionComplete: boolean; // true when sessionIndex reaches 10
   onAnswer: (correct: boolean) => void;
   startNewSession: () => void;
+  // firstTryCount is session-memory-only — mid-session refresh resets to 0 (acceptable for 10-puzzle session)
+  firstTryCount: number;
+  sessionTiers: MutableRefObject<Record<string, 1 | 2 | 3>>;
+  currentTiersByPiece: Record<string, PiecePuzzleProgress>;
 }
 
 interface PersistedSession {
@@ -99,12 +103,13 @@ function hydrateSession(raw: string): SessionPuzzle[] | null {
 }
 
 export function usePuzzleSession(): UsePuzzleSessionReturn {
-  const { getSessionTier, recordCorrect, recordWrong } = usePuzzleProgress();
+  const { getSessionTier, recordCorrect, recordWrong, sessionTiers, data } = usePuzzleProgress();
 
   const [queue, setQueue] = useState<SessionPuzzle[]>([]);
   const [headIndex, setHeadIndex] = useState(0);
   const [consecutiveCorrect, setConsecutiveCorrect] = useState(0);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [firstTryCount, setFirstTryCount] = useState(0);
 
   // Initialize session from sessionStorage or fresh build
   useEffect(() => {
@@ -183,6 +188,7 @@ export function usePuzzleSession(): UsePuzzleSessionReturn {
 
       // Advance head index only on correct — wrong answers let child retry same puzzle
       if (correct) {
+        setFirstTryCount((prev) => prev + 1);
         setHeadIndex((prev) => prev + 1);
       }
     },
@@ -204,6 +210,7 @@ export function usePuzzleSession(): UsePuzzleSessionReturn {
     setQueue(freshQueue);
     setHeadIndex(0);
     setConsecutiveCorrect(0);
+    setFirstTryCount(0);
   }, [getSessionTier]);
 
   const currentPuzzle = isInitialized && headIndex < SESSION_SIZE ? (queue[headIndex] ?? null) : null;
@@ -216,5 +223,8 @@ export function usePuzzleSession(): UsePuzzleSessionReturn {
     isSessionComplete,
     onAnswer,
     startNewSession,
+    firstTryCount,
+    sessionTiers,
+    currentTiersByPiece: data.pieces,
   };
 }
