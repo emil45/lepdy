@@ -150,7 +150,13 @@
       "sessionComplete": "Сессия завершена!",
       "inARow": "{count} подряд!",
       "puzzleProgress": "{current}/{total}",
-      "newSession": "Начать заново"
+      "newSession": "Начать заново",
+      "score": "{count}/10 правильно!",
+      "masteryBeginner": "Новичок",
+      "masteryIntermediate": "Средний",
+      "masteryExpert": "Эксперт",
+      "gettingHarder": "Становится сложнее!",
+      "startNewSession": "Начать заново"
     },
     "settings": {
       "pieceTheme": "Стиль фигур",

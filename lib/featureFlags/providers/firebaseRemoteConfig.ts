@@ -107,6 +107,8 @@ export class FirebaseRemoteConfigProvider implements FeatureFlagProvider {
         soundMatchingWrongAnswerDelayMs: this.getNumberFlag('soundMatchingWrongAnswerDelayMs', getValue),
         chessAdvanceTierThreshold: this.getNumberFlag('chessAdvanceTierThreshold', getValue),
         chessDemoTierThreshold: this.getNumberFlag('chessDemoTierThreshold', getValue),
+        chessStarThreshold3: this.getNumberFlag('chessStarThreshold3', getValue),
+        chessStarThreshold2: this.getNumberFlag('chessStarThreshold2', getValue),
       };
 
       this.flags = newFlags;

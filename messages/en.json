@@ -150,7 +150,13 @@
       "sessionComplete": "Session Complete!",
       "inARow": "{count} in a row!",
       "puzzleProgress": "{current}/{total}",
-      "newSession": "Start New Session"
+      "newSession": "Start New Session",
+      "score": "{count}/10 correct!",
+      "masteryBeginner": "Beginner",
+      "masteryIntermediate": "Intermediate",
+      "masteryExpert": "Expert",
+      "gettingHarder": "Getting harder!",
+      "startNewSession": "Start New Session"
     },
     "settings": {
       "pieceTheme": "Piece Theme",

@@ -150,7 +150,13 @@
       "sessionComplete": "הפעילות הושלמה!",
       "inARow": "{count} ברצף!",
       "puzzleProgress": "{current}/{total}",
-      "newSession": "התחל מחדש"
+      "newSession": "התחל מחדש",
+      "score": "{count}/10 נכון!",
+      "masteryBeginner": "מתחיל",
+      "masteryIntermediate": "בינוני",
+      "masteryExpert": "מומחה",
+      "gettingHarder": "!הולך ונהיה קשה",
+      "startNewSession": "התחל מחדש"
     },
     "settings": {
       "pieceTheme": "סגנון כלים",

@@ -18,6 +18,10 @@ export interface FeatureFlags {
   chessAdvanceTierThreshold: number;
   /** Number of consecutive wrong answers required to de-escalate to the previous puzzle tier. */
   chessDemoTierThreshold: number;
+  /** First-try correct count threshold for 3 stars on session complete screen (default 8 out of 10). */
+  chessStarThreshold3: number;
+  /** First-try correct count threshold for 2 stars on session complete screen (default 5 out of 10). */
+  chessStarThreshold2: number;
 }
 
 /**
@@ -33,6 +37,8 @@ export const DEFAULT_FLAGS: FeatureFlags = {
   soundMatchingWrongAnswerDelayMs: 2500,
   chessAdvanceTierThreshold: 5,
   chessDemoTierThreshold: 3,
+  chessStarThreshold3: 8,
+  chessStarThreshold2: 5,
 };
 
 /**
