@@ -23,10 +23,11 @@ export interface Sticker {
   // - 'sound_matching_perfect': number of perfect sound matching scores
   // - 'counting_game_completions': number of counting game completions
   // - 'total_games_completed': total games completed across all types
+  // - 'chess_level': chess level completed (unlockValue = level number 1-3)
   // - 'words_collected': unique Hebrew words collected in word builder
   // - 'words_category_complete': complete collection of a category (category specified in unlockValue as string e.g., "animals")
   // - 'future': shows as locked
-  unlockType: 'streak' | 'letters_progress' | 'letters_total' | 'numbers_progress' | 'numbers_total' | 'animals_progress' | 'animals_total' | 'games_played' | 'memory_wins' | 'simon_score' | 'speed_challenge_high' | 'word_builder_completions' | 'sound_matching_perfect' | 'counting_game_completions' | 'total_games_completed' | 'words_collected' | 'future';
+  unlockType: 'streak' | 'letters_progress' | 'letters_total' | 'numbers_progress' | 'numbers_total' | 'animals_progress' | 'animals_total' | 'games_played' | 'memory_wins' | 'simon_score' | 'speed_challenge_high' | 'word_builder_completions' | 'sound_matching_perfect' | 'counting_game_completions' | 'total_games_completed' | 'chess_level' | 'words_collected' | 'future';
   // For streak: the streak day required
   // For letters_progress: unique letters heard count
   // For letters_total: total letter clicks count
@@ -41,7 +42,7 @@ export interface StickerPage {
   color: string;
 }
 
-// 45 stickers across 6 pages
+// 48 stickers across 6 pages
 export const STICKERS: Sticker[] = [
   // Page 1: Letters - Discovery (unique letters heard)
   { id: 'letters_first', translationKey: 'stickers.letters.first', emoji: '🔤', pageNumber: 1, unlockType: 'letters_progress', unlockValue: 1 },
@@ -86,6 +87,9 @@ export const STICKERS: Sticker[] = [
   { id: 'games_counting', translationKey: 'stickers.games.counting', emoji: '🔢', pageNumber: 4, unlockType: 'counting_game_completions', unlockValue: 5 },
   { id: 'games_dedicated', translationKey: 'stickers.games.dedicated', emoji: '💎', pageNumber: 4, unlockType: 'total_games_completed', unlockValue: 25 },
   { id: 'games_master', translationKey: 'stickers.games.master', emoji: '🏆', pageNumber: 4, unlockType: 'games_played', unlockValue: 8 },
+  { id: 'chess_intro', translationKey: 'stickers.games.chess1', emoji: '♟', pageNumber: 4, unlockType: 'chess_level', unlockValue: 1 },
+  { id: 'chess_movement', translationKey: 'stickers.games.chess2', emoji: '♞', pageNumber: 4, unlockType: 'chess_level', unlockValue: 2 },
+  { id: 'chess_capture', translationKey: 'stickers.games.chess3', emoji: '♛', pageNumber: 4, unlockType: 'chess_level', unlockValue: 3 },
 
   // Page 5: Streaks (THESE ARE UNLOCKABLE IN MVP!)
   { id: 'streak_day_1', translationKey: 'stickers.streaks.day1', emoji: '🔥', pageNumber: 5, unlockType: 'streak', unlockValue: 1 },
@@ -115,7 +119,7 @@ export const STICKER_PAGES: StickerPage[] = [
 ];
 
 export const TOTAL_PAGES = 6;
-export const TOTAL_STICKERS = 45;
+export const TOTAL_STICKERS = 48;
 
 // Helper to get stickers for a specific page
 export function getStickersForPage(pageNumber: number): Sticker[] {
@@ -152,6 +156,8 @@ export interface StickerProgressValues {
   soundMatchingPerfect: number;
   countingGameCompletions: number;
   totalGamesCompleted: number;
+  // Chess
+  chessLevelsCompleted: number[];
   // Words
   uniqueWordsCollected: number;
 }
@@ -196,6 +202,8 @@ export function checkStickerUnlock(sticker: Sticker, progress: StickerProgressVa
       return progress.countingGameCompletions >= sticker.unlockValue;
     case 'total_games_completed':
       return progress.totalGamesCompleted >= sticker.unlockValue;
+    case 'chess_level':
+      return progress.chessLevelsCompleted.includes(sticker.unlockValue);
     case 'words_collected':
       return progress.uniqueWordsCollected >= sticker.unlockValue;
     case 'future':
