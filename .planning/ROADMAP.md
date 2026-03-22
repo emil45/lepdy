@@ -41,7 +41,9 @@
   1. All chess piece names display their translated text (not raw key paths like "chessGame.chessPieces.king") in Hebrew, English, and Russian
   2. The codebase contains no references to ChessBoard.tsx, ChessBoardDynamic.tsx, or useChessGame.ts
   3. Unused translation keys under chessGame.ui.* are removed and the translation files still pass lint
-**Plans**: TBD
+**Plans:** 1 plan
+Plans:
+- [ ] 07-01-PLAN.md — Fix translation key double-namespace and remove orphaned files/unused keys
 
 ### Phase 8: Navigation & UI Polish
 **Goal**: Every chess game screen has consistent back navigation and Lepdy's playful visual style
@@ -86,7 +88,7 @@
 | 4. Level 1 — Piece Introduction | v1.0 | 1/1 | Complete | 2026-03-22 |
 | 5. Level 2 — Movement Puzzles | v1.0 | 2/2 | Complete | 2026-03-22 |
 | 6. Level 3 — Capture Puzzles | v1.0 | 2/2 | Complete | 2026-03-22 |
-| 7. Bug Fixes & Cleanup | v1.1 | 0/TBD | Not started | - |
+| 7. Bug Fixes & Cleanup | v1.1 | 0/1 | Not started | - |
 | 8. Navigation & UI Polish | v1.1 | 0/TBD | Not started | - |
 | 9. Puzzle Animations | v1.1 | 0/TBD | Not started | - |
 | 10. Sticker Integration | v1.1 | 0/TBD | Not started | - |
