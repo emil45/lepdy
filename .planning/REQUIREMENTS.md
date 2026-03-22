@@ -9,7 +9,7 @@
 
 - [ ] **UI-01**: Chess game UI uses Lepdy's pastel color palette and playful styling (rounded cards, soft shadows, consistent with other games)
 - [ ] **UI-02**: Smooth transitions between puzzle screens (fade or slide, not instant swap)
-- [ ] **UI-03**: Back button on chess game main page matches the `BackButton` component used by other games
+- [x] **UI-03**: Back button on chess game main page matches the `BackButton` component used by other games
 
 ### Puzzle Feedback
 
@@ -18,8 +18,8 @@
 
 ### Navigation
 
-- [ ] **NAV-01**: Every screen in the chess game has a way to go back (exit to level map from puzzles, back from piece intro)
-- [ ] **NAV-02**: Next/Back buttons in piece introduction respect RTL direction (Next = left arrow in Hebrew, right arrow in English)
+- [x] **NAV-01**: Every screen in the chess game has a way to go back (exit to level map from puzzles, back from piece intro)
+- [x] **NAV-02**: Next/Back buttons in piece introduction respect RTL direction (Next = left arrow in Hebrew, right arrow in English)
 
 ### Bug Fixes
 
@@ -55,11 +55,11 @@
 |-------------|-------|--------|
 | FIX-01 | Phase 7 | Complete |
 | FIX-02 | Phase 7 | Complete |
-| NAV-01 | Phase 8 | Pending |
-| NAV-02 | Phase 8 | Pending |
+| NAV-01 | Phase 8 | Complete |
+| NAV-02 | Phase 8 | Complete |
 | UI-01 | Phase 8 | Pending |
 | UI-02 | Phase 8 | Pending |
-| UI-03 | Phase 8 | Pending |
+| UI-03 | Phase 8 | Complete |
 | PFEED-01 | Phase 9 | Pending |
 | PFEED-02 | Phase 9 | Pending |
 | STICK-01 | Phase 10 | Pending |

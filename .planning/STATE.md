@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Polish & Fixes
 status: unknown
-stopped_at: Completed 07-01-PLAN.md
-last_updated: "2026-03-22T11:59:14.432Z"
+stopped_at: Completed 08-01-PLAN.md
+last_updated: "2026-03-22T12:15:15.232Z"
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
+  total_plans: 3
+  completed_plans: 2
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 07 — bug-fixes-cleanup
+**Current focus:** Phase 08 — navigation-ui-polish
 
 ## Current Position
 
-Phase: 8
-Plan: Not started
+Phase: 08 (navigation-ui-polish) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -56,6 +56,7 @@ Plan: Not started
 - Trend: Stable
 
 | Phase 07-bug-fixes-cleanup P01 | 3 | 2 tasks | 7 files |
+| Phase 08-navigation-ui-polish P01 | 2 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,8 @@ Recent decisions affecting current work:
 - [Phase 03]: View routing uses useState<ChessView> — keeps single-page feel for game shell
 - [Phase 07-bug-fixes-cleanup]: Orphaned Phase 2 chess files deleted — ChessBoard wrapper never used since Phases 5-6 switched to direct react-chessboard imports
 - [Phase 07-bug-fixes-cleanup]: 5 unused chessGame.ui translation keys removed (correct, hint, tapToHear, findSquare, whichCaptures) — confirmed no consumers in codebase
+- [Phase 08-navigation-ui-polish]: X exit button calls onComplete() directly — no confirmation dialog needed for child-focused chess sub-screens
+- [Phase 08-navigation-ui-polish]: RTL arrow direction in PieceIntroduction: ArrowBackIcon as startIcon for Next (Hebrew), ArrowForwardIcon as endIcon for Back (Hebrew)
 
 ### Pending Todos
 
@@ -82,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T11:56:35.672Z
-Stopped at: Completed 07-01-PLAN.md
+Last session: 2026-03-22T12:15:15.230Z
+Stopped at: Completed 08-01-PLAN.md
 Resume file: None
