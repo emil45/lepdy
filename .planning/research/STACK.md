@@ -1,240 +1,236 @@
 # Stack Research
 
-**Domain:** Infinite replayability — random puzzle generation, escalating difficulty, progression systems
-**Project:** Lepdy Chess v1.3 (milestone addition to existing chess game)
-**Researched:** 2026-03-22
+**Domain:** Kids chess puzzle game — v1.4 new features (menu redesign, practice mode, check/checkmate puzzles, visual polish, progress engagement)
+**Project:** Lepdy Chess v1.4 Complete Puzzle Experience
+**Researched:** 2026-03-23
 **Confidence:** HIGH
-
----
-
-## Context: What Already Exists
-
-The existing stack is fixed. Do not re-research these:
-
-| Already In Place | Version | Purpose |
-|-----------------|---------|---------|
-| `chess.js` | ^1.4.0 | Chess logic library (already installed) |
-| `react-chessboard` | ^5.10.0 | Board rendering (already installed) |
-| `react-confetti` | ^6.4.0 | Celebration effects (already installed) |
-| localStorage pattern | — | Progress persistence (established in useChessProgress hook) |
-| Difficulty field | — | `difficulty: 1 | 2 | 3` already exists on MovementPuzzle and CapturePuzzle |
-
-The question is: what NEW additions are needed for infinite random puzzles with escalating difficulty and a progression system?
 
 ---
 
 ## Verdict: No New Dependencies Required
 
-The v1.3 milestone can be delivered entirely using the existing stack. The work is algorithmic, not library-based.
-
-**chess.js already provides everything needed for puzzle generation:**
-
-```typescript
-import { Chess } from 'chess.js';
-
-// Load any position from FEN
-const chess = new Chess('8/8/8/8/4R3/8/8/8 w - - 0 1');
-
-// Get all legal moves for the rook on e4
-const moves = chess.moves({ square: 'e4', verbose: true });
-// Returns: [{ from: 'e4', to: 'e1', ... }, { from: 'e4', to: 'e2', ... }, ...]
-
-// Extract valid target squares — these become validTargets in a GeneratedPuzzle
-const targets = moves.map(m => m.to);
-```
-
-This is the entire puzzle generation engine. No additional library is needed.
+**Zero new npm packages needed for v1.4.** Every capability required by the new features is already available in the installed stack. This is a build-on-what-exists milestone, identical to the v1.3 precedent.
 
 ---
 
-## Recommended Stack Additions
+## Context: What Already Exists
 
-### Zero new npm dependencies.
-
-All three features — random puzzle generation, escalating difficulty, and progression tracking — are implemented using patterns that already exist in the codebase:
-
-| Feature | Mechanism | Where |
-|---------|-----------|-------|
-| Random position generation | `Math.random()` + chess.js `Chess` instance | `utils/chessGenerator.ts` (new utility file) |
-| Valid move computation | `chess.moves({ square, verbose: true })` | Same utility |
-| Difficulty levels | Square count + piece mobility heuristics | Encoded in generator logic |
-| Puzzle progression | Extended `useChessProgress` hook | `hooks/useChessProgress.ts` (extended) |
-| Session streak | Extended `useChessProgress` hook | Same hook |
-| Star/reward state | Extended `useChessProgress` hook | Same hook |
+| Already In Place | Version | Purpose |
+|-----------------|---------|---------|
+| `chess.js` | 1.4.0 | `inCheck()`, `isCheckmate()`, `moves()` — covers all new puzzle types |
+| `react-chessboard` | 5.10.0 | Board rendering for new puzzle components |
+| `react-confetti` | 6.4.0 | Celebration effects — already used in chess game |
+| `@mui/material` | 7.3.7 | All layout, animation, and progress UI components |
+| `@emotion/react` | 11.14.0 | CSS-in-JS for custom keyframe animations |
+| `next-intl` | 4.7.0 | New translation keys for new UI sections |
+| `localStorage` pattern | — | Progress persistence in `usePuzzleProgress`, `useChessProgress` |
+| Audio system | — | `utils/audio.ts` `AudioSounds` enum + `playSound()` / `playRandomCelebration()` |
 
 ---
 
-## What Changes (Not What's Added)
+## Capability Map by Feature
 
-### 1. Puzzle Generator Utility — `utils/chessGenerator.ts` (new file)
+### 1. Menu Redesign
 
-Replace hand-curated static arrays with a generator function:
+**What's needed:** Replace the broken 1/2/3/daily card stack with an intuitive layout — distinct sections for Practice, Daily Puzzle, and Sessions.
+
+**How the current stack covers it:**
+
+- MUI `Box`, `Card`, `CardActionArea`, `Typography`, `Chip`, `Badge` — all in MUI 7.3.7
+- MUI `Fade` — already used for all chess view transitions (`ChessGameContent.tsx`)
+- New `ChessView` values (`'practice'`, `'practice-select'`) slot directly into the existing `ChessView` type union and `useState<ChessView>` routing pattern
+
+**Integration point:** `ChessGameContent.tsx` already handles view routing via a `currentView` state string; adding new views is an additive change with no architectural change.
+
+**No new packages.**
+
+---
+
+### 2. Practice Mode (per-piece drilling)
+
+**What's needed:** A mode where the child picks a specific piece and drills movement + capture puzzles for it only, with per-piece mastery progress visible.
+
+**How the current stack covers it:**
+
+- `utils/puzzleGenerator.ts` `selectNextPuzzle()` already accepts any puzzle pool; a filtered single-piece pool is a one-liner
+- `hooks/usePuzzleProgress.ts` already tracks tier (1/2/3) per piece and exposes `recordCorrect(pieceId)` / `recordWrong(pieceId)`
+- `hooks/usePuzzleSession.ts` already builds a `SessionPuzzle[]` queue; a `usePracticeModeSession` hook wraps the same primitives with a single-piece filter
+- Piece picker UI: MUI `Grid2` + `Card` with piece SVGs (already in `pieceThemes.tsx`)
+- `usePuzzleProgress` already exposes `data.pieces` (the `currentTiersByPiece` from `usePuzzleSession`) — mastery display reads from here
+
+**No new packages.**
+
+---
+
+### 3. New Puzzle Types: Check and Checkmate-in-1
+
+**What's needed:** (a) Check puzzle — child identifies/resolves a check position; (b) Checkmate-in-1 — child finds the one mating move.
+
+**chess.js 1.4.0 provides (verified via direct test against installed version):**
+
+| Method | Return | Confirmed |
+|--------|--------|-----------|
+| `inCheck()` | `true` if side to move is in check | YES — tested at runtime |
+| `isCheckmate()` | `true` if side to move is checkmated | YES — tested at runtime |
+| `moves({ verbose: true })` | All legal moves with full metadata | YES — existing usage in v1.3 |
+| `move(san)` / `undo()` | Make and undo moves for brute-force scan | YES — standard chess.js API |
+
+**Checkmate-in-1 validation pattern (no new deps, pure chess.js):**
 
 ```typescript
-// Generates a valid single-piece movement puzzle for any piece type and difficulty
-function generateMovementPuzzle(pieceId: ChessPieceId, difficulty: 1 | 2 | 3): GeneratedMovementPuzzle
-
-// Generates a capture puzzle with 1 correct piece and 1-3 distractors
-function generateCapturePuzzle(difficulty: 1 | 2 | 3): GeneratedCapturePuzzle
-```
-
-The generator uses `chess.js` to place a piece at a random square appropriate to the difficulty tier, then calls `chess.moves({ square, verbose: true })` to derive valid targets. This is pure TypeScript with no new dependencies.
-
-**Difficulty heuristics for movement puzzles (no library needed — pure logic):**
-
-| Difficulty | Position Rule | Target Count |
-|------------|--------------|--------------|
-| 1 — Easy | Center-adjacent squares (c3–f6 range) | 8+ valid moves (open positions) |
-| 2 — Medium | Edge-adjacent squares | 5–7 valid moves |
-| 3 — Hard | Corner/edge squares with restricted mobility | 2–4 valid moves |
-
-For pieces like the rook and bishop, "center vs. edge" naturally produces more/fewer valid targets through chess.js move generation — no custom logic needed beyond choosing the starting square.
-
-**Why NOT a seeded random library (e.g., seedrandom):**
-Seeded RNG is only valuable when you need to reproduce the exact same puzzle sequence across sessions (e.g., daily puzzle mode where all players solve the same puzzle). For this project, puzzles should feel fresh every visit — unseeded `Math.random()` is correct. No seeded RNG library needed.
-
-### 2. Extended Progress Schema — `hooks/useChessProgress.ts` (extended)
-
-The current `ChessProgressData` only tracks `completedLevels` and `currentLevel`. Extend it to support infinite mode:
-
-```typescript
-interface ChessProgressData {
-  // Existing (keep backward-compatible)
-  completedLevels: number[];
-  currentLevel: number;
-
-  // New for v1.3
-  totalPuzzlesSolved: number;       // cumulative counter across all sessions
-  currentStreak: number;            // consecutive correct answers in current session
-  bestStreak: number;               // all-time best streak
-  difficultyLevel: number;          // 1-10 escalating difficulty (persisted)
-  lastPlayedDate: string | null;    // ISO date string — for daily streak detection
-  totalStars: number;               // star rewards collected (for progression display)
+// Used offline during puzzle authoring to validate FEN positions
+function isCheckmateIn1(fen: string): { matingMove: string } | null {
+  const chess = new Chess(fen);
+  for (const move of chess.moves()) {
+    chess.move(move);
+    if (chess.isCheckmate()) {
+      chess.undo();
+      return { matingMove: move };
+    }
+    chess.undo();
+  }
+  return null;
 }
 ```
 
-This extends an existing hook using the established localStorage pattern. No context provider needed (existing decision: "useChessProgress as standalone hook, no context").
-
-**Why NOT an external streak/gamification library:**
-Lepdy already has a working streak hook (`useStreak.ts`) and category progress hooks. The chess game's progression needs are simpler (session-scoped streaks + cumulative counters). Adding a gamification library for what amounts to 3 counter fields in localStorage would be over-engineering.
-
-### 3. Difficulty Escalation — Pure Logic, No Library
-
-Implement difficulty as a locally computed value that increases with `totalPuzzlesSolved`:
+**New data types** (extend `data/chessPuzzles.ts`):
 
 ```typescript
-function getDifficultyTier(totalSolved: number): 1 | 2 | 3 {
-  if (totalSolved < 10) return 1;
-  if (totalSolved < 25) return 2;
-  return 3;
+export interface CheckPuzzle {
+  id: string;
+  fen: string;              // Position where a piece can deliver check
+  pieceSquare: string;      // Piece to move
+  checkSquare: string;      // Where to move to deliver check
+  difficulty: 1 | 2 | 3;
+}
+
+export interface CheckmatePuzzle {
+  id: string;
+  fen: string;              // Position with exactly one mating move
+  pieceSquare: string;      // The mating piece's current square
+  matingSquare: string;     // Where to move to checkmate
+  difficulty: 1 | 2 | 3;
 }
 ```
 
-This can be refined with breakpoints (e.g., reset back to easier puzzles when switching piece types), but the core mechanism is a pure function with no dependencies.
+**Puzzle authoring workflow:** Same as v1.3 — compose FEN positions, run `isCheckmateIn1()` or `chess.inCheck()` to validate, store as typed arrays. No runtime generation.
 
-**Why NOT an adaptive difficulty library (e.g., ELO rating packages):**
-ELO-based adaptive difficulty is appropriate when the system needs to track wrong answers, time-to-solve, and adjust on a per-puzzle basis — the approach used by Chess.com and Lichess. For a kids' app ages 5-9, that level of adaptation is both over-engineered and potentially demotivating (a child who keeps getting hard puzzles feels punished). A simple step-up-by-count approach is correct for this audience.
+**New `SessionPuzzle` union variants** in `usePuzzleSession.ts`:
+
+```typescript
+export type SessionPuzzle =
+  | { type: 'movement'; puzzle: MovementPuzzle }
+  | { type: 'capture'; puzzle: CapturePuzzle }
+  | { type: 'check'; puzzle: CheckPuzzle }         // new
+  | { type: 'checkmate'; puzzle: CheckmatePuzzle } // new
+```
+
+**No new packages.**
+
+---
+
+### 4. Visual Polish (animations, sounds, micro-rewards)
+
+**What's needed:** Richer animations on puzzle solve, mastery band upgrades, session completion screen polish, micro-reward moments.
+
+**MUI 7 transition components (all already installed):**
+
+| Component | Use Case | Already Used |
+|-----------|----------|--------------|
+| `Fade` | View transitions, hint reveals | Yes — chess game throughout |
+| `Grow` | "Pop in" rewards, mastery badge reveals | Available |
+| `Zoom` | Star reveal on session complete | Available |
+| `Slide` | New puzzle sliding in from the side | Available |
+| `Collapse` | Expandable mastery details panel | Available |
+
+**Emotion CSS keyframes** (via `@emotion/react`, already installed as MUI's engine) — for custom animations like the existing screen shake in `utils/celebrations.ts`. Same `document.createElement('style')` singleton pattern already in use.
+
+**react-confetti 6.4.0** — already installed and already used in `MovementPuzzle.tsx`, `CapturePuzzle.tsx`, `SessionCompleteScreen.tsx`. Confirmed working with React 19.2.3 in this codebase.
+
+**Audio:** `utils/audio.ts` `AudioSounds` enum already has `LEVEL_UP`, `SUCCESS`, `CELEBRATION*`, `DING`, `SPARKLE`, `WHOOSH`, `POP`, `HINT`. Adding a new chess-specific sound (e.g., a distinct "king in check" tone) only requires adding one `AudioSounds` enum entry + one MP3 file in `/public/audio/common/`. No library change.
+
+**No new packages.**
+
+---
+
+### 5. Progress & Engagement (visible mastery, rewarding feedback)
+
+**What's needed:** Per-piece mastery bars, visible tier (Beginner/Intermediate/Expert), session history indicators, encouragement for daily return.
+
+**MUI 7 progress components (already installed):**
+
+| Component | Use Case |
+|-----------|----------|
+| `LinearProgress variant="determinate"` | Per-piece mastery fill bar (0–100%) |
+| `CircularProgress variant="determinate"` | Optional ring indicator for overall mastery |
+
+**Custom styling:** MUI `sx` prop with Lepdy's pastel palette (already defined in `theme/theme.ts`) — no external CSS library.
+
+**Existing hooks to extend (no new hook files needed):**
+
+- `usePuzzleProgress.ts` — already tracks `tier` (1/2/3) per piece plus `correctCount`/`wrongCount`. Mastery percentage derivable as `(correctCount / (correctCount + wrongCount)) * 100` with no schema migration.
+- `usePuzzleSession.ts` — already exposes `currentTiersByPiece` and `sessionTiers`. The `SessionCompleteScreen` already receives these — progress display is a UI extension, not a data change.
+
+**Mastery band display (no new data):**
+
+```typescript
+// Derives from existing PiecePuzzleProgress.tier (already persisted)
+function getMasteryLabel(tier: 1 | 2 | 3): string {
+  return { 1: 'Beginner', 2: 'Intermediate', 3: 'Expert' }[tier];
+}
+```
+
+**No new packages.**
 
 ---
 
 ## What NOT to Add
 
-| Do Not Add | Why | Use Instead |
-|------------|-----|-------------|
-| `seedrandom` or similar | Reproducible puzzles aren't needed — freshness is the goal | `Math.random()` |
-| ELO/rating packages (`glicko-two`, etc.) | Sophisticated rating for ages 5-9 is demotivating overkill | Simple difficulty tiers |
-| Gamification frameworks (`gamification-js`, `badgerhq`) | These require server state; Lepdy is client-only | Extended localStorage hook |
-| Puzzle API / Lichess API at runtime | Network dependency, latency, requires API key management | Generated positions via chess.js |
-| External puzzle databases (`432k-chess-puzzles` etc.) | Tactical puzzles are wrong domain — those are "find the best move", not "show where this piece can move" | chess.js move generation |
-| State management library (Zustand, Redux) | One hook with localStorage is sufficient; adding a store for 4 counters is overkill | Extended `useChessProgress` hook |
-| React Query / SWR | No server data involved | localStorage only |
-
----
-
-## Integration Points
-
-### chess.js moves() API (already installed, v1.4.0)
-
-```typescript
-// Full signature of what the generator uses:
-chess.moves({ square: 'e4', verbose: true })
-// Returns: Array<{ from: Square, to: Square, piece: PieceSymbol, ... }>
-
-// For placement:
-chess.put({ type: 'r', color: 'w' }, 'e4')  // Place white rook on e4
-chess.clear()                                  // Clear board before placing
-```
-
-This API is confirmed stable in v1.4.0 (the version already installed).
-
-### Backward Compatibility
-
-The extended `ChessProgressData` schema must migrate gracefully. Use the existing guard pattern in `useChessProgress`:
-
-```typescript
-// In the localStorage load useEffect:
-const totalPuzzlesSolved = typeof parsed.totalPuzzlesSolved === 'number'
-  ? parsed.totalPuzzlesSolved
-  : 0;
-```
-
-This matches the existing migration pattern already used in `useCategoryProgress` hooks.
-
-### Performance on Tablets
-
-chess.js move generation is synchronous and completes in microseconds for single-piece positions. No web worker, no async generation, no loading state needed. Generating a puzzle is fast enough to happen inline before rendering the next board.
+| Avoid | Why | Use Instead |
+|-------|-----|-------------|
+| `framer-motion` / `motion` | 143 kB gzipped; dual animation system conflicts with MUI transitions already in use | MUI `Fade`/`Grow`/`Zoom`/`Slide` + Emotion keyframes |
+| `lottie-react` | Heavy (40+ kB) for a few micro-animations; overkill for this scope | CSS animations + react-confetti already installed |
+| `react-spring` | Overlaps with MUI transitions; introduces two animation systems in one codebase | MUI transitions cover all use cases |
+| Stockfish WASM | 500 kB+ binary; not needed — puzzles are curated static FENs, not AI-generated | chess.js `isCheckmate()` on static positions |
+| Lichess puzzle API at runtime | Network dependency, latency, licensing, API key management | Curated local FEN arrays (proven v1.3 approach) |
+| Zustand / Redux | One hook per feature with localStorage is the established pattern; adding a store for this data is over-engineering | React `useState` + custom hooks |
+| `react-query` / SWR | No server data fetching involved | localStorage only |
+| ELO/Glicko rating packages | Meaningless to ages 5-9; already decided in v1.3 (named mastery bands instead) | Simple tier step-up (already implemented) |
 
 ---
 
 ## Installation
 
-No new packages to install.
+No new packages are required.
 
 ```bash
-# Nothing to add — chess.js and react-chessboard are already in package.json
+# Nothing to install — zero new dependencies for v1.4
 ```
 
 ---
 
-## Alternatives Considered
+## Version Compatibility
 
-| Feature | Recommended | Alternative | Why Not |
-|---------|-------------|-------------|---------|
-| Puzzle generation | chess.js `moves()` API | Hand-curated static data | Finite (hits repeat after ~25 puzzles); adding more requires manual FEN authoring |
-| Puzzle generation | chess.js `moves()` API | External puzzle database | Wrong puzzle type — tactical puzzles are move sequences, not movement demonstrations |
-| Difficulty tracking | Simple tier counter | ELO rating | Ages 5-9 audience; ELO requires wrong-answer tracking and is demotivating at low levels |
-| Progression state | Extended localStorage hook | React Context | Existing decision: chess hooks are standalone (no context); one more counter field doesn't justify adding context |
-| Seeding | `Math.random()` | `seedrandom` | No daily puzzle mode planned; fresh randomness preferred over reproducibility |
-| Streaks | Extended `useChessProgress` | External streak library | The app already has `useStreak.ts`; a second streak library would conflict with the existing pattern |
-
----
-
-## Stack Patterns for This Milestone
-
-**If the game needs a "puzzle of the day" mode (same puzzle for all users on same date):**
-- Use a date-based seed: `const seed = new Date().toISOString().slice(0, 10)` → derive square index deterministically
-- Still no seeded RNG library needed — a simple modulo over date numeric hash is sufficient
-
-**If difficulty should reset when the piece type changes:**
-- Track `currentPieceIndex` in the progress data and reset `currentStreak` but not `totalPuzzlesSolved`
-- Pure data change, no new dependencies
-
-**If a visual "level-up" moment is needed for escalating difficulty:**
-- Use the existing `react-confetti` (already installed) with a brief screen transition
-- Use MUI's existing `Fade` component (already in use) for smooth state change
+| Package | Version | React 19 Compatible | Notes |
+|---------|---------|---------------------|-------|
+| chess.js | 1.4.0 | Yes (no React dependency) | `inCheck()` and `isCheckmate()` confirmed working via direct runtime test |
+| react-confetti | 6.4.0 | Yes (confirmed working) | Already in production use in chess game with React 19.2.3 |
+| @mui/material | 7.3.7 | Yes (official support) | MUI v7 officially targets React 18+/19 |
+| @emotion/react | 11.14.0 | Yes (confirmed working) | MUI's CSS engine; no issues |
+| next-intl | 4.7.0 | Yes (confirmed working) | No changes needed |
 
 ---
 
 ## Sources
 
-- chess.js npm: https://www.npmjs.com/package/chess.js — v1.4.0 confirmed current
-- chess.js docs: https://jhlywa.github.io/chess.js/ — `moves({ square, verbose })` API confirmed
-- chess.js GitHub releases: https://github.com/jhlywa/chess.js/releases — v1.4.0 is latest
-- Existing codebase: `/utils/chessFen.ts`, `/hooks/useChessProgress.ts`, `/data/chessPuzzles.ts` — confirmed existing patterns
-- Difficulty design: Predicting Chess Puzzle Difficulty research (arxiv.org/html/2410.11078v1) — center/edge heuristic aligns with complexity findings (LOW confidence — domain insight, not direct source)
-- Kids progression UX: Duolingo gamification research via orizon.co/blog — streak + milestone mechanics (MEDIUM confidence)
+- chess.js official API docs (https://jhlywa.github.io/chess.js/) — `inCheck()`, `isCheckmate()`, `moves()` method signatures (HIGH confidence)
+- chess.js runtime test — `inCheck()` and `isCheckmate()` tested directly against installed 1.4.0 in `/Users/emil/code/lepdy/node_modules/chess.js` (HIGH confidence)
+- MUI v7 transitions docs (https://mui.com/material-ui/transitions/) — Fade, Grow, Zoom, Slide, Collapse availability confirmed (HIGH confidence)
+- MUI v7 progress docs (https://mui.com/material-ui/react-progress/) — LinearProgress, CircularProgress confirmed (HIGH confidence)
+- Codebase inspection — react-confetti usage in `MovementPuzzle.tsx`, `CapturePuzzle.tsx`, `SessionCompleteScreen.tsx` confirms React 19.2.3 compatibility in production (HIGH confidence)
+- Codebase inspection — `usePuzzleProgress.ts`, `usePuzzleSession.ts`, `puzzleGenerator.ts` show extension points for practice mode (HIGH confidence)
 
 ---
 
-*Stack research for: Lepdy Chess v1.3 Infinite Replayability*
-*Researched: 2026-03-22*
+*Stack research for: Lepdy Chess v1.4 Complete Puzzle Experience*
+*Researched: 2026-03-23*

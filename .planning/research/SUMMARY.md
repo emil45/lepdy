@@ -1,178 +1,191 @@
 # Project Research Summary
 
-**Project:** Lepdy Chess v1.3 — Infinite Replayability
-**Domain:** Kids chess learning game — random puzzle generation, escalating difficulty, progression systems
-**Researched:** 2026-03-22
+**Project:** Lepdy Chess v1.4 Complete Puzzle Experience
+**Domain:** Kids chess learning game — progressive puzzle experience for ages 5-9
+**Researched:** 2026-03-23
 **Confidence:** HIGH
 
 ## Executive Summary
 
-Lepdy Chess v1.3 adds infinite replayability to a shipped chess learning game (v1.2) that already has a 3-level progression arc, 18 movement puzzles, 8 capture puzzles, and localStorage-based progress tracking. The established approach for kids' educational games (ChessKid, Duolingo, Khan Academy Kids) is to layer infinite generation on top of a curated seed set — not to replace curation — and to replace finite "you finished" dead ends with structured session windows (10 puzzles, 3-5 minutes) that give micro-rewards at completion. The technical conclusion is that no new dependencies are required: chess.js `moves({ square, verbose: true })` provides the entire puzzle generation engine, and all progression mechanics are extensions of the existing localStorage hook pattern.
+Lepdy Chess v1.4 is a polish-and-expand milestone on a shipped product, not a greenfield build. The existing v1.0–v1.3 codebase already provides a solid foundation: 95 curated puzzles, adaptive per-piece difficulty, Hebrew audio, daily puzzles, and session tracking. The research verdict is clear — zero new npm packages are required, and every v1.4 capability can be built using already-installed stack primitives (chess.js 1.4.0, react-chessboard, MUI 7, react-confetti, Emotion, next-intl). This means v1.4 execution risk is primarily architectural correctness, not technology adoption.
 
-The recommended implementation strategy is pool expansion first (curated 18 → 60+ movement puzzles; 8 → 30+ capture puzzles), then a `puzzleGenerator` utility that randomly samples from the pool by difficulty tier, then a `usePuzzleSession` hook that replaces the current linear-array-consumed-to-end pattern inside `MovementPuzzle` and `CapturePuzzle`. The existing `useChessProgress` hook is extended with difficulty band, total puzzles solved, and session star tracking — using an additive migration that preserves existing player data. The top-level state machine in `ChessGameContent.tsx` and all rendering logic remain untouched.
+The recommended build strategy is to treat v1.4 as five distinct concerns in dependency order: (1) redesigned game menu as the foundation layer that gives all new features a home; (2) practice mode reusing the existing adaptive session engine with a single filter parameter; (3) check and checkmate-in-1 puzzle data authored as curated FEN arrays (not runtime-generated), validated against chess.js offline; (4) visual polish applied as self-contained component enhancements; and (5) progress engagement features surfacing already-tracked mastery data on the new menu. Each concern is small, well-bounded, and can ship incrementally.
 
-The primary risks are not architectural — they are calibration and UX. A difficulty curve tuned on adult reasoning feels like a cliff to a 6-year-old. A generator with no deduplication buffer creates perceived repetition that reads as broken. An "infinite" mode with no session milestones feels like an empty corridor and drives abandonment. All three risks have established mitigations: separate difficulty axes (board complexity first, position novelty second), a ring-buffer dedup (last 10-15 puzzle hashes), and explicit session milestones (5-puzzle checkpoints, 25-puzzle sticker unlocks) that must be specified before the generator is written.
-
----
+The primary risks are architectural rather than technical: practice mode inadvertently creating parallel state with the existing adaptive difficulty system, check/checkmate puzzles using piece-placement FEN instead of full FEN (causing chess.js evaluation failures), the ChessView state machine routing silently swallowing unhandled views, and the three-locale i18n files drifting out of sync. All risks have concrete prevention strategies documented in the research. The central theme across all four research files is "extend existing contracts, do not duplicate them."
 
 ## Key Findings
 
 ### Recommended Stack
 
-No new npm dependencies are needed. The entire milestone is deliverable using what is already installed: chess.js v1.4.0 (legal move computation via `moves({ square, verbose: true })`), react-confetti (celebration effects), and the existing localStorage hook pattern. Explicitly rejected: seeded RNG libraries (fresh randomness is the goal), ELO/Glicko rating packages (wrong audience — ages 5-9), gamification frameworks (require server state), Stockfish/Lichess puzzle APIs (wrong puzzle type for this domain).
+No new dependencies are needed for v1.4. The installed stack fully covers every capability required by the new features. See `.planning/research/STACK.md` for the full capability mapping.
 
 **Core technologies:**
-- `chess.js` v1.4.0 — puzzle generation engine via `chess.put()` + `chess.moves({ square, verbose: true })`; already installed; microsecond generation time suitable for inline synchronous use on tablets
-- `Math.random()` — unseeded random selection from curated pool; correct for this use case; reproducibility is not a goal
-- Extended `useChessProgress` hook — adds difficulty band, streak, total solved; additive localStorage migration preserving existing player data; no new storage key or context provider needed
+- `chess.js 1.4.0`: `inCheck()`, `isCheckmate()`, `moves()` — covers all new puzzle type validation; tested against installed version at runtime
+- `react-chessboard 5.10.0`: Board rendering for new puzzle components; existing API contract already established in codebase
+- `@mui/material 7.3.7`: All layout, animation (Fade, Grow, Zoom, Slide, Collapse), and progress UI components already installed
+- `@emotion/react 11.14.0`: CSS keyframe animations for micro-rewards; same pattern as existing `utils/celebrations.ts`
+- `react-confetti 6.4.0`: Already in production use in the chess game with React 19.2.3 — confirmed compatible
+- `next-intl 4.7.0`: New translation keys for new UI sections; no configuration change needed
+- `localStorage` custom hooks pattern: All progress persistence via `usePuzzleProgress`, `useChessProgress`, `useDailyPuzzle` — no new storage schema
+
+**What NOT to add:** framer-motion (143 kB; conflicts with existing MUI transitions), Stockfish WASM (500 kB+; not needed for curated FEN puzzles), Lichess puzzle API (network dependency), Zustand/Redux (over-engineering for this hook-based scope).
 
 ### Expected Features
 
-**Must have (v1.3 core — table stakes for infinite replayability):**
-- Random movement puzzle generator — place piece on random valid square, compute legal targets via chess.js, never exhaust
-- Random capture puzzle generator — place attacker + target, validate via chess.js
-- Infinite puzzle stream — remove terminal "all done" screen; puzzles continue after fixed set exhausted
-- Difficulty escalation — Rook/Bishop first (predictable linear movement), Knight last (L-shape hardest for ages 5-9); more distractor pieces as correct count climbs
-- Hebrew piece name on every generated puzzle — pronunciation button always visible; directly serves Lepdy's core differentiator
-- Consecutive-correct run counter — "4 in a row!" display; motivates one more puzzle with no infrastructure cost
+See `.planning/research/FEATURES.md` for full competitor analysis and UX sourcing.
 
-**Should have (v1.3.x — after core validated):**
-- Named piece mastery bands — "Rook Beginner → Rook Expert → Knight Beginner" — concrete, non-numeric, age-appropriate
-- Date-seeded daily featured puzzle — same puzzle for all players each day; client-side only; drives return visits
-- Puzzle count display — "Puzzle 47 today" — cumulative accomplishment signal
+**Must have (table stakes — P1):**
+- Redesigned game menu — 3-4 large icon tiles; current 1/2/3/daily structure is broken and navigability is below category baseline (ChessKid, Magnus, ChessMatec all have clear top-level hubs)
+- Per-piece practice mode with piece picker — "drill the knight" mode; top feature gap vs. ChessKid and Magnus Trainer for the 5-9 age bracket
+- Sound effects on correct/wrong answers — every kids app in the category has this; absence is conspicuous
+- Piece mastery map — visual display of Beginner/Intermediate/Expert per piece; makes abstract progress concrete for children
+- Celebration milestones during session — mini-confetti at 3, 5, 10 consecutive correct; low effort, high perceived polish
+- Checkmate-in-1 puzzles (curated set of 20-30) — foundational puzzle type present in every chess learning competitor
 
-**Defer to v2+:**
-- Tactical puzzles (forks, pins) — ages 8+; out of scope per PROJECT.md "ready to play" goal
-- Multi-piece sequence puzzles — significant complexity jump
-- Parent progress dashboard — valuable but beyond game scope
+**Should have (P2 — add after P1 validates):**
+- Session summary with per-piece breakdown — extend existing SessionCompleteScreen; no new data collection required
+- Check puzzles ("put the king in check") — fills gap between capture and checkmate; add after mate-in-1 is stable
 
-**Anti-features to avoid:**
-- Lives/hearts/energy system — Duolingo removed hearts in May 2025 specifically because punishment discourages young learners; existing "try again" pattern is correct
-- Glicko/ELO numeric rating — meaningless to ages 5-9; a dropped rating causes abandonment
-- Competitive leaderboard — already ruled out in PROJECT.md; creates anxiety, not motivation for this age group
+**Defer (v2+):**
+- Checkmate-in-2 puzzles — inappropriate for ages 5-9 cognitive load (working memory constraint)
+- Timer pressure / Puzzle Rush mode — cortisol research shows abandonment for beginning learners ages 5-9
+- Parent progress dashboard — high value but large UX scope
+- "Find the best move" open puzzles — adult tactical content, requires full position evaluation; out of scope
+
+**Anti-features to explicitly avoid:** lives/hearts/energy system (Duolingo removed hearts in May 2025 for exactly this reason), global leaderboards (documented as creating anxiety for ages 5-9), settings menus with many options, timer pressure on puzzles.
 
 ### Architecture Approach
 
-The architecture is an extension of the existing system, not a rewrite. The current `ChessGameContent.tsx` state machine (`'map' | 'level-1' | 'level-2' | 'level-3'`) is untouched. The key change is replacing the `puzzleIndex` + `ORDERED_PUZZLES` consumed-linearly pattern inside `MovementPuzzle` and `CapturePuzzle` with calls to a new `usePuzzleSession` hook that sources puzzles from `puzzleGenerator.ts` and persists progress via the extended `useChessProgress`. Build order has clear dependencies: data expansion → generator utility → progress hook extension → session hook → puzzle component refactor → session complete screen.
+v1.4 is a series of additive extensions to the existing `ChessGameContent` state machine — not a redesign. The dominant pattern across all research is "extend existing contracts rather than create parallel systems." The `ChessView` union type grows from 4 to 5-6 values; the `SessionPuzzle` discriminated union grows from 2 to 4 variants; `usePuzzleSession` gains one optional `pieceFilter` parameter. No new architectural layers, no new state management, no new storage schemas. See `.planning/research/ARCHITECTURE.md` for complete component structure, data flow, and build-order dependency graph.
 
-**Major components:**
-1. `utils/puzzleGenerator.ts` (new) — pure function; selects next puzzle from pool by difficulty, excludes recent-IDs ring buffer; falls back to easier tier if filtered pool is empty
-2. `hooks/usePuzzleSession.ts` (new) — per-session state: current puzzle, streak, puzzles solved, session complete flag; sources puzzles from generator; reports back to `useChessProgress` on each puzzle solved
-3. `hooks/useChessProgress.ts` (extended) — adds `movementDifficulty`, `captureDifficulty`, `totalPuzzlesSolved`, `longestStreak`; additive migration with defaults for new fields; existing `completedLevels` data preserved
-4. `MovementPuzzle.tsx` / `CapturePuzzle.tsx` (refactored) — replace internal `puzzleIndex` state with `usePuzzleSession`; board rendering, FEN animation, square highlighting unchanged
-5. `SessionComplete.tsx` (new) — star display (1-3 stars based on first-try accuracy), session summary screen between sessions; fires `onComplete` to return to map
-6. `data/chessPuzzles.ts` (expanded) — 18 → 60+ movement puzzles; 8 → 30+ capture puzzles; 10+ puzzles per difficulty tier per level type
+**Major components (changes and additions only):**
+1. `ChessMenuScreen.tsx` (new) — replaces inline map JSX in ChessGameContent; owns menu tile layout; reads `usePuzzleProgress` directly for mastery display
+2. `PieceSelectorScreen.tsx` (new) — 6-piece grid for practice mode entry; reads `usePuzzleProgress` for per-piece mastery badges
+3. `CheckPuzzle.tsx` / `CheckmatePuzzle.tsx` (new) — puzzle renderers following the existing pure-renderer pattern (`puzzle`, `onAnswer`, `onExit` props)
+4. `ChessGameContent.tsx` (modified) — extended `ChessView` type, new view branches, `selectedPiece` state for practice navigation
+5. `usePuzzleSession.ts` (modified) — add optional `pieceFilter?: ChessPieceId` parameter to `buildSessionQueue`; additive, no breaking change to existing callers
+6. `data/chessPuzzles.ts` (modified) — add `checkPuzzles[]` and `checkmatePuzzles[]` arrays using full FEN format (not piece-placement FEN)
+
+**Unchanged and stable (do not touch):** `PieceIntroduction.tsx`, `useChessProgress.ts`, `useChessPieceTheme.ts`, `useDailyPuzzle.ts`, `usePuzzleProgress.ts`, `utils/chessFen.ts`, `utils/puzzleGenerator.ts`, all existing localStorage keys.
 
 ### Critical Pitfalls
 
-1. **Generator produces unsolvable or trivially easy boards** — derive `validTargets` exclusively from chess.js `moves()` output; enforce min/max target counts (at least 3, no more than 14 for difficulty 1); validate with a 1000-puzzle automated test before any UI integration. A wrong `validTargets` array here also corrupts the hint system, actively teaching incorrect movement rules.
+See `.planning/research/PITFALLS.md` for full detail, prevention checklists, and recovery strategies.
 
-2. **Progress schema corruption for returning users** — extend the existing localStorage key additively; provide typed defaults for every new field; add a `version` field; test specifically on a device with the old `lepdy_chess_progress` key present. The bug only appears on returning-user devices, not on fresh installs.
+1. **Practice mode creates parallel state with adaptive difficulty** — If practice uses its own puzzle selection outside `usePuzzleSession`, tier progress never updates. Prevention: practice calls `recordCorrect`/`recordWrong` from `usePuzzleProgress` directly and uses a separate `buildPracticeQueue` function; never uses `SESSION_STORAGE_KEY` or `SESSION_SIZE=10`.
 
-3. **Puzzle repetition within a session** — maintain a ring buffer of last 10-15 puzzle hashes per session; exclude those from generator selection; validate with a 50-consecutive-puzzle automated test asserting no FEN appears within a window of 15. Kids ages 5-7 notice repetition and interpret it as a bug.
+2. **Check/Checkmate FEN format mismatch** — Existing puzzles use piece-placement FEN (e.g., `'8/8/4R3/8/8'`). chess.js `load()` requires full FEN (e.g., `'8/8/4R3/8/8 w - - 0 1'`). Passing piece-placement FEN causes `isCheckmate()` to silently return false. Prevention: author all check/checkmate puzzles with full FEN; validate each position with `chess.validate_fen()` before committing to the data file.
 
-4. **Difficulty curve miscalibrated for the target audience** — separate escalation into two independent axes (board complexity first, position novelty second); cap advancement at one tier per session; implement de-escalation after 3 consecutive wrong answers on same type; store thresholds in a named config object accessible via Firebase Remote Config for post-ship tuning without a code deploy.
+3. **ChessView state machine silently drops unhandled views** — The current if-chain routing falls through to the map render for any unhandled `ChessView` value. Prevention: add TypeScript `assertNever` or an explicit error branch when extending `ChessView` in the menu redesign phase. This is a structural fix that protects all subsequent phases.
 
-5. **Infinite treadmill with no milestones** — specify micro-milestones (every 5 puzzles = session checkpoint, every 25 = sticker unlock) as acceptance criteria for the generation phase; the session hook must fire milestone events from day one. "Infinite" with no visible progress signal causes abandonment after puzzle 3-5 in ages 5-9.
+4. **`usePuzzleProgress` multi-instantiation causes state divergence** — A mastery display screen calling the hook independently from the session creates two copies of the same localStorage state that can show different tier values. Prevention: lift `usePuzzleProgress` to `ChessGameContent` and pass `data.pieces` as props to mastery display components; never call the hook in child components.
 
----
+5. **i18n locale desync** — New translation keys added to `en.json` but missing in `he.json` (the primary user locale, RTL) cause broken UI for the main user base. Prevention: treat locale file synchronization as a per-phase acceptance criterion; key count under `chessGame` must match across all three locale files before any phase merges.
+
+**Bonus pitfall:** Mastery progress bars toward the next tier incentivize rapid tapping in ages 5-7. Display mastery as a named state (Beginner/Intermediate/Expert), not a numeric counter toward the next level.
 
 ## Implications for Roadmap
 
-The ARCHITECTURE.md build order defines a clear dependency graph. Phases cannot be reordered arbitrarily — each phase enables the next.
+Based on combined research, the dependency-driven phase order from ARCHITECTURE.md maps cleanly to roadmap phases. The research recommends grouping by delivery value rather than strict sequential phases wherever dependencies permit parallel work.
 
-### Phase 1: Puzzle Pool Expansion
+### Phase 1: Menu Redesign + Visual Polish Foundation
 
-**Rationale:** Pure data work with no code dependencies; unblocks all subsequent phases; the pool must exist before the generator can sample from it. Hand-curating is faster to ship and more kid-friendly than algorithmic generation for this audience.
-**Delivers:** 60+ movement puzzles and 30+ capture puzzles tagged by difficulty tier (1/2/3); minimum 10 puzzles per tier per type; each position hand-verified for clarity
-**Addresses:** Table-stakes feature "infinite puzzle stream requires a non-exhaustible pool"
-**Avoids:** Pitfall 3 (repetition) — pool variety must exceed 30 unique positions per piece type before any UI is built on top
+**Rationale:** The menu is the entry point for every new v1.4 feature. Practice mode, mastery map, and new puzzle types have no visible surface until the menu exists. Visual polish (animations, sounds) is self-contained component work with no feature dependencies — shipping it alongside the menu means users see immediate improvement from first phase. This is the Architecture research's recommended "Phase A + F together" grouping.
+**Delivers:** New `ChessMenuScreen` with 3-4 clear navigation tiles; entrance animations on menu and session screens; correct/wrong sound effects via extended `AudioSounds` enum; streak badge bounce animation; star reveal stagger on session complete; `ChessView` assertNever protecting all future view routing.
+**Addresses features:** Redesigned game menu (P1), Sound effects on correct/wrong (P1), Celebration milestones (P1).
+**Avoids pitfalls:** ChessView assertNever added here prevents silent routing failures for all subsequent phases; i18n sync enforced from this first phase.
+**Research flag:** Standard patterns — skip phase research. MUI transitions well-documented; existing codebase patterns clear.
 
-### Phase 2: Core Generator + Progress Hook Extension
+### Phase 2: Practice Mode
 
-**Rationale:** These two components are the foundation — everything else depends on them. They can be built in parallel (generator is a pure function; progress hook has no UI dependencies) but must both be complete before the session hook can be written.
-**Delivers:** `utils/puzzleGenerator.ts` (next-puzzle selection with dedup ring buffer) and extended `useChessProgress` (difficulty bands, migration guard, `recordPuzzleSolved` method)
-**Addresses:** Random puzzle generation (P1 feature), difficulty escalation persistence (P1 feature)
-**Avoids:** Pitfall 2 (schema breakage) — migration must be built and tested here; Pitfall 1 (degenerate positions) — validator integrated into generator before any UI
+**Rationale:** Once the menu exists, practice mode is the highest-value feature with the lowest build risk. It reuses the existing adaptive session engine entirely — the change is one optional parameter on `buildSessionQueue`. The two-step navigation structure (menu → picker → drill) must be designed correctly here to avoid the back-navigation pitfall documented in PITFALLS.md.
+**Delivers:** `PieceSelectorScreen` with 6-piece grid; filtered puzzle drilling per piece using existing adaptive difficulty engine; correct back-navigation from drill to picker (not to main map); practice answers wired to `usePuzzleProgress` for tier advancement; daily puzzle isolation confirmed.
+**Addresses features:** Practice mode with piece picker (P1).
+**Avoids pitfalls:** Parallel state pitfall (define hook contract before any UI is written); back-navigation pitfall (use separate `'practice'` and `'practice-drill'` ChessView values, not nested flags).
+**Research flag:** Standard patterns — no research needed. The `pieceFilter` parameter approach is straightforward.
 
-### Phase 3: Session Hook + Puzzle Component Refactor
+### Phase 3: Check and Checkmate-in-1 Puzzle Data + Renderers
 
-**Rationale:** `usePuzzleSession` requires both the generator and the extended progress hook to exist. Once the hook is built, refactoring `MovementPuzzle` and `CapturePuzzle` is mechanical — only the puzzle source changes; rendering logic is untouched.
-**Delivers:** `hooks/usePuzzleSession.ts` + refactored `MovementPuzzle` / `CapturePuzzle`; infinite puzzle stream operational; consecutive-correct streak counter; Hebrew name on every generated puzzle
-**Addresses:** Infinite puzzle stream (P1), consecutive-correct run counter (P1), Hebrew name on every generated puzzle (P1)
-**Avoids:** Pitfall 6 (progression state in component state) — session hook owns all persistent state; component state is reset-safe on navigation
+**Rationale:** Puzzle data authoring (FEN curation and validation) is the critical path. The FEN format pitfall — full FEN required for chess.js vs. piece-placement FEN used by existing puzzles — is a data authoring concern caught before any components are written. Data and renderers ship together in this phase, but data validation runs first. New puzzle types are not yet included in regular session queues — they are available and testable but not in rotation.
+**Delivers:** `checkPuzzles[]` and `checkmatePuzzles[]` data arrays with full FEN; `CheckPuzzle.tsx` and `CheckmatePuzzle.tsx` renderer components following existing pure-renderer pattern; extended `SessionPuzzle` discriminated union; new dispatch branches in `ChessGameContent`; offline validation script confirming each position with chess.js.
+**Addresses features:** Checkmate-in-1 puzzles (P1); foundation for Check puzzles (P2).
+**Avoids pitfalls:** Full FEN format enforced at authoring time; new puzzle types as separate components (not shoehorned into `MovementPuzzle` with flag props).
+**Research flag:** Needs attention during planning — the 20-30 checkmate-in-1 positions need to be sourced or composed. This is content work requiring chess knowledge. Define the validation workflow before the phase executes.
 
-### Phase 4: Session Complete Screen + Progression UI
+### Phase 4: Wire New Puzzle Types Into Sessions (Feature-Flagged)
 
-**Rationale:** Milestone UX must ship with the generation feature, not as a deferred enhancement. The "infinite treadmill" pitfall is most acute at launch — without visible session milestones, initial retention data will look artificially low and may be misread as product failure.
-**Delivers:** `SessionComplete.tsx` (1-3 star display), puzzle count display, "Getting harder!" tier advancement badge, level-map card updates showing session stars
-**Addresses:** Session milestone display (prevents abandonment pitfall), star progression (ties back to existing Lepdy reward model)
-**Avoids:** Pitfall 4 (infinite treadmill UX) — every session ends with a visible completion moment and stars earned
+**Rationale:** New puzzle types enter regular session queues only after their renderers are stable and validated in isolation (Phase 3). A Firebase Remote Config feature flag (`chessCheckPuzzles`) allows rollout control and quick disable if issues surface post-ship. This separation means Phase 3 can be QA'd before broader session exposure.
+**Delivers:** `usePuzzleSession` extended to include check/checkmate in `buildSessionQueue`; feature flag gating via existing `useFeatureFlagContext()`; Amplitude events for new puzzle type interactions.
+**Addresses features:** Checkmate-in-1 integrated into play sessions; check puzzles as optional addition.
+**Research flag:** Standard patterns — feature flag integration follows an existing well-understood pattern in the codebase.
 
-### Phase 5: Named Mastery Bands + Daily Featured Puzzle (v1.3.x)
+### Phase 5: Progress and Engagement Layer
 
-**Rationale:** These are P2 features — add after core validation confirms that kids engage with the random generation and that the difficulty escalation curve is correctly tuned. Named mastery bands built on a mis-tuned curve will have the wrong band boundaries.
-**Delivers:** "Rook Beginner → Rook Expert" band display, date-seeded daily puzzle entry point
-**Addresses:** Named piece mastery bands (P2), date-seeded daily featured puzzle (P2)
-**Uses:** Existing Firebase Remote Config (feature flag for daily puzzle gate), existing `logEvent()` Amplitude pattern
+**Rationale:** Mastery display builds on the stable menu (Phase 1) and practice mode (Phase 2). By this phase, mastery data has been actively used through real practice sessions. The design constraint documented in PITFALLS.md — show tier as a named state, not a progress counter — prevents metric-gaming behavior identified as a risk for ages 5-7.
+**Delivers:** Piece mastery map on `ChessMenuScreen` (6-piece grid with Beginner/Intermediate/Expert badges); per-piece mastery badges on `PieceSelectorScreen`; enhanced `DailyPuzzleCard` with prominent "uncompleted" call-to-action state.
+**Addresses features:** Piece mastery map (P1), Session summary per-piece breakdown (P2).
+**Avoids pitfalls:** `usePuzzleProgress` lifted to `ChessGameContent` — no multi-instantiation divergence; mastery shown as named state label only, no numeric counter toward next tier.
+**Research flag:** Standard patterns — reads from existing hooks; no new data layer.
 
 ### Phase Ordering Rationale
 
-- Data before code: puzzle pool must exist before generator can be validated against real positions
-- Generator and progress hook before session hook: session hook is a consumer of both; it cannot be built in isolation
-- Session milestones specified before generator ships: pitfall 4 requires milestone hooks to be a first-class contract of the generator output, not a later addition
-- Mastery bands after core validation: band boundaries depend on accurate difficulty calibration data from the shipped generator
+- Menu before everything: Practice mode, mastery map, and new puzzle entry points have no surface until the menu component exists.
+- Visual polish with Phase 1: Animation and sound enhancements are self-contained and non-blocking; shipping early maximizes perceived quality from first release.
+- Puzzle data before renderers: The FEN format pitfall is caught at authoring time; discovering it after renderers are built causes rework.
+- Renderers before session inclusion: Validate new puzzle types in isolation before they enter adaptive sessions where kids encounter them in unpredictable rotation.
+- Engagement layer last: Progress display is most meaningful after practice mode is stable and mastery data has been actively accumulated through real sessions.
 
 ### Research Flags
 
-Phases likely needing deeper research during planning:
-- **Phase 2 (Generator):** Difficulty heuristics for piece placement need validation against actual child behavior; center/edge placement is directionally correct but exact square ranges need empirical tuning. Store thresholds as a Firebase Remote Config object from day one so they can be adjusted without a code deploy.
-- **Phase 4 (Progression UI):** Session star thresholds (3 stars at 8/10 first-try) are informed estimates — actual accuracy distribution for ages 5-9 on movement puzzles is unknown until data exists. Flag these thresholds for post-launch adjustment.
+Phases needing deeper planning attention:
+- **Phase 3 (puzzle data authoring):** The 20-30 checkmate-in-1 positions need to be sourced or composed — this is content work requiring chess knowledge. Define whether to hand-compose positions, use public domain puzzle collections, or generate-and-validate with chess.js. Also define the validation workflow (script vs. manual) before execution begins.
 
 Phases with standard patterns (skip research-phase):
-- **Phase 1 (Pool Expansion):** Pure content work; quality bar is "hand-verified clarity for age 5"; no technical research needed
-- **Phase 3 (Component Refactor):** Architecture is fully specified; the refactor is mechanical — replace puzzle source, leave rendering untouched
-- **Phase 5 (Daily Puzzle):** Client-side date hash seeding is well-understood; no research needed
-
----
+- **Phase 1:** MUI transitions, AudioSounds enum extension, menu layout — all established patterns directly visible in the codebase.
+- **Phase 2:** `pieceFilter` on existing hook — 10-line change with clear extension point already documented in hooks.
+- **Phase 4:** Feature flag integration — existing Remote Config pattern well-understood in codebase.
+- **Phase 5:** Read-only hook consumption for display — follows the exact same pattern as the existing `SessionCompleteScreen` which receives `currentTiersByPiece` as props.
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | chess.js API confirmed stable at v1.4.0; all decisions are "use what exists"; no new dependency evaluation needed |
-| Features | HIGH | Competitor mechanics verified against shipped products (ChessKid, Duolingo, Lichess); anti-features backed by published 2025 design decisions (Duolingo hearts removal) |
-| Architecture | HIGH | Based on direct codebase reading of existing chess game files; build order derived from actual dependency graph between existing and new components |
-| Pitfalls | HIGH | Derived from codebase-specific contracts (existing hook shapes, SSR patterns in Next.js App Router) plus well-established educational game design patterns |
+| Stack | HIGH | Zero new dependencies confirmed; all packages verified against installed versions and existing production usage; chess.js methods runtime-tested |
+| Features | HIGH | Competitor apps analyzed directly (ChessKid, Magnus Trainer, ChessMatec); UX patterns sourced from published research; age-appropriateness constraints well-documented with 2025 references |
+| Architecture | HIGH | Based on direct first-hand codebase reading of all relevant chess game files; extension points explicitly identified with line-level specificity |
+| Pitfalls | HIGH | Derived from direct code analysis, not inference; FEN format pitfall verified against chess.js API; state management pitfalls traced to specific hook contracts in the codebase |
 
 **Overall confidence:** HIGH
 
 ### Gaps to Address
 
-- **Difficulty calibration numbers:** The specific thresholds (advance after 5 consecutive correct, de-escalate after 3 wrong) are reasonable estimates but not empirically validated for this audience. Store in a named config object accessible via Firebase Remote Config; plan to tune post-launch using Amplitude data.
-- **Minimum pool variety per difficulty tier:** The "10+ puzzles per tier" floor is an estimate for "feels infinite without repetition." Validate via the 50-puzzle automated dedup test before ship — the test result should determine whether the pool needs further expansion.
-- **chess.js SSR guard in new utility file:** PITFALLS.md flags that chess.js reads `window` and requires `dynamic` import or client-only guard in Next.js App Router. The existing codebase uses chess.js only in client components; a new `utils/puzzleGenerator.ts` could be imported from a server context. Confirm the guard pattern during Phase 2 implementation.
-
----
+- **Puzzle content sourcing:** The 20-30 checkmate-in-1 and check puzzle positions need to be authored or sourced. This is a content gap, not a code gap. Resolve in Phase 3 planning: decide whether to compose positions by hand, use public domain collections, or generate-and-validate with chess.js offline.
+- **Hebrew instruction text for new puzzle types:** Check and checkmate instruction strings in Hebrew must be authored with care — Hebrew has grammatical gender agreement for chess piece names. Machine-translation is insufficient. Flag for native-speaker review before Phase 3 ships.
+- **Celebration coordinator design:** The coordination pattern to prevent concurrent confetti instances is identified as needed but the specific implementation is not yet designed. Define the singleton/ref approach during Phase 1 planning before any new confetti triggers are added.
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- Direct codebase reading: `app/[locale]/games/chess-game/`, `hooks/useChessProgress.ts`, `data/chessPuzzles.ts`, `utils/chessFen.ts` — existing contracts and state shapes confirmed first-hand
-- chess.js npm v1.4.0 and docs: `moves({ square, verbose: true })` and `put()` API confirmed
-- Lepdy PROJECT.md v1.3 milestone spec and constraints
+- Direct codebase reading — `ChessGameContent.tsx`, `usePuzzleSession.ts`, `usePuzzleProgress.ts`, `MovementPuzzle.tsx`, `CapturePuzzle.tsx`, `data/chessPuzzles.ts`, `hooks/useDailyPuzzle.ts`, `utils/chessFen.ts`, `utils/puzzleGenerator.ts`
+- chess.js official API docs (https://jhlywa.github.io/chess.js/) — `inCheck()`, `isCheckmate()`, `moves()` method signatures confirmed
+- chess.js runtime test — `inCheck()` and `isCheckmate()` tested directly against installed 1.4.0 in `node_modules/chess.js`
+- MUI v7 transitions docs (https://mui.com/material-ui/transitions/) — Fade, Grow, Zoom, Slide, Collapse availability confirmed
+- MUI v7 progress docs (https://mui.com/material-ui/react-progress/) — LinearProgress, CircularProgress confirmed
+- PROJECT.md v1.4 milestone description
 
 ### Secondary (MEDIUM confidence)
-- ChessKid named level progression structure — piece-by-piece learning sequence confirms band model over numeric rating
-- Duolingo energy replaces hearts (May 2025) — confirms punishment-free direction; hearts system deprecated
-- Khan Academy Kids mastery-gated progression — repeat until correct model
-- Puzzle game loyalty index 2025 (Mistplay) — streak mechanics drive engagement (puzzle genre 85/100 loyalty index)
-- Generating Chess Puzzles with Genetic Algorithms (PropelAuth blog) — contrast against rule-based approach; confirms rule-based is appropriate for beginner puzzles
+- ChessKid App Store review — piece-by-piece lesson structure, sound feedback, celebration patterns
+- ChessMatec / ChessWorld App (https://www.chessworld.io/learn-chess-app) — course grid menu, animated check demonstrations
+- Best Chess Teaching Apps 2026 — Wise.live — current category feature benchmarks
+- UX Design for Children — AufaitUX (https://www.aufaitux.com/blog/ui-ux-designing-for-children/) — 60-80px icons, 3-5 choices per screen standards
+- Streaks for Gamification — Plotline (https://www.plotline.so/blog/streaks-for-gamification-in-mobile-apps/) — 40-60% higher DAU combining streaks + milestones
+- Mate in 1 move puzzles for kids — Korpalski Chess — mate-in-1 as foundational kids puzzle type
 
-### Tertiary (LOW confidence — directional only)
-- Predicting Chess Puzzle Difficulty (arxiv.org/html/2410.11078v1) — center/edge heuristic aligns with complexity findings; not a direct source for difficulty threshold values
-- Duolingo gamification research (Young Urban Project) — streak boost figures (60% engagement, 3.6x at 7-day); magnitude may not transfer to this specific audience or app type
+### Tertiary (context only)
+- Designing for Kids: UX Tips — Ungrammary — button sizing, menu depth
+- Top 7 Gamified Learning Apps with Progress Tracking — QuizCat — mastery-gated progression patterns
+- How to Find the Best Move — Chess.com — rationale for deferring "best move" puzzles to adult audience
 
 ---
-*Research completed: 2026-03-22*
+*Research completed: 2026-03-23*
 *Ready for roadmap: yes*
