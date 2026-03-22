@@ -55,7 +55,10 @@ Plans:
   3. The chess game main page back button looks and behaves identically to the back button on other Lepdy game pages
   4. The Next/Back arrows in piece introduction point in the correct direction — left arrow advances in Hebrew (RTL), right arrow advances in English and Russian (LTR)
   5. The chess game uses Lepdy's pastel color palette with rounded cards and soft shadows, and screens transition with a smooth fade or slide instead of an instant swap
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 08-01-PLAN.md — Add X exit buttons to all sub-screens and fix RTL arrow direction
+- [ ] 08-02-PLAN.md — Apply Lepdy pastel styling with soft shadows and fade transitions
 
 ### Phase 9: Puzzle Animations
 **Goal**: Correct puzzle answers show the piece physically moving to the target square before celebrating
@@ -89,6 +92,6 @@ Plans:
 | 5. Level 2 — Movement Puzzles | v1.0 | 2/2 | Complete | 2026-03-22 |
 | 6. Level 3 — Capture Puzzles | v1.0 | 2/2 | Complete | 2026-03-22 |
 | 7. Bug Fixes & Cleanup | v1.1 | 0/1 | Not started | - |
-| 8. Navigation & UI Polish | v1.1 | 0/TBD | Not started | - |
+| 8. Navigation & UI Polish | v1.1 | 0/2 | Not started | - |
 | 9. Puzzle Animations | v1.1 | 0/TBD | Not started | - |
 | 10. Sticker Integration | v1.1 | 0/TBD | Not started | - |
