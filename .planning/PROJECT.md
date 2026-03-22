@@ -46,6 +46,8 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 - ✓ Staunty SVG piece theme from lichess integrated as default — v1.2
 - ✓ Horsey SVG piece theme from lichess as alternative — v1.2
 - ✓ Extensible piece theme architecture (add theme = drop SVGs + one registry entry) — v1.2
+- ✓ Chess game settings drawer with piece theme selector (Classic/Playful thumbnails) — v1.2
+- ✓ Theme selection persists across sessions via localStorage — v1.2
 
 ### Active
 
