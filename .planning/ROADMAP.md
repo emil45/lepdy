@@ -40,7 +40,7 @@
 **Milestone Goal:** Replace the default react-chessboard visuals with Lepdy's playful pastel style — custom board colors and kid-friendly SVG chess pieces with a theme selector
 
 - [x] **Phase 11: Board Theme** - Pastel board square colors and complementary coordinate labels (completed 2026-03-22)
-- [ ] **Phase 12: Custom Piece SVGs** - Two kid-friendly SVG piece themes (staunty + horsey) via an extensible theme architecture
+- [x] **Phase 12: Custom Piece SVGs** - Two kid-friendly SVG piece themes (staunty + horsey) via an extensible theme architecture (completed 2026-03-22)
 - [ ] **Phase 13: Theme Selector** - Settings drawer piece theme selector with localStorage persistence
 
 ## Phase Details
@@ -72,7 +72,7 @@ Plans:
 
 Plans:
 - [x] 12-01: Build extensible piece theme architecture and integrate staunty SVGs
-- [ ] 12-02: Add horsey SVGs as a second registered theme and verify responsive rendering
+- [x] 12-02: Add horsey SVGs as a second registered theme and verify responsive rendering
 
 ### Phase 13: Theme Selector
 **Goal**: Users can choose their preferred piece theme from within the chess game and the choice is remembered
@@ -82,7 +82,7 @@ Plans:
   1. The chess game settings drawer contains a piece theme selector that lists all available themes (staunty, horsey)
   2. Tapping a theme in the selector immediately switches the pieces on the board
   3. After closing and reopening the chess game (or refreshing the browser), the previously selected theme is still active
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
 - [ ] 13-01: Add piece theme selector to chess game settings drawer with localStorage persistence
@@ -102,5 +102,5 @@ Plans:
 | 9. Puzzle Animations | v1.1 | 1/1 | Complete | 2026-03-22 |
 | 10. Sticker Integration | v1.1 | 1/1 | Complete | 2026-03-22 |
 | 11. Board Theme | v1.2 | 1/1 | Complete    | 2026-03-22 |
-| 12. Custom Piece SVGs | v1.2 | 1/2 | In Progress|  |
+| 12. Custom Piece SVGs | v1.2 | 2/2 | Complete    | 2026-03-22 |
 | 13. Theme Selector | v1.2 | 0/1 | Not started | - |
