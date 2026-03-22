@@ -72,7 +72,7 @@
   4. Each pool position can be independently verified as solvable and unambiguous for a child age 5-9
 **Plans**: 2 plans
 Plans:
-- [ ] 14-01-PLAN.md — Validation script + capture-rook-1 bug fix
+- [x] 14-01-PLAN.md — Validation script + capture-rook-1 bug fix
 - [ ] 14-02-PLAN.md — Author 42 movement + 22 capture puzzles
 
 ### Phase 15: Generator + Progress Hook
@@ -152,7 +152,7 @@ Plans:
 | 11. Board Theme | v1.2 | 1/1 | Complete | 2026-03-22 |
 | 12. Custom Piece SVGs | v1.2 | 2/2 | Complete | 2026-03-22 |
 | 13. Theme Selector | v1.2 | 1/1 | Complete | 2026-03-22 |
-| 14. Puzzle Pool Expansion | v1.3 | 0/2 | Not started | - |
+| 14. Puzzle Pool Expansion | v1.3 | 1/2 | In Progress|  |
 | 15. Generator + Progress Hook | v1.3 | 0/? | Not started | - |
 | 16. Session Hook + Puzzle Refactor | v1.3 | 0/? | Not started | - |
 | 17. Session Complete + Progression UI | v1.3 | 0/? | Not started | - |

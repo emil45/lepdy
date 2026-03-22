@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Infinite Replayability
-status: Ready to plan
-stopped_at: null
-last_updated: "2026-03-22T17:30:00.000Z"
+status: Ready to execute
+stopped_at: Completed 14-01-PLAN.md — validation script + capture-rook-1 fix
+last_updated: "2026-03-22T19:20:58.615Z"
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 1
 ---
 
 # Project State
@@ -19,16 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 14 — Puzzle Pool Expansion
+**Current focus:** Phase 14 — puzzle-pool-expansion
 
 ## Current Position
 
-Phase: 14 of 18 (Puzzle Pool Expansion)
-Plan: 0 of ? in current phase
-Status: Ready to plan
-Last activity: 2026-03-22 — v1.3 roadmap created; phases 14-18 defined
-
-Progress: [████████░░░░░░░░░░░░] 40% (milestones v1.0–v1.2 complete; v1.3 starting at phase 14)
+Phase: 14 (puzzle-pool-expansion) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -45,6 +41,7 @@ Progress: [████████░░░░░░░░░░░░] 40% (mi
 | v1.0 Phases 1-6 | 11 plans | ~33 min | ~3 min |
 | v1.1 Phases 7-10 | 5 plans | ~12 min | ~2.4 min |
 | v1.2 Phases 11-13 | 4 plans | ~12 min | ~3 min |
+| Phase 14-puzzle-pool-expansion P01 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -60,6 +57,7 @@ Recent decisions affecting current work:
 - [v1.3 scoping]: ELO/numeric rating excluded — anxiety-inducing for ages 5-9; named mastery bands instead
 - [v1.3 arch]: No new npm dependencies — chess.js `moves()` is the full generation engine
 - [v1.3 arch]: usePuzzleSession hook sources puzzles; MovementPuzzle/CapturePuzzle rendering unchanged
+- [Phase 14-01]: Dummy king placement prefers squares the piece cannot reach; falls back with dummy-square exclusion from comparison to handle all-corners-reachable cases (queen/rook on a1)
 
 ### Pending Todos
 
@@ -74,6 +72,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T17:30:00.000Z
-Stopped at: Roadmap created for v1.3; no plans written yet
+Last session: 2026-03-22T19:20:58.613Z
+Stopped at: Completed 14-01-PLAN.md — validation script + capture-rook-1 fix
 Resume file: None
