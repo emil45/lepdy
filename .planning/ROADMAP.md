@@ -39,7 +39,7 @@
 
 **Milestone Goal:** Replace the default react-chessboard visuals with Lepdy's playful pastel style — custom board colors and kid-friendly SVG chess pieces with a theme selector
 
-- [ ] **Phase 11: Board Theme** - Pastel board square colors and complementary coordinate labels
+- [x] **Phase 11: Board Theme** - Pastel board square colors and complementary coordinate labels (completed 2026-03-22)
 - [ ] **Phase 12: Custom Piece SVGs** - Two kid-friendly SVG piece themes (staunty + horsey) via an extensible theme architecture
 - [ ] **Phase 13: Theme Selector** - Settings drawer piece theme selector with localStorage persistence
 
@@ -56,7 +56,7 @@
 **Plans**: 1 plan
 
 Plans:
-- [ ] 11-01: Apply pastel square colors and coordinate label color to the chess board
+- [x] 11-01: Apply pastel square colors and coordinate label color to the chess board
 
 ### Phase 12: Custom Piece SVGs
 **Goal**: All chess pieces use kid-friendly SVG designs sourced from lichess, delivered through an extensible theme architecture that makes adding future themes trivial
@@ -101,6 +101,6 @@ Plans:
 | 8. Navigation & UI Polish | v1.1 | 2/2 | Complete | 2026-03-22 |
 | 9. Puzzle Animations | v1.1 | 1/1 | Complete | 2026-03-22 |
 | 10. Sticker Integration | v1.1 | 1/1 | Complete | 2026-03-22 |
-| 11. Board Theme | v1.2 | 0/1 | Not started | - |
+| 11. Board Theme | v1.2 | 1/1 | Complete   | 2026-03-22 |
 | 12. Custom Piece SVGs | v1.2 | 0/2 | Not started | - |
 | 13. Theme Selector | v1.2 | 0/1 | Not started | - |
