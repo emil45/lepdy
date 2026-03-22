@@ -12,6 +12,7 @@ import { chessPieces } from '@/data/chessPieces';
 import { movementPuzzles } from '@/data/chessPuzzles';
 import { playRandomCelebration, playSound, AudioSounds } from '@/utils/audio';
 import { moveFenPiece } from '@/utils/chessFen';
+import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
 
 // Build the ordered puzzle list at module level: King, Rook, Bishop, Queen, Knight, Pawn
 // Each group sorted by difficulty (1, 2, 3), 3 puzzles per piece = 18 total
@@ -33,6 +34,7 @@ interface MovementPuzzleProps {
 
 export default function MovementPuzzle({ onComplete, completeLevel }: MovementPuzzleProps) {
   const t = useTranslations('chessGame');
+  const { pieces } = useChessPieceTheme();
 
   const [puzzleIndex, setPuzzleIndex] = useState(0);
   const [wrongTapCount, setWrongTapCount] = useState(0);
@@ -252,6 +254,7 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
               darkSquareStyle: { backgroundColor: '#dbc3e2' },
               darkSquareNotationStyle: { color: 'rgba(67, 66, 67, 0.5)' },
               lightSquareNotationStyle: { color: 'rgba(67, 66, 67, 0.5)' },
+              pieces,
             }}
           />
         </Box>

@@ -1,6 +1,11 @@
 'use client';
 
-import type { PieceRenderObject } from 'react-chessboard/dist/types';
+// PieceRenderObject matches the react-chessboard pieces option type
+type PieceRenderObject = Record<string, (props?: {
+  fill?: string;
+  square?: string;
+  svgStyle?: React.CSSProperties;
+}) => React.JSX.Element>;
 
 export type ThemeName = 'staunty' | 'horsey';
 

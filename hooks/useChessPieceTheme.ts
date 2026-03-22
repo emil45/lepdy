@@ -2,7 +2,13 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { type ThemeName, pieceThemes } from '@/app/[locale]/games/chess-game/pieceThemes';
-import type { PieceRenderObject } from 'react-chessboard/dist/types';
+
+// PieceRenderObject matches the react-chessboard pieces option type
+type PieceRenderObject = Record<string, (props?: {
+  fill?: string;
+  square?: string;
+  svgStyle?: React.CSSProperties;
+}) => React.JSX.Element>;
 
 const STORAGE_KEY = 'lepdy_chess_piece_theme';
 

@@ -14,6 +14,7 @@ import Confetti from 'react-confetti';
 import { chessPieces } from '@/data/chessPieces';
 import { playAudio, playSound, AudioSounds } from '@/utils/audio';
 import { useDirection } from '@/hooks/useDirection';
+import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
 
 interface PieceIntroductionProps {
   onComplete: () => void;
@@ -25,6 +26,7 @@ export default function PieceIntroduction({ onComplete, completeLevel }: PieceIn
   const [isComplete, setIsComplete] = useState(false);
   const t = useTranslations('chessGame');
   const direction = useDirection();
+  const { theme } = useChessPieceTheme();
 
   const currentPiece = chessPieces[currentIndex];
 
@@ -143,15 +145,12 @@ export default function PieceIntroduction({ onComplete, completeLevel }: PieceIn
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
           }}
         >
-          <Typography
-            sx={{
-              fontSize: { xs: 96, sm: 120 },
-              lineHeight: 1,
-              userSelect: 'none',
-            }}
-          >
-            {currentPiece.symbol}
-          </Typography>
+          <img
+            src={`/chess/pieces/${theme}/w${currentPiece.fenChar}.svg`}
+            alt={t(currentPiece.translationKey as Parameters<typeof t>[0])}
+            style={{ width: 96, height: 96, display: 'block' }}
+            draggable={false}
+          />
           <Typography
             variant="h3"
             sx={{ fontWeight: 'bold', mt: 2, textAlign: 'center' }}

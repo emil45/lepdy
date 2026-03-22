@@ -12,6 +12,7 @@ import { chessPieces } from '@/data/chessPieces';
 import { capturePuzzles } from '@/data/chessPuzzles';
 import { playRandomCelebration, playSound, AudioSounds } from '@/utils/audio';
 import { moveFenPiece } from '@/utils/chessFen';
+import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
 
 // Sort puzzles by difficulty ascending
 const ORDERED_PUZZLES = [...capturePuzzles].sort((a, b) => a.difficulty - b.difficulty);
@@ -23,6 +24,7 @@ interface CapturePuzzleProps {
 
 export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzzleProps) {
   const t = useTranslations('chessGame');
+  const { pieces } = useChessPieceTheme();
 
   const [puzzleIndex, setPuzzleIndex] = useState(0);
   const [, setWrongTapCount] = useState(0);
@@ -237,6 +239,7 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
               darkSquareStyle: { backgroundColor: '#dbc3e2' },
               darkSquareNotationStyle: { color: 'rgba(67, 66, 67, 0.5)' },
               lightSquareNotationStyle: { color: 'rgba(67, 66, 67, 0.5)' },
+              pieces,
             }}
           />
         </Box>
