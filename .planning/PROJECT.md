@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A chess learning game for Lepdy, the Hebrew learning web app for kids. The game teaches chess through 3 progressive levels — learning piece names in Hebrew, movement puzzles, and capture challenges. Shipped as part of the Lepdy games collection at lepdy.com. Targets ages 5-9.
+A chess learning game for Lepdy, the Hebrew learning web app for kids. The game teaches chess through progressive levels — learning piece names in Hebrew, then infinite randomly-generated movement and capture puzzles with adaptive difficulty and daily challenges. Shipped as part of the Lepdy games collection at lepdy.com. Targets ages 5-9.
 
 ## Core Value
 
@@ -49,20 +49,26 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 - ✓ Chess game settings drawer with piece theme selector (Classic/Playful thumbnails) — v1.2
 - ✓ Theme selection persists across sessions via localStorage — v1.2
 
+- ✓ 95 validated chess puzzles (61 movement + 34 capture) across 3 difficulty tiers — v1.3
+- ✓ Infinite random puzzle generator with 15-puzzle dedup window — v1.3
+- ✓ Per-piece adaptive difficulty (advance after 5 correct, de-escalate after 3 wrong) — v1.3
+- ✓ Hebrew piece name with audio pronunciation on every generated puzzle — v1.3
+- ✓ 10-puzzle structured sessions with live streak counter — v1.3
+- ✓ Session complete screen with 1-3 stars based on first-try accuracy — v1.3
+- ✓ Named mastery bands per piece (Beginner/Intermediate/Expert) — v1.3
+- ✓ "Getting harder!" tier advancement feedback — v1.3
+- ✓ Daily featured puzzle with deterministic date-seeded selection — v1.3
+- ✓ Firebase Remote Config for difficulty and star thresholds — v1.3
+
 ### Active
 
-## Current Milestone: v1.3 Infinite Replayability
-
-**Goal:** Transform the chess game from a finite 3-level experience into an endlessly replayable learning game that gives kids a reason to come back every time.
-
-**Target features:**
-- Revamped game structure — keep the learning phase, but puzzles become infinite
-- Randomly generated puzzles so every visit feels fresh
-- Escalating difficulty that grows with the kid
-- Progression system that motivates continued play (research needed for best approach)
-- Perfect UX — seamless experience, not a menu of modes
+(No active requirements — next milestone TBD)
 
 ## Shipped Milestones
+
+### v1.3 Infinite Replayability (shipped 2026-03-22)
+Transformed the chess game from a finite 3-level experience into an endlessly replayable learning game with 95 validated puzzles, infinite random generation, adaptive difficulty, 10-puzzle sessions with stars and mastery bands, and a daily featured puzzle.
+
 
 ### v1.2 Board Facelift (shipped 2026-03-22)
 Replaced default react-chessboard visuals with Lepdy's pastel board colors and kid-friendly SVG chess pieces (staunty + horsey themes) with extensible theme architecture and in-game theme selector.
@@ -79,17 +85,20 @@ Chess learning game with 3 progressive levels, Hebrew vocabulary, and kid-friend
 - Leaderboard / competitive scoring — this is about personal progress, not competition
 - Custom piece themes or board skins — delivered in v1.2 (2 themes + extensible architecture)
 - Online multiplayer — not aligned with Lepdy's learning model
-- Advanced tactics (forks, pins, checkmate patterns) — beyond "ready to play" goal
-- Adaptive difficulty — v1 uses fixed puzzle sets per level
+- Advanced tactics (forks, pins, checkmate patterns) — beyond "ready to play" goal for v1; future TACT-01/02/03
+- Lives/hearts/energy system — punishment discourages young learners (Duolingo removed May 2025)
+- Glicko/ELO numeric rating — meaningless to ages 5-9; named mastery bands instead (v1.3)
+- Push notifications — beyond scope of web game; no service worker infrastructure
 
 ## Context
 
 - Lepdy is a live Hebrew learning app at lepdy.com for kids
-- Chess game shipped through v1.2 with pastel board, custom SVG piece themes, and in-game theme selector
+- Chess game shipped through v1.3 with infinite replayable puzzles, adaptive difficulty, daily challenge, and session reward system
 - Existing games: guess-game, memory-match, simon-game, speed-challenge, word-builder, counting-game, letter-rain, **chess-game**
-- 39 E2E tests pass (Playwright)
+- 40+ E2E tests pass (Playwright)
 - Audio files not yet recorded — game works without them (INTRO-03)
 - 48 stickers total across 6 pages (3 chess stickers added in v1.1)
+- 95 chess puzzles validated by chess.js, 6 Firebase Remote Config flags for difficulty/star tuning
 
 ## Constraints
 
@@ -113,6 +122,12 @@ Chess learning game with 3 progressive levels, Hebrew vocabulary, and kid-friend
 | FEN manipulation for puzzle animation | Update board position to trigger react-chessboard's built-in slide animation | ✓ Good — zero dependencies, 200ms animation |
 | chess_level sticker unlock type | Reuses existing sticker detector pattern, no chess-specific sticker logic needed | ✓ Good — clean integration |
 
+| No new npm deps for v1.3 — chess.js moves() is the full generation engine | Avoid dependency bloat; chess.js already installed | ✓ Good — zero new packages |
+| Per-piece tier tracking (not global) | Kids may be good at rooks but bad at knights — granular adaptation | ✓ Good — matches learning reality |
+| Between-session difficulty changes only | Mid-session changes feel jarring for kids; tier locked at session start | ✓ Good — stable play experience |
+| usePuzzleSession as coordination hook, components as pure renderers | Clean separation: hook manages flow, components render puzzles | ✓ Good — testable, reusable |
+| Date-seeded deterministic daily (no server) | Same puzzle for all users without backend; djb2 hash on UTC date string | ✓ Good — zero infrastructure |
+| Lives/hearts excluded | Punishment discourages young learners | ✓ Good — validated by Duolingo's removal |
 | Factory pattern for piece theme registry | One loop generates all 12 piece render functions per theme — adding a theme = 1 line | ✓ Good — PIECE-04 proven by horsey |
 | SVGs from lichess (CC BY-NC-SA 4.0) | Self-hosted, no CDN dependency, kid-friendly designs | ✓ Good — attribution in CREDITS.md |
 | useChessPieceTheme as standalone hook (no context) | Each component reads localStorage independently — works because settings and puzzles are mutually exclusive React subtrees | ✓ Good — simple, correct |
@@ -136,4 +151,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-22 after v1.3 Infinite Replayability milestone started*
+*Last updated: 2026-03-22 after v1.3 Infinite Replayability milestone*

@@ -1,5 +1,24 @@
 # Milestones
 
+## v1.3 Infinite Replayability (Shipped: 2026-03-22)
+
+**Phases completed:** 5 phases, 10 plans, 19 tasks
+
+**Key accomplishments:**
+
+- chess.js-based puzzle validation script that catches ambiguous distractors and validTarget mismatches, plus fixed capture-rook-1 bug (bishop c3 to c2)
+- 95 chess puzzles (61 movement + 34 capture) across 6 piece types and 3 difficulty tiers, all validated by chess.js with 0 errors and 0 warnings
+- Pure puzzle selection with 15-entry dedup window and per-piece adaptive difficulty tier persistence via localStorage and session-frozen tier via useRef
+- Hebrew piece name with audio tap wired into MovementPuzzle (always visible) and CapturePuzzle (post-answer reveal), with recordCorrect/recordWrong updating per-piece difficulty tiers on every answer
+- usePuzzleSession hook with 10-puzzle queue, sessionStorage persistence, and StreakBadge component with bounce animation using functional setState for streak tracking
+- MovementPuzzle and CapturePuzzle refactored to pure renderers, wired into ChessGameContent via usePuzzleSession with StreakBadge, N/10 progress indicator, and session complete screen
+- usePuzzleSession extended with firstTryCount tracking and forwarded tier data, plus 2 Firebase Remote Config star threshold flags and session complete translation keys in all 3 locales
+- Full session reward screen with 1-3 stars from Firebase-tunable thresholds, mastery band chips per piece, tier advancement arrows, and confetti on 3-star result
+- Date-seeded daily puzzle hook (djb2 hash) and warm-orange DailyPuzzleCard with completion tracking via date-keyed localStorage
+- Daily puzzle card wired into chess level map with standalone play/complete flow using useDailyPuzzle and DailyPuzzleCard from Plan 01
+
+---
+
 ## v1.2 Board Facelift (Shipped: 2026-03-22)
 
 **Phases completed:** 3 phases, 4 plans, 8 tasks
