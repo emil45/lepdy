@@ -14,6 +14,10 @@ export interface FeatureFlags {
   showStickersButton: boolean;
   showVoiceIndicator: boolean;
   soundMatchingWrongAnswerDelayMs: number;
+  /** Number of consecutive correct answers required to advance to the next puzzle tier. */
+  chessAdvanceTierThreshold: number;
+  /** Number of consecutive wrong answers required to de-escalate to the previous puzzle tier. */
+  chessDemoTierThreshold: number;
 }
 
 /**
@@ -27,6 +31,8 @@ export const DEFAULT_FLAGS: FeatureFlags = {
   showStickersButton: false,
   showVoiceIndicator: false,
   soundMatchingWrongAnswerDelayMs: 2500,
+  chessAdvanceTierThreshold: 5,
+  chessDemoTierThreshold: 3,
 };
 
 /**
