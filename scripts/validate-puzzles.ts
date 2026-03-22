@@ -8,7 +8,7 @@
  * - Pool counts: warns when puzzle counts fall below target thresholds
  */
 
-import { Chess } from 'chess.js';
+import { Chess, Square } from 'chess.js';
 import { movementPuzzles, capturePuzzles, MovementPuzzle, CapturePuzzle } from '../data/chessPuzzles';
 
 // ============================================================
@@ -127,8 +127,8 @@ function findSafeKingCorner(
     try {
       const tempFen = newRanks.join('/') + ' w - - 0 1';
       const tempChess = new Chess(tempFen);
-      const reachable = tempChess.moves({ verbose: true, square: pieceSquare }).map(m => m.to);
-      if (!reachable.includes(corner)) {
+      const reachable = tempChess.moves({ verbose: true, square: pieceSquare as Square | undefined }).map(m => m.to);
+      if (!reachable.includes(corner as Square)) {
         // This corner is safe — the piece cannot reach it
         return corner;
       }
@@ -200,7 +200,7 @@ function getValidTargets(
   isKingPuzzle: boolean,
 ): { targets: string[]; dummySquares: string[] } {
   const { chess, dummySquares } = buildChessWithDummyKings(pieceOnlyFen, isKingPuzzle, pieceSquare);
-  const moves = chess.moves({ verbose: true, square: pieceSquare });
+  const moves = chess.moves({ verbose: true, square: pieceSquare as Square });
   const targets = [...new Set(moves.map(m => m.to))];
   return { targets, dummySquares };
 }
@@ -296,15 +296,15 @@ function validateCapturePuzzle(puzzle: CapturePuzzle): string[] {
   }
 
   // Verify correct piece can reach target
-  const correctMoves = chess.moves({ verbose: true, square: puzzle.correctPieceSquare }).map(m => m.to);
-  if (!correctMoves.includes(puzzle.targetSquare)) {
+  const correctMoves = chess.moves({ verbose: true, square: puzzle.correctPieceSquare as Square }).map(m => m.to);
+  if (!correctMoves.includes(puzzle.targetSquare as Square)) {
     errors.push(`Correct piece on ${puzzle.correctPieceSquare} CANNOT reach target ${puzzle.targetSquare}`);
   }
 
   // Verify no distractor can reach target
   for (const distractor of puzzle.distractorSquares) {
-    const distractorMoves = chess.moves({ verbose: true, square: distractor }).map(m => m.to);
-    if (distractorMoves.includes(puzzle.targetSquare)) {
+    const distractorMoves = chess.moves({ verbose: true, square: distractor as Square }).map(m => m.to);
+    if (distractorMoves.includes(puzzle.targetSquare as Square)) {
       errors.push(`Distractor on ${distractor} CAN reach target ${puzzle.targetSquare} — ambiguous puzzle`);
     }
   }
