@@ -57,7 +57,7 @@
 - [x] **Phase 15: Generator + Progress Hook** - Build puzzle generator with dedup ring buffer and extend useChessProgress with difficulty bands and migration (completed 2026-03-22)
 - [x] **Phase 16: Session Hook + Puzzle Refactor** - Wire usePuzzleSession into MovementPuzzle and CapturePuzzle, replacing linear puzzle array with infinite random stream (completed 2026-03-22)
 - [x] **Phase 17: Session Complete + Progression UI** - Star-based session complete screen and named mastery band display (completed 2026-03-22)
-- [ ] **Phase 18: Daily Featured Puzzle** - Date-seeded daily puzzle that is the same for all players each day
+- [x] **Phase 18: Daily Featured Puzzle** - Date-seeded daily puzzle that is the same for all players each day (completed 2026-03-22)
 
 ## Phase Details
 
@@ -131,7 +131,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 18-01-PLAN.md — useDailyPuzzle hook, DailyPuzzleCard component, translation keys
-- [ ] 18-02-PLAN.md — Wire daily puzzle into ChessGameContent with daily view and map card
+- [x] 18-02-PLAN.md — Wire daily puzzle into ChessGameContent with daily view and map card
 
 ## Progress
 
@@ -156,4 +156,4 @@ Plans:
 | 15. Generator + Progress Hook | v1.3 | 2/2 | Complete   | 2026-03-22 |
 | 16. Session Hook + Puzzle Refactor | v1.3 | 1/2 | Complete    | 2026-03-22 |
 | 17. Session Complete + Progression UI | v1.3 | 2/2 | Complete    | 2026-03-22 |
-| 18. Daily Featured Puzzle | v1.3 | 1/2 | In Progress|  |
+| 18. Daily Featured Puzzle | v1.3 | 2/2 | Complete   | 2026-03-22 |
