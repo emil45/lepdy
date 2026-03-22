@@ -26,7 +26,7 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 - [x] All 6 chess pieces with Hebrew names, audio pronunciation, and visual display — Validated in Phase 4: Level 1 Piece Introduction
 - [ ] Level-based progression system (learn pieces → movement puzzles → capture puzzles)
 - [x] Level 1: Learn each piece — name, appearance, Hebrew audio — Validated in Phase 4: Level 1 Piece Introduction
-- [ ] Level 2: Movement puzzles — "tap where this piece can move"
+- [x] Level 2: Movement puzzles — "tap where this piece can move" — Validated in Phase 5: Level 2 Movement Puzzles
 - [ ] Level 3: Capture puzzles — "which piece can capture the target?"
 - [ ] Progress tracking — which levels are completed (local, no leaderboard)
 - [ ] Adaptive difficulty for ages 5-9
@@ -88,4 +88,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-22 after Phase 4: Level 1 Piece Introduction complete*
+*Last updated: 2026-03-22 after Phase 5: Level 2 Movement Puzzles complete*
