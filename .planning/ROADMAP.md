@@ -74,7 +74,9 @@ Plans:
   2. Each introduction shows the piece image, Hebrew name text, and a button to play the pronunciation
   3. The game works fully when no audio MP3 files are present — missing audio does not crash or block progress
   4. Completing all 6 piece introductions marks Level 1 as done on the level map
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 04-01-PLAN.md — PieceIntroduction component, ChessGameContent wiring, E2E tests
 
 ### Phase 5: Level 2 — Movement Puzzles
 **Goal**: A child can tap where a piece can move, receive immediate feedback, and get a hint if stuck — for all 6 piece types
@@ -109,6 +111,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Foundation | 0/2 | Planning complete | - |
 | 2. Board Infrastructure | 1/2 | In Progress|  |
 | 3. Game Shell | 2/2 | Complete   | 2026-03-21 |
-| 4. Level 1 — Piece Introduction | 0/? | Not started | - |
+| 4. Level 1 — Piece Introduction | 0/1 | Planning complete | - |
 | 5. Level 2 — Movement Puzzles | 0/? | Not started | - |
 | 6. Level 3 — Capture Puzzles | 0/? | Not started | - |
