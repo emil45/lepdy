@@ -8,10 +8,12 @@ import IconButton from '@mui/material/IconButton';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CloseIcon from '@mui/icons-material/Close';
 import { useTranslations } from 'next-intl';
 import Confetti from 'react-confetti';
 import { chessPieces } from '@/data/chessPieces';
 import { playAudio, playSound, AudioSounds } from '@/utils/audio';
+import { useDirection } from '@/hooks/useDirection';
 
 interface PieceIntroductionProps {
   onComplete: () => void;
@@ -22,6 +24,7 @@ export default function PieceIntroduction({ onComplete, completeLevel }: PieceIn
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const t = useTranslations('chessGame');
+  const direction = useDirection();
 
   const currentPiece = chessPieces[currentIndex];
 
@@ -68,6 +71,13 @@ export default function PieceIntroduction({ onComplete, completeLevel }: PieceIn
     );
   }
 
+  const nextButtonProps = direction === 'rtl'
+    ? { startIcon: <ArrowBackIcon /> }
+    : { endIcon: <ArrowForwardIcon /> };
+  const backButtonProps = direction === 'rtl'
+    ? { endIcon: <ArrowForwardIcon /> }
+    : { startIcon: <ArrowBackIcon /> };
+
   return (
     <Box
       sx={{
@@ -79,6 +89,18 @@ export default function PieceIntroduction({ onComplete, completeLevel }: PieceIn
         minHeight: '100vh',
       }}
     >
+      {/* Exit button row */}
+      <Box sx={{ width: '100%', maxWidth: 400, display: 'flex', justifyContent: 'flex-end' }}>
+        <IconButton
+          onClick={onComplete}
+          aria-label="exit"
+          data-testid="exit-button"
+          sx={{ color: 'text.secondary' }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </Box>
+
       <Box
         sx={{
           width: '100%',
@@ -151,7 +173,7 @@ export default function PieceIntroduction({ onComplete, completeLevel }: PieceIn
             variant="outlined"
             onClick={handleBack}
             disabled={currentIndex === 0}
-            startIcon={<ArrowBackIcon />}
+            {...backButtonProps}
           >
             {t('ui.back')}
           </Button>
@@ -159,7 +181,7 @@ export default function PieceIntroduction({ onComplete, completeLevel }: PieceIn
             variant="contained"
             onClick={handleNext}
             data-testid="next-button"
-            endIcon={<ArrowForwardIcon />}
+            {...nextButtonProps}
           >
             {t('ui.next')}
           </Button>
