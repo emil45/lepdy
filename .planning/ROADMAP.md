@@ -116,8 +116,8 @@ Plans:
   4. User can start a new session immediately from the session complete screen
 **Plans**: 2 plans
 Plans:
-- [ ] 17-01-PLAN.md — [to be planned]
-- [ ] 17-02-PLAN.md — [to be planned]
+- [ ] 17-01-PLAN.md — Hook extension (firstTryCount, tier forwarding) + Firebase flags + translation keys
+- [ ] 17-02-PLAN.md — SessionCompleteScreen component with stars, mastery chips, tier advancement, confetti
 
 ### Phase 18: Daily Featured Puzzle
 **Goal**: Kids have a reason to return to the game every day because there is always a new featured puzzle waiting for them
@@ -155,5 +155,5 @@ Plans:
 | 14. Puzzle Pool Expansion | v1.3 | 2/2 | Complete    | 2026-03-22 |
 | 15. Generator + Progress Hook | v1.3 | 2/2 | Complete   | 2026-03-22 |
 | 16. Session Hook + Puzzle Refactor | v1.3 | 1/2 | Complete    | 2026-03-22 |
-| 17. Session Complete + Progression UI | v1.3 | 0/? | Not started | - |
+| 17. Session Complete + Progression UI | v1.3 | 0/2 | Not started | - |
 | 18. Daily Featured Puzzle | v1.3 | 0/? | Not started | - |
