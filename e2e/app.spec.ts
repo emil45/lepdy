@@ -165,6 +165,57 @@ test.describe('Chess movement puzzles', () => {
   });
 });
 
+test.describe('Chess capture puzzles', () => {
+  test('Level 3 board renders with puzzle progress', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('lepdy_chess_progress', JSON.stringify({
+        completedLevels: [1, 2],
+        currentLevel: 3
+      }));
+    });
+    await page.goto('/games/chess-game');
+    // Click Level 3 card (third level card)
+    await page.locator('[data-testid="level-card"]').nth(2).click();
+    // Verify puzzle progress counter appears
+    await expect(page.locator('[data-testid="puzzle-progress"]')).toBeVisible();
+    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 8');
+  });
+
+  test('Wrong tap on distractor shows try again feedback', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('lepdy_chess_progress', JSON.stringify({
+        completedLevels: [1, 2],
+        currentLevel: 3
+      }));
+    });
+    await page.goto('/games/chess-game');
+    await page.locator('[data-testid="level-card"]').nth(2).click();
+    await expect(page.locator('[data-testid="puzzle-progress"]')).toBeVisible();
+    // First capture puzzle: capture-rook-1, distractor at c3
+    await page.locator('[data-square="c3"]').click();
+    // Verify try again text appears
+    await expect(page.locator('[data-testid="try-again-text"]')).toBeVisible();
+  });
+
+  test('Hint appears after 2 wrong taps', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('lepdy_chess_progress', JSON.stringify({
+        completedLevels: [1, 2],
+        currentLevel: 3
+      }));
+    });
+    await page.goto('/games/chess-game');
+    await page.locator('[data-testid="level-card"]').nth(2).click();
+    await expect(page.locator('[data-testid="puzzle-progress"]')).toBeVisible();
+    // Click distractor c3 twice (first capture puzzle has distractor at c3)
+    await page.locator('[data-square="c3"]').click();
+    await page.waitForTimeout(700); // wait for flash to clear
+    await page.locator('[data-square="c3"]').click();
+    // After 2 wrong taps, puzzle hasn't advanced — still shows 1/8
+    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 8');
+  });
+});
+
 test.describe('Info pages load', () => {
   const pages = ['learn', 'about', 'safety', 'contact'];
   for (const p of pages) {
