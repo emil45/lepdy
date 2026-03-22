@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A chess learning game for Lepdy, the Hebrew learning web app for kids. The game teaches chess through progressive levels — learning piece names in Hebrew, then infinite randomly-generated movement and capture puzzles with adaptive difficulty and daily challenges. Shipped as part of the Lepdy games collection at lepdy.com. Targets ages 5-9.
+A chess learning game for Lepdy, the Hebrew learning web app for kids. The game teaches chess through progressive puzzles — learning piece names in Hebrew, then practicing with per-piece drills, mixed challenge sessions, and advanced puzzle types (check, checkmate-in-1). Designed to feel like a polished kids game app, not a prototype. Shipped as part of the Lepdy games collection at lepdy.com. Targets ages 5-9.
 
 ## Core Value
 
@@ -62,7 +62,22 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 
 ### Active
 
-(No active requirements — next milestone TBD)
+- [ ] Redesigned game menu replacing broken 1/2/3/daily structure with intuitive layout
+- [ ] Practice mode — pick a specific piece and drill puzzles for it
+- [ ] New puzzle types — check puzzles, checkmate-in-1, find the best move
+- [ ] Visual polish — animations, sound effects, celebrations, micro-rewards
+- [ ] Progress & engagement — visible mastery tracking that makes kids want to come back
+
+## Current Milestone: v1.4 Complete Puzzle Experience
+
+**Goal:** Transform the chess game from a working prototype into a polished, engaging kids puzzle app that a child wants to revisit daily and a parent would proudly recommend.
+
+**Target features:**
+- Redesigned game menu with clear, intuitive structure
+- Practice mode for per-piece drilling
+- New puzzle types (check, checkmate-in-1, find the best move)
+- Visual polish (animations, sounds, celebrations)
+- Progress & engagement (visible mastery, rewarding feedback)
 
 ## Shipped Milestones
 
@@ -81,9 +96,10 @@ Chess learning game with 3 progressive levels, Hebrew vocabulary, and kid-friend
 
 ### Out of Scope
 
-- Full chess game (AI opponent or multiplayer) — too complex for v1, goal is learning fundamentals
+- Full chess game (AI opponent or multiplayer) — Lepdy is a puzzle-based learning app; kids go to lichess/chess.com for real games
 - Leaderboard / competitive scoring — this is about personal progress, not competition
 - Custom piece themes or board skins — delivered in v1.2 (2 themes + extensible architecture)
+- AI opponent / play mode — Lepdy teaches chess fundamentals through puzzles; real gameplay deferred to chess platforms
 - Online multiplayer — not aligned with Lepdy's learning model
 - Advanced tactics (forks, pins, checkmate patterns) — beyond "ready to play" goal for v1; future TACT-01/02/03
 - Lives/hearts/energy system — punishment discourages young learners (Duolingo removed May 2025)
@@ -151,4 +167,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-22 after v1.3 Infinite Replayability milestone*
+*Last updated: 2026-03-23 after v1.4 Complete Puzzle Experience milestone start*
