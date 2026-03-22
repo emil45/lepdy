@@ -10,9 +10,11 @@ import { useTranslations } from 'next-intl';
 import Confetti from 'react-confetti';
 import { chessPieces } from '@/data/chessPieces';
 import { movementPuzzles } from '@/data/chessPuzzles';
-import { playRandomCelebration, playSound, AudioSounds } from '@/utils/audio';
+import { playAudio, playRandomCelebration, playSound, AudioSounds } from '@/utils/audio';
 import { moveFenPiece } from '@/utils/chessFen';
 import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import { usePuzzleProgress } from '@/hooks/usePuzzleProgress';
 
 // Build the ordered puzzle list at module level: King, Rook, Bishop, Queen, Knight, Pawn
 // Each group sorted by difficulty (1, 2, 3), 3 puzzles per piece = 18 total
@@ -35,6 +37,7 @@ interface MovementPuzzleProps {
 export default function MovementPuzzle({ onComplete, completeLevel }: MovementPuzzleProps) {
   const t = useTranslations('chessGame');
   const { pieces } = useChessPieceTheme();
+  const { recordCorrect, recordWrong } = usePuzzleProgress();
 
   const [puzzleIndex, setPuzzleIndex] = useState(0);
   const [wrongTapCount, setWrongTapCount] = useState(0);
@@ -89,6 +92,7 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
 
       if (puzzle.validTargets.includes(square)) {
         // Correct tap
+        recordCorrect(puzzle.pieceId);
         setIsAdvancing(true);
         const newFen = moveFenPiece(puzzle.fen, puzzle.pieceSquare, square);
         setDisplayFen(newFen);
@@ -111,6 +115,7 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
         }, 1500);
       } else {
         // Wrong tap — no sound per FEED-02
+        recordWrong(puzzle.pieceId);
         setFlashSquare(square);
         setFlashType('wrong');
         setShowTryAgain(true);
@@ -130,7 +135,7 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
         }, 1200);
       }
     },
-    [isAdvancing, isComplete, puzzle, puzzleIndex, completeLevel, onComplete, resetFeedbackState]
+    [isAdvancing, isComplete, puzzle, puzzleIndex, completeLevel, onComplete, resetFeedbackState, recordCorrect, recordWrong]
   );
 
   const squareStyles = useMemo(() => {
@@ -235,9 +240,27 @@ export default function MovementPuzzle({ onComplete, completeLevel }: MovementPu
         maxWidth: 480,
       }}>
         {/* Instruction text */}
-        <Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 2, px: 1 }}>
+        <Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 1, px: 1 }}>
           {t('ui.tapToMove', { piece: t(pieceConfig.translationKey as Parameters<typeof t>[0]) })}
         </Typography>
+
+        {/* Hebrew piece name with audio tap */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: 'center', mb: 1 }}>
+          <Typography
+            variant="h5"
+            sx={{ fontWeight: 'bold', cursor: 'pointer' }}
+            onClick={() => playAudio(`chess/he/${pieceConfig.audioFile}`)}
+          >
+            {t(pieceConfig.translationKey as Parameters<typeof t>[0])}
+          </Typography>
+          <IconButton
+            onClick={() => playAudio(`chess/he/${pieceConfig.audioFile}`)}
+            aria-label="play audio"
+            data-testid="piece-name-audio-button"
+          >
+            <VolumeUpIcon />
+          </IconButton>
+        </Box>
 
         {/* Board — always LTR regardless of locale */}
         <Box ref={containerRef} sx={{ direction: 'ltr', width: '100%', maxWidth: 480, margin: '0 auto' }}>
