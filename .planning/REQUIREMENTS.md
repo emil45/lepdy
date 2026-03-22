@@ -32,10 +32,10 @@
 
 ### Capture Puzzles (Level 3)
 
-- [ ] **CAPT-01**: User sees multiple pieces on board and identifies which piece can capture a target
-- [ ] **CAPT-02**: Correct captures are celebrated with animation and sound
-- [ ] **CAPT-03**: Wrong selections get gentle feedback with hint after 2 attempts
-- [ ] **CAPT-04**: Capture puzzles use curated FEN positions (static JSON, not generated)
+- [x] **CAPT-01**: User sees multiple pieces on board and identifies which piece can capture a target
+- [x] **CAPT-02**: Correct captures are celebrated with animation and sound
+- [x] **CAPT-03**: Wrong selections get gentle feedback with hint after 2 attempts
+- [x] **CAPT-04**: Capture puzzles use curated FEN positions (static JSON, not generated)
 
 ### Progression System
 
@@ -106,10 +106,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MOVE-04 | Phase 5 | Complete |
 | MOVE-05 | Phase 5 | Complete |
 | MOVE-06 | Phase 5 | Complete |
-| CAPT-01 | Phase 6 | Pending |
-| CAPT-02 | Phase 6 | Pending |
-| CAPT-03 | Phase 6 | Pending |
-| CAPT-04 | Phase 6 | Pending |
+| CAPT-01 | Phase 6 | Complete |
+| CAPT-02 | Phase 6 | Complete |
+| CAPT-03 | Phase 6 | Complete |
+| CAPT-04 | Phase 6 | Complete |
 | PROG-01 | Phase 3 | Complete |
 | PROG-02 | Phase 3 | Complete |
 | PROG-03 | Phase 3 | Complete |
