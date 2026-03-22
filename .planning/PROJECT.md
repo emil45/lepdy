@@ -43,6 +43,9 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 
 - ✓ Pastel board square colors (beigePastel/purplePastel) replacing default brown/beige — v1.2
 - ✓ Coordinate labels styled with blackPastel at 50% opacity — v1.2
+- ✓ Staunty SVG piece theme from lichess integrated as default — v1.2
+- ✓ Horsey SVG piece theme from lichess as alternative — v1.2
+- ✓ Extensible piece theme architecture (add theme = drop SVGs + one registry entry) — v1.2
 
 ### Active
 
