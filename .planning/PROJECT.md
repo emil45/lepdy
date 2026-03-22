@@ -41,6 +41,9 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 - ✓ Piece slide animation on correct puzzle answers (movement + capture) — v1.1
 - ✓ 3 chess stickers (one per level) integrated into Lepdy sticker collection — v1.1
 
+- ✓ Pastel board square colors (beigePastel/purplePastel) replacing default brown/beige — v1.2
+- ✓ Coordinate labels styled with blackPastel at 50% opacity — v1.2
+
 ### Active
 
 (Defined in REQUIREMENTS.md for v1.2)
