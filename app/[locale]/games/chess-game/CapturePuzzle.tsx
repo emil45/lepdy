@@ -3,6 +3,8 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import { Chessboard } from 'react-chessboard';
 import { useTranslations } from 'next-intl';
 import Confetti from 'react-confetti';
@@ -176,6 +178,18 @@ export default function CapturePuzzle({ onComplete, completeLevel }: CapturePuzz
         minHeight: '100vh',
       }}
     >
+      {/* Exit button row */}
+      <Box sx={{ width: '100%', maxWidth: 480, display: 'flex', justifyContent: 'flex-end' }}>
+        <IconButton
+          onClick={onComplete}
+          aria-label="exit"
+          data-testid="exit-button"
+          sx={{ color: 'text.secondary' }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </Box>
+
       {/* Overall progress: "1 / 8" */}
       <Typography
         data-testid="puzzle-progress"
