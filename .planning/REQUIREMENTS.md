@@ -13,8 +13,8 @@
 
 ### Puzzle Feedback
 
-- [ ] **PFEED-01**: Correct puzzle answer in movement puzzles animates the piece moving to the target square before showing celebration
-- [ ] **PFEED-02**: Correct answer in capture puzzles shows the capturing piece moving to the target
+- [x] **PFEED-01**: Correct puzzle answer in movement puzzles animates the piece moving to the target square before showing celebration
+- [x] **PFEED-02**: Correct answer in capture puzzles shows the capturing piece moving to the target
 
 ### Navigation
 
@@ -60,8 +60,8 @@
 | UI-01 | Phase 8 | Complete |
 | UI-02 | Phase 8 | Complete |
 | UI-03 | Phase 8 | Complete |
-| PFEED-01 | Phase 9 | Pending |
-| PFEED-02 | Phase 9 | Pending |
+| PFEED-01 | Phase 9 | Complete |
+| PFEED-02 | Phase 9 | Complete |
 | STICK-01 | Phase 10 | Pending |
 
 **Coverage:**
