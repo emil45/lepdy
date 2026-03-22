@@ -16,10 +16,10 @@
 
 ### Piece Introduction (Level 1)
 
-- [ ] **INTRO-01**: Each of the 6 chess pieces is introduced individually (one at a time)
-- [ ] **INTRO-02**: Piece introduction shows Hebrew name, piece image, and plays audio pronunciation (when audio file exists)
-- [ ] **INTRO-03**: Audio is optional — game works fully without audio files; MP3 paths are placeholder references for later recording
-- [ ] **INTRO-04**: Pieces are introduced in progressive order: King → Rook → Bishop → Queen → Knight → Pawn
+- [x] **INTRO-01**: Each of the 6 chess pieces is introduced individually (one at a time)
+- [x] **INTRO-02**: Piece introduction shows Hebrew name, piece image, and plays audio pronunciation (when audio file exists)
+- [x] **INTRO-03**: Audio is optional — game works fully without audio files; MP3 paths are placeholder references for later recording
+- [x] **INTRO-04**: Pieces are introduced in progressive order: King → Rook → Bishop → Queen → Knight → Pawn
 
 ### Movement Puzzles (Level 2)
 
@@ -96,10 +96,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BOARD-04 | Phase 2 | Complete |
 | BOARD-05 | Phase 2 | Complete |
 | BOARD-06 | Phase 2 | Complete |
-| INTRO-01 | Phase 4 | Pending |
-| INTRO-02 | Phase 4 | Pending |
-| INTRO-03 | Phase 4 | Pending |
-| INTRO-04 | Phase 4 | Pending |
+| INTRO-01 | Phase 4 | Complete |
+| INTRO-02 | Phase 4 | Complete |
+| INTRO-03 | Phase 4 | Complete |
+| INTRO-04 | Phase 4 | Complete |
 | MOVE-01 | Phase 5 | Pending |
 | MOVE-02 | Phase 5 | Pending |
 | MOVE-03 | Phase 5 | Pending |
