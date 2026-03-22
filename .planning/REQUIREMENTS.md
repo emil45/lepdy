@@ -28,7 +28,7 @@
 
 ### Stickers
 
-- [ ] **STICK-01**: Completing each chess level earns a sticker (3 total — one per level), using Lepdy's existing sticker system
+- [x] **STICK-01**: Completing each chess level earns a sticker (3 total — one per level), using Lepdy's existing sticker system
 
 ## v2 Requirements
 
@@ -62,7 +62,7 @@
 | UI-03 | Phase 8 | Complete |
 | PFEED-01 | Phase 9 | Complete |
 | PFEED-02 | Phase 9 | Complete |
-| STICK-01 | Phase 10 | Pending |
+| STICK-01 | Phase 10 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 10 total
