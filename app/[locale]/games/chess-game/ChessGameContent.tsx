@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
+import Button from '@mui/material/Button';
 import Fade from '@mui/material/Fade';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useTranslations } from 'next-intl';
@@ -16,13 +17,15 @@ import BackButton from '@/components/BackButton';
 import RoundFunButton from '@/components/RoundFunButton';
 import { useChessProgress } from '@/hooks/useChessProgress';
 import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
+import { usePuzzleSession } from '@/hooks/usePuzzleSession';
 import ChessSettingsDrawer from './ChessSettingsDrawer';
 import PieceIntroduction from './PieceIntroduction';
+import StreakBadge from './StreakBadge';
 
 const MovementPuzzle = dynamic(() => import('./MovementPuzzle'), { ssr: false });
 const CapturePuzzle = dynamic(() => import('./CapturePuzzle'), { ssr: false });
 
-type ChessView = 'map' | 'level-1' | 'level-2' | 'level-3';
+type ChessView = 'map' | 'level-1' | 'session';
 
 const LEVELS = [
   { num: 1, nameKey: 'levels.pieceIntro' as const, emoji: '\u2654', color: '#9ed6ea' },
@@ -91,6 +94,15 @@ export default function ChessGameContent() {
   const t = useTranslations('chessGame');
   const { isLevelUnlocked, isLevelCompleted, completeLevel } = useChessProgress();
   const { theme, selectTheme } = useChessPieceTheme();
+  const { currentPuzzle, sessionIndex, consecutiveCorrect, isSessionComplete, onAnswer, startNewSession } = usePuzzleSession();
+
+  // Call completeLevel for both puzzle levels when session completes
+  useEffect(() => {
+    if (isSessionComplete) {
+      completeLevel(2);
+      completeLevel(3);
+    }
+  }, [isSessionComplete, completeLevel]);
 
   if (currentView === 'level-1') {
     return (
@@ -102,21 +114,73 @@ export default function ChessGameContent() {
     );
   }
 
-  if (currentView === 'level-2') {
-    return (
-      <Fade in={true} timeout={300}>
-        <div>
-          <MovementPuzzle onComplete={() => setCurrentView('map')} completeLevel={completeLevel} />
-        </div>
-      </Fade>
-    );
-  }
+  if (currentView === 'session') {
+    // Session complete screen
+    if (isSessionComplete) {
+      return (
+        <Fade in={true} timeout={300}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', gap: 2 }}>
+            <Typography variant="h4" sx={{ fontWeight: 'bold', textAlign: 'center', px: 2 }}>
+              {t('ui.sessionComplete')}
+            </Typography>
+            <Typography variant="h6" sx={{ color: 'text.secondary' }}>
+              {t('ui.puzzleProgress', { current: 10, total: 10 })}
+            </Typography>
+            <Button variant="contained" onClick={() => { startNewSession(); }}>
+              {t('ui.newSession')}
+            </Button>
+            <Button variant="outlined" onClick={() => { startNewSession(); setCurrentView('map'); }}>
+              {t('ui.back')}
+            </Button>
+          </Box>
+        </Fade>
+      );
+    }
 
-  if (currentView === 'level-3') {
+    // Loading state while session initializes
+    if (!currentPuzzle) return null;
+
+    const progressText = t('ui.puzzleProgress', { current: sessionIndex + 1, total: 10 });
+
+    if (currentPuzzle.type === 'movement') {
+      return (
+        <Fade in={true} timeout={300}>
+          <div>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1, mt: 1 }}>
+              <StreakBadge count={consecutiveCorrect} />
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 0.5 }}>
+              <Typography variant="body2" color="text.secondary">
+                {progressText}
+              </Typography>
+            </Box>
+            <MovementPuzzle
+              puzzle={currentPuzzle.puzzle}
+              onAnswer={onAnswer}
+              onExit={() => setCurrentView('map')}
+            />
+          </div>
+        </Fade>
+      );
+    }
+
+    // Capture puzzle
     return (
       <Fade in={true} timeout={300}>
         <div>
-          <CapturePuzzle onComplete={() => setCurrentView('map')} completeLevel={completeLevel} />
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1, mt: 1 }}>
+            <StreakBadge count={consecutiveCorrect} />
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 0.5 }}>
+            <Typography variant="body2" color="text.secondary">
+              {progressText}
+            </Typography>
+          </Box>
+          <CapturePuzzle
+            puzzle={currentPuzzle.puzzle}
+            onAnswer={onAnswer}
+            onExit={() => setCurrentView('map')}
+          />
         </div>
       </Fade>
     );
@@ -144,7 +208,14 @@ export default function ChessGameContent() {
               bgColor={level.color}
               isUnlocked={isLevelUnlocked(level.num)}
               isCompleted={isLevelCompleted(level.num)}
-              onSelect={() => setCurrentView(`level-${level.num}` as ChessView)}
+              onSelect={() => {
+                if (level.num === 1) {
+                  setCurrentView('level-1');
+                } else {
+                  // Level 2 and 3 both start a puzzle session
+                  setCurrentView('session');
+                }
+              }}
             />
           ))}
         </Box>
