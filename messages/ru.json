@@ -148,7 +148,8 @@
       "levelComplete": "Уровень пройден!",
       "tapToHear": "Нажми, чтобы послушать",
       "findSquare": "Найди правильную клетку",
-      "whichCaptures": "Какая фигура может взять?"
+      "whichCaptures": "Какая фигура может взять?",
+      "tapToMove": "Куда может пойти {piece}? Нажми!"
     }
   },
   "soundMatching": {

@@ -148,7 +148,8 @@
       "levelComplete": "השלב הושלם!",
       "tapToHear": "לחצו לשמוע",
       "findSquare": "מצאו את המשבצת הנכונה",
-      "whichCaptures": "מי יכול לתפוס?"
+      "whichCaptures": "מי יכול לתפוס?",
+      "tapToMove": "לאן {piece} יכול ללכת? לחץ!"
     }
   },
   "soundMatching": {

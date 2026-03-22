@@ -148,7 +148,8 @@
       "levelComplete": "Level Complete!",
       "tapToHear": "Tap to hear",
       "findSquare": "Find the right square",
-      "whichCaptures": "Which piece can capture?"
+      "whichCaptures": "Which piece can capture?",
+      "tapToMove": "Where can the {piece} move? Tap!"
     }
   },
   "soundMatching": {
