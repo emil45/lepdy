@@ -1,366 +1,507 @@
-# Architecture Patterns
+# Architecture Research
 
-**Domain:** Chess learning game for kids (ages 5-9)
-**Researched:** 2026-03-21
-**Context:** Adding a chess learning game to an existing Next.js Hebrew learning app (Lepdy)
+**Domain:** Infinite replayability, random puzzle generation, escalating difficulty, and progression systems for an existing kids chess learning game
+**Researched:** 2026-03-22
+**Confidence:** HIGH — based on direct codebase reading, not assumptions
 
 ---
 
-## Recommended Architecture
+## Existing Architecture (as-shipped, v1.2)
 
-The chess game follows Lepdy's established server/client split pattern and uses two external libraries for chess concerns:
+Understanding what exists is prerequisite to knowing what changes.
 
-- **chess.js** (v1.4.0) — pure game logic: legal move generation, FEN parsing, move validation, board state. No rendering.
-- **react-chessboard** (v5.x) — React board renderer: drag/drop, click-to-move, square highlighting, custom piece rendering. No logic.
-
-These are combined in a custom `useChessGame` hook that bridges them, exactly paralleling how `useLetterTracing` bridges canvas drawing state in the existing letter-tracing game.
-
-### Component Boundaries
+### Current System Overview
 
 ```
-app/[locale]/games/chess/
-├── page.tsx                        (Server: locale, metadata, renders ChessContent)
-├── ChessContent.tsx                (Client: top-level state machine, level routing)
-├── components/
-│   ├── ChessBoard.tsx              (Pure display: wraps react-chessboard, accepts props)
-│   ├── PieceIntroCard.tsx          (Level 1: single piece display with Hebrew name + audio)
-│   ├── MovementPuzzle.tsx          (Level 2: "tap where this piece can move")
-│   ├── CapturePuzzle.tsx           (Level 3: "which piece can capture the target?")
-│   ├── LevelMap.tsx                (Progress overview: which levels are unlocked/done)
-│   └── ChessPieceLabel.tsx         (Hebrew name + transliteration display)
-├── hooks/
-│   ├── useChessGame.ts             (Bridge: chess.js state + board interaction logic)
-│   ├── useChessProgress.ts         (Wraps useCategoryProgress for chess level progress)
-│   └── useChessAudio.ts            (Piece name audio playback for Hebrew pronunciation)
-└── data/
-    ├── chessPieces.ts              (6 pieces: id, translationKey, audioFile, FEN symbol)
-    └── puzzles.ts                  (Puzzle definitions: FEN + correct answer squares)
+app/[locale]/games/chess-game/
+├── page.tsx                    (Server: locale, metadata)
+├── ChessGameContent.tsx        (Client: state machine — 'map' | 'level-1' | 'level-2' | 'level-3')
+├── PieceIntroduction.tsx       (Level 1: swipe through 6 pieces with Hebrew names + audio)
+├── MovementPuzzle.tsx          (Level 2: 18 fixed puzzles from chessPuzzles.ts)
+├── CapturePuzzle.tsx           (Level 3: 8 fixed puzzles from chessPuzzles.ts)
+├── ChessSettingsDrawer.tsx     (Piece theme selection)
+└── pieceThemes.tsx             (Factory: staunty/horsey SVG render objects)
+
+hooks/
+├── useChessProgress.ts         (localStorage: completedLevels[], currentLevel)
+└── useChessPieceTheme.ts       (localStorage: 'staunty' | 'horsey')
+
+data/
+├── chessPieces.ts              (6 piece configs: id, translationKey, audioFile, fenChar, order)
+└── chessPuzzles.ts             (movementPuzzles[18] + capturePuzzles[8], hand-curated FEN arrays)
+
+utils/
+└── chessFen.ts                 (moveFenPiece: FEN piece-placement string manipulation)
+```
+
+### Current State Machine (ChessGameContent)
+
+```
+ChessView = 'map' | 'level-1' | 'level-2' | 'level-3'
+
+'map'     → LevelMapCard × 3 (locked/unlocked/completed)
+'level-1' → <PieceIntroduction onComplete={() => setView('map')} completeLevel />
+'level-2' → <MovementPuzzle onComplete={() => setView('map')} completeLevel />
+'level-3' → <CapturePuzzle onComplete={() => setView('map')} completeLevel />
+```
+
+### Current Puzzle Consumption Pattern
+
+Both MovementPuzzle and CapturePuzzle share the same internal pattern:
+
+```typescript
+// Module-level constant — puzzles ordered at import time
+const ORDERED_PUZZLES = [...source].sort(...)
+
+// Component-local state
+const [puzzleIndex, setPuzzleIndex] = useState(0);
+const puzzle = ORDERED_PUZZLES[puzzleIndex];
+
+// Advance: puzzleIndex++ until puzzleIndex === ORDERED_PUZZLES.length - 1
+// Then: completeLevel(N) → onComplete()
+```
+
+The critical constraint: puzzles are a **finite ordered array consumed linearly**. When the array ends, the level ends. This is the primary architectural constraint v1.3 must change.
+
+### Current Progress Schema (localStorage)
+
+```typescript
+interface ChessProgressData {
+  completedLevels: number[];  // [1], [1,2], [1,2,3]
+  currentLevel: number;       // max unlocked level
+}
+// key: 'lepdy_chess_progress'
+```
+
+This is minimal — no puzzle attempt counts, no per-session data, no difficulty tracking.
+
+---
+
+## v1.3 Target: What Needs to Change
+
+### What "Infinite Replayability" Requires
+
+1. **Puzzle generation**: Instead of consuming a finite array, generate puzzles on demand — either fully algorithmically or by sampling from a much larger set with smart selection.
+2. **Escalating difficulty**: Track how well the child is doing and adjust puzzle difficulty dynamically.
+3. **Progression system**: Give kids a reason to return — streaks, stars earned per session, piece mastery badges, or a cumulative score.
+4. **Seamless UX**: The child should never hit a "you're done" wall mid-session. Puzzles keep coming.
+
+### What Must NOT Change
+
+- `page.tsx` / `ChessGameContent.tsx` routing pattern — stable, don't touch the shell
+- `useChessPieceTheme` — no changes needed
+- `ChessSettingsDrawer` — no changes needed
+- `PieceIntroduction` (Level 1) — learning phase stays as-is; infinite replayability applies to puzzle levels only
+- `chessPieces.ts` — piece data is correct and stable
+- `chessFen.ts` — FEN utilities are correct and tested
+- Existing localStorage key `lepdy_chess_progress` — must migrate, not replace (existing players have data)
+
+---
+
+## Recommended Architecture for v1.3
+
+### System Overview
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                    ChessGameContent.tsx                          │
+│   State machine: 'map' | 'level-1' | 'level-2' | 'level-3'     │
+│   (unchanged shell — new views slot in without changes here)     │
+├──────────────────────────────────────────────────────────────────┤
+│    Level 2: MovementPuzzle    │    Level 3: CapturePuzzle        │
+│    (refactored internals)     │    (refactored internals)        │
+│         ↓                    │         ↓                        │
+│    usePuzzleSession           │    usePuzzleSession              │
+│    (shared session hook)      │    (shared session hook)         │
+├──────────────────────────────────────────────────────────────────┤
+│    PuzzleGenerator            │    DifficultyTracker             │
+│    (generate next puzzle)     │    (compute next difficulty)     │
+│         ↓                    │         ↓                        │
+│    chessPuzzles.ts            │    useChessProgress (extended)   │
+│    (curated set, expanded)    │    (add difficulty + session data)│
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ### Component Responsibilities
 
-| Component | Responsibility | Communicates With |
-|-----------|---------------|-------------------|
-| `page.tsx` | Server: locale validation, metadata, renders ChessContent | Next.js routing, next-intl |
-| `ChessContent.tsx` | State machine: which level/phase is active, navigation between levels | All child components, useChessProgress |
-| `ChessBoard.tsx` | Renders react-chessboard with Lepdy styling, emits square click events | ChessContent, MovementPuzzle, CapturePuzzle |
-| `PieceIntroCard.tsx` | Displays one piece with large visual, Hebrew name, audio button | useChessAudio, ChessPieceLabel |
-| `MovementPuzzle.tsx` | Shows board with one piece placed, validates player taps correct squares | ChessBoard, useChessGame |
-| `CapturePuzzle.tsx` | Shows board with enemy piece, player must tap the piece that can capture it | ChessBoard, useChessGame |
-| `LevelMap.tsx` | Shows 3 level buttons with locked/unlocked/completed state | useChessProgress |
-| `useChessGame.ts` | chess.js instance, legal move calculation, FEN loading, answer validation | chess.js, MovementPuzzle, CapturePuzzle |
-| `useChessProgress.ts` | localStorage progress for each level and puzzle | useCategoryProgress (existing hook) |
-| `useChessAudio.ts` | Plays Hebrew audio for piece names via existing playAudio() | utils/audio.ts (existing) |
-| `chessPieces.ts` | Static config: 6 pieces with IDs, translation keys, audio filenames | PieceIntroCard, MovementPuzzle, CapturePuzzle |
-| `puzzles.ts` | Puzzle definitions per level with FEN string and expected answer set | MovementPuzzle, CapturePuzzle |
+| Component | Status | Responsibility |
+|-----------|--------|---------------|
+| `ChessGameContent.tsx` | Unchanged | Top-level state machine and view router |
+| `MovementPuzzle.tsx` | Refactored | Consumes puzzles from `usePuzzleSession` instead of fixed array |
+| `CapturePuzzle.tsx` | Refactored | Same — consumes from `usePuzzleSession` |
+| `usePuzzleSession.ts` | New | Per-session state: current puzzle, streak, score, session progress |
+| `puzzleGenerator.ts` | New | Select next puzzle from pool based on difficulty level |
+| `useChessProgress.ts` | Extended | Add difficulty tracking, session history, total puzzles solved |
+| `PieceIntroduction.tsx` | Unchanged | Level 1 learning phase |
+| `ChessSettingsDrawer.tsx` | Unchanged | Settings |
 
 ---
 
-## Data Flow
+## New Components: Detailed Design
 
-### Page Load Flow
+### 1. `usePuzzleSession.ts` (New Hook)
 
-```
-Browser → app/[locale]/games/chess/page.tsx (Server)
-  └── setRequestLocale(locale)
-  └── generateMetadata()
-  └── render <ChessContent />
-        └── useChessProgress() → reads localStorage for level state
-        └── render <LevelMap /> showing unlocked/completed levels
-```
-
-### Level 1: Piece Introduction
-
-```
-User taps piece on LevelMap
-  → ChessContent sets activeLevel = 1, activePiece = piece
-  → PieceIntroCard renders
-  → useChessAudio.playPieceAudio(piece.audioFile)  [auto-plays on mount]
-  → User taps audio button → playAudio('/audio/chess/he/{piece}.mp3')
-  → User taps "next" → ChessContent advances to next piece or marks level complete
-  → useChessProgress.recordLevelComplete('level-1') → localStorage
-```
-
-### Level 2: Movement Puzzle Flow
-
-```
-User selects Level 2 from LevelMap
-  → ChessContent renders MovementPuzzle with puzzle config
-  → MovementPuzzle calls useChessGame.loadPuzzle(puzzle.fen)
-      → chess.js.load(fen) sets board state
-      → chess.js.moves({ square: puzzle.pieceSquare, verbose: true })
-      → extracts Set<Square> of legal destination squares
-  → ChessBoard renders board from chess.js.fen()
-  → User taps a square
-      → onSquareClick(square) fires
-      → useChessGame.checkAnswer(square)
-          → correct: if square in legalSquares → playSound(SUCCESS) → highlight green → advance
-          → wrong: playSound(WRONG) → highlight red → try again
-  → All correct squares tapped → puzzle complete → next puzzle or level complete
-```
-
-### Level 3: Capture Puzzle Flow
-
-```
-User selects Level 3 from LevelMap
-  → ChessContent renders CapturePuzzle with puzzle config
-  → puzzle.fen positions multiple pieces; one is a target (enemy piece)
-  → useChessGame.loadPuzzle(fen)
-      → chess.js computes which friendly pieces attack the target square
-      → builds Set<Square> of correct attacker squares
-  → User taps a piece
-      → if piece is a valid attacker → SUCCESS, show capture animation
-      → if piece cannot capture target → WRONG, try again
-  → Puzzle complete → advance
-```
-
-### Progress Persistence
-
-```
-useChessProgress (wraps existing useCategoryProgress pattern)
-  → key: 'lepdy_chess_progress'
-  → shape: { completedLevels: Set<string>, completedPuzzles: Set<string> }
-  → reads on mount, writes on each completion
-  → exposes: isLevelComplete(levelId), isPuzzleComplete(puzzleId), recordCompletion(id)
-```
-
----
-
-## chess.js Integration Pattern
-
-chess.js provides the following API used in `useChessGame.ts`:
+This replaces the `puzzleIndex` + `ORDERED_PUZZLES` pattern inside puzzle components. It owns all per-session state.
 
 ```typescript
-const chess = new Chess();
-
-// Load a puzzle position
-chess.load(fen);                              // throws if invalid FEN
-
-// Get legal moves for a piece
-chess.moves({ square: 'e4', verbose: true }) // returns MoveObject[] with .to property
-
-// Get piece at a square
-chess.get('e4')                              // returns { type: 'p', color: 'w' } or undefined
-
-// Check board state
-chess.turn()                                 // 'w' | 'b'
-chess.fen()                                  // current FEN string (passed to react-chessboard)
-chess.board()                                // 8x8 array of piece objects
-```
-
-For Level 2 (movement puzzles), the flow is: `load(fen)` → `moves({ square, verbose: true })` → extract `.to` squares → compare against player tap.
-
-For Level 3 (capture puzzles), the flow is: `load(fen)` → for each friendly piece, `moves({ square: piece.square, verbose: true })` → find moves where `.captured` is defined and `.to === targetSquare` → those piece squares are correct answers.
-
----
-
-## Puzzle Data Format
-
-Puzzles are static TypeScript definitions in `data/puzzles.ts`. No external puzzle database needed at v1.
-
-```typescript
-interface MovementPuzzle {
-  id: string;
-  pieceId: string;          // e.g. 'rook' — maps to chessPieces.ts
-  fen: string;              // chess.js FEN: piece placement on empty/simple board
-  pieceSquare: Square;      // where the piece sits (e.g. 'd4')
-  instruction: string;      // i18n key: 'chess.puzzles.movement.rook_open_file'
+interface PuzzleSessionState {
+  currentPuzzle: MovementPuzzle | CapturePuzzle;
+  puzzlesSolvedThisSession: number;
+  streakCount: number;             // consecutive correct first-try answers
+  difficultyLevel: 1 | 2 | 3;     // current operating difficulty
+  sessionComplete: boolean;        // true after N puzzles (e.g. 10)
 }
 
-interface CapturePuzzle {
-  id: string;
-  fen: string;              // positions both friendly pieces and one enemy target
-  targetSquare: Square;     // the enemy piece to capture
-  correctAttackers: Square[]; // precomputed or derived at runtime from chess.js
-  instruction: string;      // i18n key: 'chess.puzzles.capture.knight_fork'
+interface UsePuzzleSessionReturn {
+  puzzle: MovementPuzzle | CapturePuzzle;
+  puzzleNumber: number;            // 1-based for UI ("Puzzle 3 of 10")
+  sessionTotal: number;            // e.g. 10 (configurable)
+  streakCount: number;
+  difficultyLevel: 1 | 2 | 3;
+  recordCorrect(firstTry: boolean): void;  // advance to next puzzle
+  recordSkip(): void;                      // skip current puzzle (no penalty)
+  isSessionComplete: boolean;
 }
 ```
 
-FEN example for a rook movement puzzle: `8/8/8/8/3R4/8/8/8 w - - 0 1`
-(empty board, white Rook on d4)
+**Key behavior:**
+- Generates the first puzzle on mount by calling `puzzleGenerator.nextPuzzle()`
+- On `recordCorrect()`: updates streak, calls progress hook, gets next puzzle
+- Session ends after `sessionTotal` puzzles (not when array exhausted)
+- Streak breaks on `recordCorrect(firstTry: false)` — resets to 0
+
+**Integration point with existing components:** MovementPuzzle and CapturePuzzle replace their `puzzleIndex` / `ORDERED_PUZZLES` local state with a call to `usePuzzleSession()`. Board render logic, FEN animation, and square highlighting remain unchanged.
+
+### 2. `puzzleGenerator.ts` (New Utility)
+
+Selects the next puzzle from a pool based on the current difficulty level. Pure function — no side effects, no state.
+
+```typescript
+function nextPuzzle(
+  pool: MovementPuzzle[],   // or CapturePuzzle[]
+  difficulty: 1 | 2 | 3,
+  recentIds: string[]       // avoid immediate repeats
+): MovementPuzzle | CapturePuzzle
+```
+
+**Algorithm:** Filter pool by `difficulty`, exclude `recentIds` (last 3-5), pick randomly. If filtered pool is empty (e.g. not enough puzzles at difficulty 3), fall back to difficulty 2 or 1.
+
+**Why not full algorithmic generation?** Generating valid chess puzzles algorithmically for a 5-year-old is a solved but complex problem (requires chess.js legal move computation + position quality checks). Expanding the curated pool from 18→60+ puzzles is faster to ship, easier to tune for kid-friendliness, and produces better results for this age group. Algorithmic generation is a future option — the `puzzleGenerator` abstraction keeps that door open.
+
+### 3. Extended `useChessProgress.ts`
+
+The existing hook tracks only `completedLevels[]`. v1.3 adds difficulty and session history without breaking the existing localStorage format.
+
+**Extended schema:**
+
+```typescript
+interface ChessProgressData {
+  completedLevels: number[];          // existing — keep as-is
+  currentLevel: number;               // existing — keep as-is
+  // v1.3 additions:
+  movementDifficulty: 1 | 2 | 3;     // current difficulty for movement puzzles
+  captureDifficulty: 1 | 2 | 3;      // current difficulty for capture puzzles
+  totalPuzzlesSolved: number;         // lifetime counter
+  sessionPuzzlesCorrect: number[];    // per-session correct counts (last 5 sessions)
+  longestStreak: number;              // lifetime best streak
+}
+```
+
+**Migration:** On load, if `movementDifficulty` is missing, default to 1. Existing `completedLevels` data is preserved. No breaking change.
+
+**New methods exposed:**
+
+```typescript
+interface UseChessProgressReturn {
+  // existing
+  completedLevels: number[];
+  completeLevel: (levelNum: number) => void;
+  isLevelUnlocked: (levelNum: number) => boolean;
+  isLevelCompleted: (levelNum: number) => boolean;
+  // v1.3 additions
+  movementDifficulty: 1 | 2 | 3;
+  captureDifficulty: 1 | 2 | 3;
+  totalPuzzlesSolved: number;
+  longestStreak: number;
+  recordPuzzleSolved(levelType: 'movement' | 'capture', firstTry: boolean): void;
+  recordSessionComplete(levelType: 'movement' | 'capture', score: number): void;
+}
+```
+
+**Difficulty escalation rule** (inside `recordPuzzleSolved`):
+- Track rolling accuracy over last 5 puzzles
+- If 5/5 correct on first try at current difficulty → bump difficulty up
+- If 3/5 or worse → bump difficulty down (never below 1)
+- Difficulty changes are persisted immediately
 
 ---
 
-## Patterns to Follow
+## Data Flow Changes
 
-### Pattern 1: State Machine for Game Phases
+### New Puzzle Consumption Flow (Movement/Capture)
 
-`ChessContent.tsx` manages a top-level phase state, paralleling how `LetterTracingContent.tsx` uses `gameState: 'menu' | 'playing' | 'complete'`.
-
-```typescript
-type ChessPhase =
-  | { type: 'level-map' }
-  | { type: 'piece-intro'; pieceIndex: number }
-  | { type: 'movement-puzzle'; puzzleIndex: number }
-  | { type: 'capture-puzzle'; puzzleIndex: number }
-  | { type: 'level-complete'; level: 1 | 2 | 3 };
+```
+User taps Level 2 on map
+  → ChessGameContent renders <MovementPuzzle completeLevel={completeLevel} onComplete={...} />
+  → MovementPuzzle calls usePuzzleSession({ pool: movementPuzzles, progress })
+      → usePuzzleSession calls puzzleGenerator.nextPuzzle(pool, difficulty, [])
+      → returns first puzzle
+  → Board renders puzzle.fen
+  → User taps correct square
+      → handlePuzzleSquareClick → correct path → usePuzzleSession.recordCorrect(firstTry)
+          → streak++, puzzlesSolved++
+          → if puzzlesSolved < sessionTotal → nextPuzzle() → new puzzle renders
+          → if puzzlesSolved === sessionTotal → sessionComplete = true
+  → SessionComplete screen shows (star earned, return to map)
+  → onComplete() → back to map
 ```
 
-This makes each phase a distinct render path with clear entry/exit, avoids sprawling conditional logic, and matches Lepdy's existing game pattern.
+### Difficulty Escalation Flow
 
-### Pattern 2: Derived Legal Squares (Not Stored State)
-
-Legal move squares are computed from chess.js on demand — never stored in React state. This avoids stale state bugs. `useChessGame` exposes a function `getLegalSquares(square)` that calls chess.js each time.
-
-### Pattern 3: Square Highlighting via react-chessboard customSquareStyles
-
-`react-chessboard` accepts a `customSquareStyles` prop (Record<Square, CSSProperties>). Legal squares are passed as highlight styles when a piece is selected. This keeps highlight logic outside React state — computed as a derived value during render.
-
-```typescript
-const highlightedSquares = selectedSquare
-  ? Object.fromEntries(
-      getLegalSquares(selectedSquare).map(sq => [sq, { backgroundColor: 'rgba(255, 255, 0, 0.4)' }])
-    )
-  : {};
+```
+usePuzzleSession.recordCorrect(firstTry: boolean)
+  → progress.recordPuzzleSolved('movement', firstTry)
+      → increments rollingAccuracy[last5]
+      → if should bump: setMovementDifficulty(prev + 1) → localStorage
+      → if should drop: setMovementDifficulty(prev - 1) → localStorage
+  → next puzzle from puzzleGenerator uses new difficulty level
 ```
 
-### Pattern 4: Click-Not-Drag for Kids
+### Progress Data Flow
 
-`react-chessboard` supports `arePiecesDraggable={false}` and `onSquareClick` handler. For ages 5-9 on tablets, click/tap is more reliable than drag. Level 2 uses a two-tap model: tap piece to select (highlights legal squares), tap destination to confirm.
+```
+useChessProgress (extended)
+  ├── reads from localStorage 'lepdy_chess_progress' on mount
+  ├── merges new fields with defaults if missing (migration)
+  └── writes on every recordPuzzleSolved() and recordSessionComplete()
 
-### Pattern 5: Chess Piece Data Follows Lepdy Item Pattern
+usePuzzleSession
+  ├── reads difficulty from useChessProgress
+  ├── calls recordPuzzleSolved() on each correct answer
+  └── calls recordSessionComplete() when session ends
+```
 
-`chessPieces.ts` mirrors the existing `letters.ts` / `numbers.ts` pattern with the same interface shape, enabling the existing `useCategoryProgress` hook to track which pieces have been introduced in Level 1.
+---
+
+## Progression System: Recommended Approach
+
+After reviewing common patterns for kids learning games (Duolingo Kids, ChessKid, Endless Alphabet), the recommended progression model is **stars per session** rather than points or leaderboards — it aligns with Lepdy's existing sticker/achievement model and avoids competitive pressure for ages 5-9.
+
+### Session Star System
+
+- Each puzzle session is 10 puzzles
+- Session earns 1-3 stars based on accuracy:
+  - 3 stars: 8+ correct on first try
+  - 2 stars: 5-7 correct on first try
+  - 1 star: completed session (any accuracy)
+- Stars are shown on the session-complete screen and stored in progress
+- The level-map cards update to show "best session stars" alongside the existing checkmark
+
+### What NOT to Build
+
+- Per-puzzle scoring / points — creates anxiety in young kids
+- Leaderboards — PROJECT.md explicitly out of scope
+- Failure states that block progress — always allow retry or skip
+- Level locks based on stars — access stays based on level completion only
+
+---
+
+## Structural Changes to Puzzle Components
+
+### Before (MovementPuzzle / CapturePuzzle internal structure)
 
 ```typescript
-interface ChessPieceConfig {
-  id: string;                // 'chess_piece_1' .. 'chess_piece_6'
-  translationKey: string;    // 'chess.pieces.king'
-  audioFile: string;         // 'king.mp3'
-  symbol: string;            // FEN symbol: 'K', 'Q', 'R', 'B', 'N', 'P'
-  fenSymbolBlack: string;    // 'k', 'q', 'r', 'b', 'n', 'p'
+// Module-level constant — runs once at import
+const ORDERED_PUZZLES = PIECE_ORDER.flatMap(...)
+
+export default function MovementPuzzle({ onComplete, completeLevel }) {
+  const [puzzleIndex, setPuzzleIndex] = useState(0);
+  const puzzle = ORDERED_PUZZLES[puzzleIndex];
+  // ...advance logic inline with setTimeout chains
+  // ...endgame: completeLevel(2) → onComplete()
 }
+```
+
+### After (using usePuzzleSession)
+
+```typescript
+export default function MovementPuzzle({ onComplete, completeLevel }) {
+  const progress = useChessProgress();
+  const session = usePuzzleSession({
+    pool: movementPuzzles,
+    levelType: 'movement',
+    difficulty: progress.movementDifficulty,
+    onPuzzleSolved: (firstTry) => progress.recordPuzzleSolved('movement', firstTry),
+    onSessionComplete: (score) => {
+      progress.recordSessionComplete('movement', score);
+      completeLevel(2);
+    },
+  });
+
+  const { puzzle, isSessionComplete } = session;
+  // ...rest of board render logic unchanged
+  // ...handlePuzzleSquareClick calls session.recordCorrect(firstTry) instead of setPuzzleIndex
+}
+```
+
+The board rendering, FEN manipulation, `squareStyles` computation, and confetti logic are unchanged. Only the puzzle source and advance mechanism changes.
+
+---
+
+## New File Locations
+
+```
+app/[locale]/games/chess-game/
+├── page.tsx                      (unchanged)
+├── ChessGameContent.tsx          (unchanged)
+├── PieceIntroduction.tsx         (unchanged)
+├── MovementPuzzle.tsx            (refactored — uses usePuzzleSession)
+├── CapturePuzzle.tsx             (refactored — uses usePuzzleSession)
+├── SessionComplete.tsx           (new — star display screen between sessions)
+├── ChessSettingsDrawer.tsx       (unchanged)
+└── pieceThemes.tsx               (unchanged)
+
+hooks/
+├── useChessProgress.ts           (extended — new fields + methods)
+├── useChessPieceTheme.ts         (unchanged)
+└── usePuzzleSession.ts           (new)
+
+utils/
+├── chessFen.ts                   (unchanged)
+└── puzzleGenerator.ts            (new)
+
+data/
+├── chessPieces.ts                (unchanged)
+└── chessPuzzles.ts               (expanded — 18→60+ puzzles for broader difficulty range)
+```
+
+---
+
+## Build Order (Phase Dependencies)
+
+Dependencies flow bottom-up. Each item must exist before items that depend on it.
+
+```
+Phase A: Expand puzzle pool
+  chessPuzzles.ts: add difficulty-3 puzzles for movement (currently only 1-2-3 but thin)
+  chessPuzzles.ts: add difficulty-2 and 3 capture puzzles (currently 8 total)
+  Target: 10+ puzzles per difficulty tier per level type
+  [No code dependencies — pure data expansion]
+
+Phase B: Puzzle generator utility
+  utils/puzzleGenerator.ts: nextPuzzle(pool, difficulty, recentIds) pure function
+  [Depends on: chessPuzzles.ts types]
+  [Enables: usePuzzleSession]
+
+Phase C: Extended progress hook
+  hooks/useChessProgress.ts: add movementDifficulty, captureDifficulty, totalPuzzlesSolved
+  hooks/useChessProgress.ts: add recordPuzzleSolved() with escalation logic
+  hooks/useChessProgress.ts: localStorage migration (safe — additive only)
+  [Depends on: nothing new]
+  [Enables: usePuzzleSession difficulty input + session recording]
+
+Phase D: Session hook
+  hooks/usePuzzleSession.ts: session state, streak, puzzle advance
+  [Depends on: puzzleGenerator, useChessProgress extended API]
+  [Enables: refactored puzzle components]
+
+Phase E: Refactor puzzle components
+  MovementPuzzle.tsx: replace puzzleIndex + ORDERED_PUZZLES with usePuzzleSession
+  CapturePuzzle.tsx: same
+  Board render logic: unchanged — only puzzle source changes
+  [Depends on: usePuzzleSession]
+
+Phase F: Session complete screen + progression UI
+  SessionComplete.tsx: star display, session summary
+  LevelMapCard: update to show session stars
+  [Depends on: extended useChessProgress, session data]
+
+Phase G: Progression system integration
+  useChessProgress: recordSessionComplete, longestStreak
+  i18n keys: new strings for session complete, star labels
+  [Depends on: SessionComplete component]
 ```
 
 ---
 
 ## Anti-Patterns to Avoid
 
-### Anti-Pattern 1: Storing Board State in React State
+### Anti-Pattern 1: Generating Puzzles Algorithmically Before Expanding the Pool
 
-**What goes wrong:** Keeping the chess board squares/pieces as React state and syncing with chess.js creates two sources of truth.
-**Why bad:** Causes desyncs, hard to reason about, stale state bugs during fast interactions.
-**Instead:** chess.js is the single source of truth. Pass `chess.fen()` to react-chessboard's `position` prop. React state holds only: which phase is active, which square is selected, and whether the puzzle is solved.
+**What happens:** Algorithmic generation (chess.js + random piece placement + legal move validation) sounds like infinite replayability but is complex to tune for 5-year-olds. Generated positions may have too many or too few valid moves, or place pieces in confusing configurations.
 
-### Anti-Pattern 2: Building a Custom Board Renderer
+**Do this instead:** Expand the curated pool from 18→60+ movement puzzles and 8→30+ capture puzzles. Each puzzle is hand-verified for clarity. The `puzzleGenerator` randomly samples from the pool. This is sufficient for "feels infinite" with far less complexity.
 
-**What goes wrong:** Rendering an 8x8 grid with MUI Grid/Box components and custom piece images.
-**Why bad:** Handles poorly: drag-and-drop, board orientation, piece SVGs, responsive sizing, accessibility, and touch events — all solved problems in react-chessboard.
-**Instead:** Use react-chessboard v5, which is actively maintained, TypeScript-native, mobile-friendly, and composable. Customize via its props only.
+### Anti-Pattern 2: Storing Difficulty State Inside Puzzle Components
 
-### Anti-Pattern 3: Precomputing All Legal Moves on Load
+**What happens:** Each puzzle component tracks its own difficulty locally. On unmount (exit game), difficulty resets. Kids who learned at difficulty 2 restart at difficulty 1 every session.
 
-**What goes wrong:** Calling `chess.moves()` for every piece on mount and storing results.
-**Why bad:** Wasted computation, stale if position changes, complex cache invalidation.
-**Instead:** Compute on demand when a square is selected. chess.js is fast enough for immediate computation on tap.
+**Do this instead:** Difficulty lives exclusively in `useChessProgress` (localStorage). `usePuzzleSession` reads difficulty as an input, never stores it. Persistence is guaranteed.
 
-### Anti-Pattern 4: Deep Puzzle Logic in Components
+### Anti-Pattern 3: Blocking Level Re-entry on Completion
 
-**What goes wrong:** Puzzle validation logic (is this tap correct?) lives inside MovementPuzzle or CapturePuzzle JSX components.
-**Why bad:** Untestable, mixed concerns, duplicated across Level 2 and Level 3.
-**Instead:** All chess logic lives in `useChessGame.ts`. Components receive: current position, highlight map, onSquareClick handler. They emit taps, useChessGame decides correctness.
+**What happens:** Level 2 and 3 are already marked complete, so the level map disables them or changes click behavior — kids can't replay.
 
-### Anti-Pattern 5: i18n Keys for Piece Names Hardcoded in Components
+**Do this instead:** Completed levels stay tappable. On re-entry, `usePuzzleSession` starts a fresh session at the player's current difficulty. The `completeLevel()` call on session end is idempotent (useChessProgress already handles duplicate completions).
 
-**What goes wrong:** Using string literals like "מלך" (king in Hebrew) directly in components.
-**Why bad:** Breaks Russian/English locales, no central source of piece name data.
-**Instead:** All piece names come from `messages/{he,en,ru}.json` via `useTranslations()` with keys like `chess.pieces.king`. Audio files are locale-specific under `/public/audio/chess/he/`.
+### Anti-Pattern 4: Replacing useChessProgress Instead of Extending It
 
----
+**What happens:** Create a new `useChessProgressV2` hook and migrate ChessGameContent to use it. The old hook is abandoned. Existing players lose their progress.
 
-## Integration with Existing Lepdy Architecture
+**Do this instead:** Extend the existing hook in-place. The localStorage migration is additive — new fields default gracefully. No player data is lost.
 
-### Fits Existing Patterns Without Modification
+### Anti-Pattern 5: Session Length Too Long
 
-| Existing Pattern | Chess Game Usage |
-|-----------------|-----------------|
-| `page.tsx` (server) + `*Content.tsx` (client) | `chess/page.tsx` + `ChessContent.tsx` — no change to pattern |
-| `useCategoryProgress` hook | `useChessProgress` wraps it with chess-specific storage key |
-| `playAudio(path)` for pronunciation | `useChessAudio` calls it with `/audio/chess/he/{piece}.mp3` |
-| `playSound(AudioSounds.X)` for game effects | Used directly in `useChessGame` for SUCCESS/WRONG/COMPLETE |
-| `useTranslations()` for i18n | Used in all chess components — piece names, instructions, UI labels |
-| `BackButton href="/games"` | Used in `ChessContent.tsx` — back goes to games list |
-| `Celebration` component | Used on level complete and puzzle complete |
-| `FunButton` | Used for "Start", "Next", level selection |
-| `useGameAnalytics` | Used in `ChessContent.tsx` to fire GAME_STARTED, GAME_COMPLETED |
-| Feature flags | Chess game gated behind `chessGameEnabled` flag during rollout |
+**What happens:** Setting session to 20+ puzzles. Young kids (5-7) lose attention after 5-10 minutes. A 20-puzzle session forces them to either abandon mid-session or complete it resentfully.
 
-### New Additions Required
-
-| Addition | Why | Location |
-|----------|-----|----------|
-| `chess.js` npm dependency | Legal move generation | `package.json` |
-| `react-chessboard` npm dependency | Board rendering | `package.json` |
-| Hebrew audio files (6 pieces) | Pronunciation: king, queen, rook, bishop, knight, pawn | `/public/audio/chess/he/` |
-| Translation keys for chess | Piece names (all 3 locales), UI strings, puzzle instructions | `messages/{he,en,ru}.json` |
-| Route `app/[locale]/games/chess/` | Game page | App Router |
-| Chess button in GamesContent.tsx | Navigation entry point | Existing GamesContent |
+**Do this instead:** 10 puzzles per session maximum. This maps to roughly 3-5 minutes of play for this age. The session-complete celebration becomes a natural and satisfying stopping point.
 
 ---
 
-## Build Order (Phase Dependencies)
+## Integration Points (New ↔ Existing)
 
-Dependencies flow bottom-up. Each layer must exist before the layer above it builds on it.
+### Internal Boundaries
 
-```
-1. Data + translations
-   └── chessPieces.ts (6 piece configs)
-   └── messages/*.json chess keys (piece names in he/en/ru)
-   └── Hebrew audio files recorded and placed
+| Boundary | Communication | Notes |
+|----------|---------------|-------|
+| `MovementPuzzle` ↔ `usePuzzleSession` | Props: `pool`, `levelType`, `difficulty`, callbacks | Session hook is the single puzzle source |
+| `usePuzzleSession` ↔ `puzzleGenerator` | Function call: `nextPuzzle(pool, difficulty, recentIds)` | Pure function, no shared state |
+| `usePuzzleSession` ↔ `useChessProgress` | Props in, callbacks out — progress hook is not called directly from session | Clean separation |
+| `ChessGameContent` ↔ `MovementPuzzle/CapturePuzzle` | Interface unchanged: `onComplete`, `completeLevel` props | Shell is untouched |
+| `useChessProgress` ↔ `localStorage` | Existing key `lepdy_chess_progress`, additive migration | No breaking change |
+| `SessionComplete.tsx` ↔ `useChessProgress` | Reads `longestStreak`, session stars for display | Read-only — no writes from this component |
 
-2. Chess logic hook
-   └── useChessGame.ts (chess.js integration)
-   └── useChessAudio.ts (audio playback)
-   └── useChessProgress.ts (localStorage progress)
+### External Services
 
-3. Board component
-   └── ChessBoard.tsx (react-chessboard wrapper with Lepdy styling)
-   [depends on: chess.js FEN output, react-chessboard]
-
-4. Level 1: Piece Introduction
-   └── PieceIntroCard.tsx (piece display + Hebrew audio)
-   └── ChessPieceLabel.tsx (Hebrew name + transliteration)
-   [depends on: chessPieces.ts, useChessAudio, translations]
-
-5. Level 2: Movement Puzzles
-   └── puzzles.ts (movement puzzle definitions with FEN)
-   └── MovementPuzzle.tsx (board + legal move highlighting)
-   [depends on: ChessBoard, useChessGame, puzzles.ts]
-
-6. Level 3: Capture Puzzles
-   └── CapturePuzzle.tsx (board + attacker identification)
-   [depends on: ChessBoard, useChessGame, puzzles.ts]
-
-7. Level navigation
-   └── LevelMap.tsx (shows 3 levels, locked/unlocked/complete state)
-   [depends on: useChessProgress]
-
-8. Game entry point
-   └── ChessContent.tsx (state machine: routes between phases)
-   └── chess/page.tsx (server component wrapper)
-   └── GamesContent.tsx (add chess button)
-   [depends on: all above]
-```
+| Service | Integration | Notes |
+|---------|-------------|-------|
+| Amplitude | Log `puzzle_solved`, `session_complete`, `difficulty_changed` events | Use existing `logEvent()` pattern — no new setup |
+| Firebase Remote Config | Feature flag `chessInfiniteMode` during rollout | Use existing `useFeatureFlagContext()` |
+| localStorage | Additive schema migration in `useChessProgress` | No new storage keys needed |
 
 ---
 
-## Scalability Considerations
+## Scaling Considerations
 
-| Concern | Now (v1) | Future |
-|---------|----------|--------|
-| Puzzle count | ~10-15 per level, static TypeScript | Could load from Firebase or JSON file if count grows |
-| Piece images | react-chessboard's default SVG pieces | Custom illustrated pieces via `customPieces` prop |
-| Additional levels | Level 4+ (e.g. check detection) added to same state machine | New level type added to ChessPhase union, new component |
-| Full chess game | Out of scope — would require adding AI (stockfish.js WASM) | Separate route, not a level in this game |
-| Progress sync | localStorage only (no account) | Could add Firebase anonymous auth + Firestore, same pattern as simon-game leaderboard |
+| Concern | Now (v1.3) | Future |
+|---------|------------|--------|
+| Puzzle pool size | 60-80 curated FEN puzzles | Could generate algorithmically via chess.js if pool feels repetitive |
+| Difficulty calibration | Simple rolling accuracy (last 5 puzzles) | Spaced repetition (SM-2 algorithm) for per-puzzle retention tracking |
+| Progress sync | localStorage only | Firebase anonymous auth + Firestore, same pattern as simon-game leaderboard |
+| New puzzle types | Movement + Capture sessions | Check detection, fork identification as new level types using same session architecture |
 
 ---
 
 ## Sources
 
-- chess.js API documentation: https://jhlywa.github.io/chess.js/
-- react-chessboard GitHub (v5, actively maintained): https://github.com/Clariity/react-chessboard
-- react-chess-tools monorepo (React 19 + react-chessboard v5 + chess.js): https://github.com/dancamma/react-chess-tools
-- Chess puzzle data format (Lichess): https://database.lichess.org/
-- Kids chess learning progression (ChessKid, ChessWorld): https://www.chessboardvault.com/best-chess-apps-for-kids/
-- FEN notation reference: https://www.chess.com/terms/fen-chess
+- Direct codebase reading: `/Users/emil/code/lepdy/app/[locale]/games/chess-game/` (HIGH confidence — first-hand)
+- Direct codebase reading: `/Users/emil/code/lepdy/hooks/useChessProgress.ts` (HIGH confidence — first-hand)
+- Direct codebase reading: `/Users/emil/code/lepdy/data/chessPuzzles.ts` (HIGH confidence — first-hand)
+- Lepdy PROJECT.md v1.3 milestone description (HIGH confidence — first-hand)
+- Pattern reference: Duolingo Kids session model (MEDIUM confidence — industry knowledge)
+- Pattern reference: localStorage additive migration pattern from existing Lepdy hooks (HIGH confidence — codebase)
+
+---
+
+*Architecture research for: v1.3 Infinite Replayability — chess learning game*
+*Researched: 2026-03-22*

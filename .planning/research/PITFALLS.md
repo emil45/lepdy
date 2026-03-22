@@ -1,251 +1,281 @@
-# Domain Pitfalls
+# Pitfalls Research
 
-**Domain:** Kids chess learning game (ages 5-9) integrated into Next.js Hebrew learning app
-**Project:** Lepdy Chess
-**Researched:** 2026-03-21
+**Domain:** Infinite replayability — random puzzle generation, escalating difficulty, and progression/retention systems for a kids' chess learning app (ages 5-9)
+**Researched:** 2026-03-22
+**Confidence:** HIGH (domain knowledge from kids' educational game patterns, verified against codebase specifics)
 
 ---
 
 ## Critical Pitfalls
 
-Mistakes that cause rewrites, abandoned sessions, or broken UX at the foundation level.
+### Pitfall 1: Puzzle Generator Produces Unsolvable or Trivially Easy Boards
+
+**What goes wrong:**
+The random board generator places pieces, computes valid targets, and presents the puzzle — but occasionally generates degenerate cases: a rook blocked on all sides by friendly pieces (zero valid moves), a king in the corner with no visible escape, or a queen with 27 valid targets where any tap is essentially random. The game accepts or rejects taps based on `validTargets`, so a procedural generator that gets this wrong produces either unbeatable walls or instant wins with no learning value.
+
+**Why it happens:**
+The existing puzzle data (`chessPuzzles.ts`) hand-curates FEN strings and `validTargets` arrays. A generator must reproduce this contract — compute FEN, compute valid targets from game rules — without the safety of manual review. Chess movement rules have corner cases: pawns on starting rank vs. not, king near edge, bishop on a1-h8 vs. a8-h1 diagonal, knight near corners. Teams often verify the "happy path" piece position and miss edge-of-board scenarios that emerge from randomization.
+
+**How to avoid:**
+- Build the generator to produce FEN first, then derive `validTargets` from a chess rules engine (chess.js or a minimal rule module), not the other way around. Never handcraft the valid targets array in a generator.
+- Enforce constraints during generation: minimum valid targets (e.g., at least 3 for movement puzzles), maximum valid targets (e.g., not more than 14 for difficulty 1), piece placement at least 2 squares from edge for early puzzles.
+- Write a validator function that checks every generated puzzle before presenting it. If invalid, regenerate (up to N attempts, then fall back to a curated puzzle).
+- Test the generator in isolation with 1000 samples and log any degenerate results before integrating into UI.
+
+**Warning signs:**
+- Kid immediately taps wrong every time (board feels impossible)
+- Kid taps any square and gets it right on first try consistently (too easy, too many targets)
+- "Try Again" shows on empty squares (validTargets computation is wrong)
+- Console errors about missing piece or undefined square reference
+
+**Phase to address:** Puzzle generation phase (whichever phase introduces the random generator — this is the foundational phase for the entire milestone).
 
 ---
 
-### Pitfall 1: react-chessboard SSR Hydration Crash in Next.js App Router
+### Pitfall 2: Progress Schema Breakage When Migrating from Linear Levels to Infinite Puzzles
 
-**What goes wrong:** react-chessboard uses react-dnd internally and accesses browser APIs during initialization. In Next.js App Router, importing it without `'use client'` or without dynamic import with `{ ssr: false }` causes hydration mismatch errors or outright crashes. The chessboard renders on the server, then client hydration sees a different DOM, causing React to throw.
+**What goes wrong:**
+The existing `useChessProgress` stores `{ completedLevels: number[], currentLevel: number }` under `lepdy_chess_progress`. The new system needs to store difficulty band, total puzzles solved, streak, or similar. Teams write a new hook with a new shape, forget that real kids already have the old key, and either: (a) the new code reads old data and crashes on a type mismatch, or (b) kids lose all existing progress on first load.
 
-**Why it happens:** react-chessboard is a pure client-side library — it needs the DOM, window, and event listeners. The App Router renders server components by default. The project already follows a `page.tsx` (server) + `*Content.tsx` (client) split, but even within the client component the board component itself may need to be loaded dynamically to avoid SSR.
+**Why it happens:**
+The existing hook already has basic safeguards (`Array.isArray` check) but doesn't have a version field. Adding new fields to the same key without a migration guard is the natural path-of-least-resistance. The bug only appears on devices that previously ran the game — always passes on fresh installs.
 
-**Consequences:** White screen or hydration error on first load. Can be subtle in dev (StrictMode double-render) and catastrophic in prod.
+**How to avoid:**
+- Add a `version: number` field to every localStorage schema from the start. The current schema should be treated as `version: 1`.
+- When the new hook loads, check the version. If version < 2, migrate: preserve what is meaningful (e.g., `completedLevels` could seed initial difficulty band: if all 3 levels completed, start at difficulty 2), then write the new schema version.
+- Use a different storage key for the v2 schema (`lepdy_chess_progress_v2`) to guarantee no collision during rollout.
+- Keep reading the old key during migration so returning kids get credit for prior progress.
 
-**Prevention:**
-- Import the chessboard component via `next/dynamic` with `{ ssr: false }` inside the client Content component.
-- The `ChessBoardGame.tsx` component file should carry `'use client'` at the top.
-- Wrap with `ChessBoardDndProvider` (included in the library) — do not install a separate react-dnd version as it will cause a version conflict.
+**Warning signs:**
+- Type errors on `parsed.currentLevel` or `parsed.completedLevels` at runtime
+- `NaN` difficulty band on first load for returning users
+- Kids see level 1 locked again despite having completed it
 
-**Detection:** Hydration error in browser console on first load. StrictMode double-invoke exposing the state sync bug (see Pitfall 2).
-
-**Phase:** Phase implementing the board rendering.
-
----
-
-### Pitfall 2: Dual State Sources Causing Board Position Flicker/Reset
-
-**What goes wrong:** Keeping a `chess.js` Chess instance and a separate `position` state string causes them to desync. The board shows the correct position, then immediately snaps back to a previous state. This is a confirmed bug pattern in react-chessboard (issue #119).
-
-**Why it happens:** React re-renders can fire state updates in sequence — the Chess instance updates first, then the position string lags one render behind. React.StrictMode's double-invocation makes this happen in dev even when it wouldn't in prod.
-
-**Consequences:** Puzzle positions don't persist. Kids see a piece move, then watch it snap back. Catastrophic for a puzzle-based learning game.
-
-**Prevention:**
-- Single source of truth: `const [game, setGame] = useState(new Chess())`.
-- Pass `game.fen()` directly as the board position prop — no separate position state.
-- Update state by creating a new Chess instance and calling `setGame(new Chess(gameCopy))` — never mutate the Chess instance directly.
-
-**Detection:** Board snaps back to previous position after a valid move. Only happens intermittently in dev (StrictMode), consistently in prod once puzzle state gets more complex.
-
-**Phase:** Phase implementing puzzle logic and piece interaction.
+**Phase to address:** Progress system redesign phase, before any new UI is built on top of the new schema.
 
 ---
 
-### Pitfall 3: 8x8 Board Squares Are Too Small for Tablet Tap Accuracy at Ages 5-9
+### Pitfall 3: Difficulty Escalation Is Too Steep or Too Flat — Kids Quit or Get Bored
 
-**What goes wrong:** A standard 8x8 board filling a mobile/tablet viewport gives each square approximately 40-48px. Children aged 5-7 have significantly lower motor precision than adults. Chess.com users on touch devices report needing to tap "dead center" multiple times before a piece registers. For young children, this is not a UX annoyance — it is a session-ending frustration.
+**What goes wrong:**
+The difficulty curve is calibrated on a developer's machine with adult chess knowledge, not on a 6-year-old. Either (a) difficulty ramps fast and kids hit a wall where puzzles feel impossible at puzzle 10, or (b) difficulty never meaningfully escalates and kids are still doing rook-in-center-of-empty-board puzzles at puzzle 50. Both kill retention. The first causes frustration-quit. The second causes boredom-quit.
 
-**Why it happens:** A responsive board that simply fills available width distributes space evenly across 64 squares, producing small squares. CSS `touch-action`, click vs. drag interaction modes, and no tap-tolerance padding compound the issue.
+**Why it happens:**
+Teams use simple numeric difficulty labels (1, 2, 3) and ramp by changing a single parameter (more pieces on board, less common piece positions). They don't account for the cognitive difference between "understanding a rule" and "applying it in a crowded board." For ages 5-9 with wide skill variation, difficulty labels that feel smooth to a developer can feel like a cliff to a child.
 
-**Consequences:** Kids give up before completing a single puzzle. Parents uninstall. The game never gets a chance to teach chess.
+**How to avoid:**
+- Separate difficulty into two independent axes: **board complexity** (how many other pieces on board) and **position novelty** (how far from center, edge cases). Escalate board complexity first, position novelty second — adding more pieces is intuitive; unusual positions are confusing even when movement is "easy."
+- Use a puzzle-per-session window: don't escalate difficulty until the kid has solved at least 5 puzzles correctly at the current band. Don't escalate based on consecutive correct answers alone (one lucky streak should not lock a kid into hard puzzles).
+- Implement a **softcap**: never advance more than one difficulty tier per session.
+- Implement a **de-escalation signal**: after 3 wrong attempts on the same puzzle type, quietly step back one tier. Reset tier on next session start, not immediately during session.
 
-**Prevention:**
-- Constrain the board to a minimum 56px per square (448px total board width minimum on mobile).
-- Use tap-to-select then tap-to-place interaction (not drag-and-drop) for touch devices — react-chessboard supports this via the `onSquareClick` prop alongside `onPieceDrop`.
-- On tablets (primary device per project constraints), aim for 60-70px squares.
-- Test on actual iPad and Android tablet, not just browser devtools resize.
+**Warning signs:**
+- More than 4 wrong taps before any correct answer on a movement puzzle (too hard)
+- Average puzzle solve time drops near zero after puzzle 5 (too easy, reflexive tapping)
+- Session duration drops sharply at a specific puzzle number
 
-**Detection:** Testing on a real device with ages 5-8 children. Early warning: any puzzle where kids must select a specific square and miss on first tap more than 50% of the time.
-
-**Phase:** Phase implementing board UI and mobile layout.
-
----
-
-### Pitfall 4: RTL Layout Breaking Chess Board Orientation
-
-**What goes wrong:** Hebrew is the default locale and uses RTL direction. Applying `direction: rtl` to the page or a parent container can mirror the chess board coordinates — columns appear reversed, or rank/file labels render backwards. This makes the board look wrong and confuses kids who later see a physical chess board.
-
-**Why it happens:** CSS `direction: rtl` applied at a high level propagates into all children including absolutely positioned board squares. react-chessboard renders the board with internal CSS that is not RTL-aware by design. MUI's RTL theming (which Lepdy already uses) applies direction globally.
-
-**Consequences:** Board is visually mirrored in Hebrew locale. File a on the left becomes file h on the left. Piece movement appears wrong. Lessons learned in Hebrew don't transfer to real-board play.
-
-**Prevention:**
-- Wrap the chessboard component in a container with explicit `direction: ltr` — chess notation is language-agnostic and always LTR.
-- The board itself, coordinate labels, and piece interaction zone must all be inside this LTR wrapper.
-- Only text around the board (instructions, piece names in Hebrew) should inherit RTL from the page.
-
-**Detection:** Render the board in Hebrew locale and verify file 'a' is on the left (white's queenside) and rank 1 is at the bottom.
-
-**Phase:** Phase implementing board rendering, verified during i18n integration.
+**Phase to address:** Difficulty engine design phase. The escalation logic should be spec'd and test-driven before any UI that displays difficulty is built.
 
 ---
 
-## Moderate Pitfalls
+### Pitfall 4: The "Infinite" Label Creates an Endless-Treadmill UX That Kids Abandon
+
+**What goes wrong:**
+Teams implement random puzzle generation and declare the game infinite, but provide no milestones, no visible progress markers, no "you got through 10 puzzles today" moment. Kids, especially ages 5-9, need micro-rewards and visible completion signals to feel progress. Without these, "infinite" feels like an empty corridor with no doors. Session length drops after puzzle 3 because there is nothing to look forward to.
+
+**Why it happens:**
+The existing game has a satisfying completion arc: Level 1 → Level 2 → Level 3 → "You learned chess!" Each level has a completion screen with confetti. Removing the finite arc and replacing it with pure infinity removes the emotional payoff loops that keep kids engaged. Teams focus on the technical generation system and defer "progression feel" to a later phase that never ships.
+
+**How to avoid:**
+- Define micro-milestones before writing any generator code: "Every 5 puzzles" is a session checkpoint. "Every 25 puzzles" is a badge/sticker unlock. These milestones must be specified as success criteria of the generation phase, not deferred.
+- Keep the existing Level 1 → Level 2 → Level 3 arc as the onboarding path. Infinite generation starts only after a kid completes Level 3. This preserves the existing completion feel and makes the transition to infinite feel like an unlock ("You've unlocked endless puzzles!").
+- Show a visible "puzzle N" counter and a "daily goal" indicator (e.g., "5 puzzles today") so kids know where they are in the session.
+
+**Warning signs:**
+- Kids exit after puzzle 3-5 without any error (pure abandonment)
+- Play sessions are shorter than the average of v1.0/v1.1 (regression)
+- No engagement spike after session 1 (no reason to return)
+
+**Phase to address:** UX/progression design phase. Must be specified before the generation phase so the generator builds milestone hooks into its output from day one.
 
 ---
 
-### Pitfall 5: Cognitive Overload from All-Pieces-at-Once Level Design
+### Pitfall 5: Random Puzzle Generator Repeats the Same Puzzles Immediately
 
-**What goes wrong:** Displaying the full board (all 16 pieces per side) when teaching piece movements overwhelms children. Research confirms that unstructured, all-at-once instruction causes frustration and makes chess "feel like homework." Young children need single-concept focus per session.
+**What goes wrong:**
+The simplest random generator picks uniformly from a pool (or generates from a seed without deduplication). Kids see the same position twice in three puzzles. For movement puzzles, this feels like a bug. For capture puzzles, kids memorize the correct answer from the last repetition — zero learning happens. Kids ages 5-7 will notice repetition and lose trust in the game ("it's broken").
 
-**Why it happens:** Developers think "real chess uses a full board" so they start with a full board even in learning mode. The PROJECT.md correctly notes a full 8x8 board but doesn't specify how many pieces are on it during lessons.
+**Why it happens:**
+Pure random selection has high collision probability with small pools. The existing 18 movement + 8 capture puzzles already had this risk; a generator that produces a limited variety of positions will repeat frequently. Teams test with 5 puzzles and don't notice; kids play 20+ in a session.
 
-**Consequences:** Level 2 movement puzzles become impossible for ages 5-6. Kids cannot identify which piece to tap among 32 pieces on a crowded board.
+**How to avoid:**
+- Maintain a **recent-puzzles ring buffer** per session (last 10-15 puzzle hashes). Never regenerate a puzzle whose hash is in the buffer.
+- For procedurally generated puzzles: hash the (piece type, piece position, distractor positions) tuple. Two puzzles with the same piece on the same square are "the same puzzle" from a kid's perspective.
+- Ensure the generator's effective variety exceeds 30 unique positions per piece type before the feature ships. Validate this in automated tests.
 
-**Prevention:**
-- Level 1 (learn pieces): Single piece on an empty board, centered.
-- Level 2 (movement): One piece at the center, empty board, legal move squares highlighted.
-- Level 3 (capture): Introduce one target piece to capture, still mostly empty board.
-- Only introduce multiple pieces once each piece's movement is established individually.
+**Warning signs:**
+- The same FEN string appears twice within 10 puzzles in a test run
+- Kids say "I already did this one" (qualitative signal)
 
-**Detection:** A child cannot identify the piece being discussed within 3 seconds = too much visual noise on the board.
-
-**Phase:** Phase designing puzzle content and level structure.
-
----
-
-### Pitfall 6: Audio Pronunciation Never Playing or Clashing with Game Sounds
-
-**What goes wrong:** Hebrew piece name audio fails to play because it is triggered simultaneously with a game sound effect (correct/wrong move feedback), the previous audio is still playing and there is no queuing system, or autoplay policy blocks audio on first interaction.
-
-**Why it happens:** Lepdy's audio system uses `playAudio()` for category audio and `playSound()` for game effects — these are separate systems that can clash. New audio files in `/public/audio/chess/he/` must match the expected file naming and path conventions. Browsers block audio until a user gesture has occurred on the page.
-
-**Consequences:** Kids never hear Hebrew piece names — the core educational feature of the game fails silently.
-
-**Prevention:**
-- Always trigger first audio from a direct user tap/click (not on component mount).
-- Queue audio: if a sound is playing, wait for it to finish before playing the next.
-- Use the existing `playAudio()` system from `utils/audio.ts` — do not create a separate audio implementation.
-- Audio file naming: match the convention in other categories (e.g., `king.mp3`, `queen.mp3`) — check `/public/audio/letters/he/` for reference.
-- Record all 6 piece names before starting Level 1 implementation: King, Queen, Rook, Bishop, Knight, Pawn in Hebrew.
-
-**Detection:** Open browser devtools console — autoplay policy errors appear as `DOMException: play() failed because the user didn't interact with the document first`.
-
-**Phase:** Phase implementing piece introduction (Level 1). Audio files needed before this phase begins.
+**Phase to address:** Puzzle generation phase. Deduplication must be a built-in contract of the generator, not a post-hoc fix.
 
 ---
 
-### Pitfall 7: Progress Persisting Incorrectly Across Devices / Incognito
+### Pitfall 6: Progression System Stores State in Component State Instead of the Progress Hook
 
-**What goes wrong:** Progress saved to localStorage is invisible in incognito mode and unavailable when a child switches from tablet to phone. A child who completes Level 1 in Safari on an iPad starts from scratch in Chrome. In some browsers, localStorage throws in private browsing mode, crashing the progress read/write code.
+**What goes wrong:**
+A new "session stats" or "streak" feature gets added directly to `ChessGameContent` state (`useState`). Progress is lost when the component unmounts (kid exits to the games menu and comes back). Or worse, progress is duplicated: one source in `useChessProgress` (persisted) and one in local component state (ephemeral), and they diverge.
 
-**Why it happens:** localStorage is device- and browser-specific. The project explicitly chooses local progress (no leaderboard), which is correct for Lepdy's model, but the implementation needs graceful fallback handling.
+**Why it happens:**
+The existing codebase uses `useChessProgress` as a simple standalone hook without a context provider. The hook was intentionally kept simple ("no migration logic needed" per the Key Decisions table). When adding new fields (difficulty band, session puzzle count, streak), the natural temptation is to add them to the nearest `useState` rather than extend the hook and update the persistence schema.
 
-**Consequences:** Repeated re-completion of already-mastered levels. The progression system appears broken. Parents interpret it as a bug and lose trust.
+**How to avoid:**
+- All persistent player state (difficulty band, total puzzles solved, current streak, date of last session) must live in an extended `useChessProgress` hook. Nothing that should survive a page reload lives in component state.
+- Session-only state (current puzzle index within a session, animation state, hint counters) is fine in component state — it resets correctly on remount.
+- Before adding any new `useState` to a game component, ask: "Would losing this state on exit be correct behavior?" If no, move it to the hook.
 
-**Prevention:**
-- Wrap all `localStorage.getItem/setItem` calls in try/catch — incognito in some browsers throws on write.
-- Fall back to in-memory state when localStorage is unavailable (progress resets on reload, but doesn't crash).
-- Make re-doing completed levels frictionless (not punitive) — treat it as "practice mode" rather than failure.
-- Use a progress schema that is forwards-compatible: `{ version: 1, completedLevels: string[] }` so adding new levels doesn't corrupt existing saves.
+**Warning signs:**
+- Difficulty band resets to 1 every time the games menu is visited
+- "Streak" counter always shows 1 despite continuous play
+- Progress bar resets on back-navigation
 
-**Detection:** Test in incognito mode — if the page throws a JS error, the localStorage handling is broken.
-
-**Phase:** Phase implementing progression system.
-
----
-
-### Pitfall 8: Immediate Wrong-Answer Feedback That Punishes and Discourages
-
-**What goes wrong:** Displaying a red X or loud buzzer sound when a child taps the wrong square creates anxiety and shame. Research on chess pedagogy confirms this causes early dropout — children already uncertain about chess rules interpret negative feedback as "I am bad at this."
-
-**Why it happens:** Developers apply standard quiz-game feedback patterns (green check / red X / buzzer). Lepdy's existing games likely have this for older content, but 5-9 year olds respond very differently to negative signals than adults.
-
-**Consequences:** Children abandon sessions after first wrong answer. Parents report the app is "too hard" even when puzzles are objectively simple.
-
-**Prevention:**
-- For wrong answers: gentle visual reset (piece returns to origin) with a soft sound — no red X, no buzzer.
-- Use encouraging language: "Try again!" not "Wrong!".
-- Show a hint highlight (legal move squares) after 2-3 failed attempts rather than failing the puzzle outright.
-- Match Lepdy's existing supportive tone — look at how guess-game handles wrong answers for reference.
-
-**Detection:** Watch a 5-6 year old attempt a puzzle for the first time. If they show frustration or hesitate to try again after a wrong answer, the feedback is too harsh.
-
-**Phase:** Phase implementing puzzle interaction and feedback system.
+**Phase to address:** Progress system redesign phase, as a design constraint applied before any new UI is coded.
 
 ---
 
-## Minor Pitfalls
+### Pitfall 7: The Hint System Breaks Under Infinite/Random Puzzles
+
+**What goes wrong:**
+The existing hint system shows green dot overlays on `validTargets` after 2 wrong taps. This works because every `validTargets` array is hand-verified. A generator that produces incorrect `validTargets` will show hints pointing to wrong squares, actively teaching kids incorrect movement rules. This is worse than showing no hint.
+
+**Why it happens:**
+Testing the generator's correctness and testing the hint display are treated as separate concerns. The generator passes unit tests for common positions, but edge cases (pawn at rank 8, knight at a1) produce wrong validTargets that only surface during gameplay when the hint reveals the error.
+
+**How to avoid:**
+- The generator's validTargets computation must be the single source of truth used by both the hint system AND the tap validation. Never compute them independently in two places.
+- Validate generated validTargets against chess.js or an equivalent rule engine in a test suite, not manually.
+- If using chess.js: call `chess.moves({ square: pieceSquare, verbose: true })` and extract the `.to` fields. This is authoritative and handles all edge cases.
+
+**Warning signs:**
+- Hints appear on squares that correctly produce "wrong tap" feedback
+- Tap validation and hints disagree (some validTargets squares show no hint, or non-validTargets squares get hinted)
+
+**Phase to address:** Puzzle generation phase. The rule engine integration must be established before hints or tap validation is wired to generator output.
 
 ---
 
-### Pitfall 9: Legal Move Highlighting Not Shown = Kids Have No Idea What to Tap
+## Technical Debt Patterns
 
-**What goes wrong:** A movement puzzle asks "where can this Knight move?" but gives no visual guidance on how to interpret the board. Children ages 5-6 have no idea that Knights move in an L-shape. Without highlighted squares, the puzzle is a random-tap exercise, not a learning exercise.
+Shortcuts that seem reasonable but create long-term problems.
 
-**Prevention:** Always show legal move highlights for the piece in question during Level 2 puzzles. Gradually fade them out (less prominent) as the child progresses through pieces, not off entirely. Highlights are not "cheating" for this age group — they are the teaching mechanism.
-
-**Phase:** Phase implementing movement puzzles (Level 2).
-
----
-
-### Pitfall 10: Board Not Accessible via Keyboard or Screen Reader
-
-**What goes wrong:** react-chessboard has a stated accessibility roadmap but implementation is incomplete. If a child uses assistive technology, or if an automated accessibility audit runs during QA, the board fails.
-
-**Prevention:** react-chessboard provides some aria labels out of the box — verify they render in the DOM. For the puzzle use-case (not a full chess game), supplement with visible labels on each piece showing its Hebrew name for screen reader users. Do not block deployment over this — but do not strip out the library's default accessibility attributes.
-
-**Phase:** Minor — address after core puzzle mechanics work.
+| Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
+|----------|-------------------|----------------|-----------------|
+| Hardcode difficulty thresholds as magic numbers in generator | Fast to write | Impossible to tune without reading code; breaks when puzzle types change | Never — use named constants minimum |
+| Store difficulty band in component state | No hook refactor needed | Resets on every navigation; progression feels broken | Never |
+| Skip deduplication buffer | Simpler generator | Kids see repeated puzzles; perceived as bug | Never in shipped code; OK in a generator prototype |
+| Use same localStorage key for v2 schema | No migration code needed | Returning kids get corrupt reads or lost progress | Never — always version-gate schemas |
+| Generate puzzles at render time (no memoization) | Simple code | Re-renders regenerate new puzzle mid-display; board flickers | Never in puzzle components |
+| Reuse `completeLevel(levelNum)` API for new infinite progression | No new hook surface needed | Level 1/2/3 semantic doesn't map to difficulty bands; semantics rot | Only for pure-backward-compat check; deprecate quickly |
 
 ---
 
-### Pitfall 11: Teaching Pawn Promotion, En Passant, and Castling Before Basics
+## Integration Gotchas
 
-**What goes wrong:** Developers who know chess include all legal moves in the chess.js validation. Pawn promotion prompts, castling, and en passant are legal moves that chess.js will compute — if they appear in Level 2 or 3 puzzles, they will confuse children who have not learned these rules yet.
+Common mistakes when connecting to existing systems and external services.
 
-**Prevention:** Build custom puzzle FEN positions where these special moves cannot occur. Filter out castling (`chess.get()` piece check on rooks/kings) and do not include pawns near the 8th rank in early puzzles. Introduce special moves only if a Level 4+ is added later.
-
-**Phase:** Phase implementing puzzle FEN data design.
-
----
-
-### Pitfall 12: i18n Translation Keys Missing Causing Fallback English in Hebrew Locale
-
-**What goes wrong:** Adding chess-specific UI text (piece names, level instructions, feedback messages) to `messages/he.json` but forgetting to add the same keys to `messages/en.json` and `messages/ru.json` causes next-intl to throw a missing translation warning, and in strict mode, an error.
-
-**Prevention:** Add all chess translation keys to all three locale files simultaneously. Use a placeholder value (English copy) in `en.json` and `ru.json` immediately — get Russian/English translations polished later.
-
-**Phase:** Relevant to every phase that introduces new UI text.
+| Integration | Common Mistake | Correct Approach |
+|-------------|----------------|------------------|
+| chess.js for move generation | Import full chess.js at module level — causes SSR crash (chess.js reads `window`) | Use `dynamic(() => import('chess.js'), { ssr: false })` or guard in a utility that only runs client-side |
+| chess.js FEN validation | Trust that a generated FEN string is valid without checking | Call `chess.validate_fen(fen)` before passing FEN to `react-chessboard`; invalid FEN silently renders empty board |
+| react-chessboard position prop | Switch to full FEN (with side-to-move) for infinite puzzles | `react-chessboard` accepts piece-placement FEN — keep this contract; do NOT switch to full FEN unless needed |
+| `useChessProgress` hook | Add new fields without migration guard | Always provide defaults for every field; check `typeof parsed.field !== 'undefined'` before using; version the schema |
+| Amplitude analytics | Log inline string event names per puzzle | Define all new milestone events in `models/amplitudeEvents.ts` before the feature ships |
+| Sticker unlock system | Create a new `chess_infinite` unlock type without checking existing detector | Reuse `chess_level` unlock type pattern; extend the detector with milestone thresholds rather than inventing new types |
 
 ---
 
-## Phase-Specific Warnings
+## Performance Traps
 
-| Phase Topic | Likely Pitfall | Mitigation |
-|-------------|----------------|------------|
-| Board rendering | SSR hydration crash (Pitfall 1) | `next/dynamic` with `ssr: false` from day one |
-| Board rendering | RTL flipping board (Pitfall 4) | Explicit `direction: ltr` wrapper on board container |
-| Board rendering | Touch targets too small (Pitfall 3) | Enforce 56px minimum square size, test on physical tablet |
-| Puzzle logic | State desync board reset (Pitfall 2) | Single `game` state, pass `game.fen()` directly |
-| Level 1 (piece intro) | Audio never plays (Pitfall 6) | Record all 6 audio files first; trigger only from user interaction |
-| Level 2 (movement) | No highlights = confusion (Pitfall 9) | Always highlight legal squares; they are the lesson |
-| Level 2 (movement) | Cognitive overload (Pitfall 5) | Single piece on empty board only |
-| Level 2/3 (puzzles) | Special move confusion (Pitfall 11) | Curate FEN positions to exclude castling/en passant/promotion |
-| Feedback design | Punishment discourages retry (Pitfall 8) | Soft reset + hint system; no buzzer |
-| Progression system | localStorage crash in incognito (Pitfall 7) | try/catch wrapper with in-memory fallback |
-| Any phase | Missing i18n keys (Pitfall 12) | Always update all 3 locale files together |
+Patterns that work at small scale but fail under real usage.
+
+| Trap | Symptoms | Prevention | When It Breaks |
+|------|----------|------------|----------------|
+| Generating puzzles inside render body | Board re-renders on any parent state change (settings drawer open/close) produce new random puzzles — board resets mid-play | Generate puzzle once in `useState` initializer or stable `useMemo`; deps must be stable | First time parent re-renders after puzzle is displayed |
+| Confetti on every correct tap, no cleanup | Each correct answer mounts a `react-confetti` instance; rapid play accumulates many instances on tablet | Mount confetti, set `recycle={false}`, unmount after 3s — same pattern as existing code, already correct | Sustained correct-answer streaks on low-end tablet |
+| chess.js instantiated on every puzzle render | New `Chess(fen)` inside an unstable `useMemo` or render body | Instantiate chess.js once per puzzle in a `useEffect` or `useMemo([fen])`; do not reinstantiate on animation re-renders | High-frequency re-renders during slide animation |
+| Large puzzle pool stored in module scope | All puzzles in memory even when not playing chess | Already fine for curated set; for generated puzzles, generate on demand and discard solved puzzles rather than pre-generating all | Only matters if pool exceeds ~1000 objects |
+
+---
+
+## UX Pitfalls
+
+Common user experience mistakes for this domain and age group.
+
+| Pitfall | User Impact | Better Approach |
+|---------|-------------|-----------------|
+| Showing "puzzle N / ∞" | Kids and parents have no sense of completion; infinity is not meaningful to a 6-year-old | Show session progress ("5 puzzles today") and milestone progress ("25 more to next sticker") — finite, achievable goals |
+| Escalating difficulty without communicating it | Kid suddenly fails repeatedly with no explanation; feels like the game broke | Show a subtle "Getting harder!" badge when advancing a tier; make escalation feel like achievement, not punishment |
+| Resetting to Level 1 after all levels completed | Kid feels punished for finishing; "I already did this" | Transition to infinite mode as an explicit unlock after Level 3; level map celebrates "Endless mode unlocked!" |
+| Skipping per-puzzle celebration on infinite puzzles | Kid completes 50 puzzles with no moment of joy | Keep the small confetti burst per correct answer (already in MovementPuzzle/CapturePuzzle); add milestone celebrations at 5/10/25 |
+| Hints revealing all valid targets immediately at high difficulty | Kids tap hint squares reflexively; no learning | Maintain existing 2-wrong-tap threshold; consider increasing to 3 on harder difficulty tiers |
+| Difficulty change in the middle of a session | Confusing to re-enter mid-session at unexpected difficulty | Persist difficulty band; resume exactly where left off |
+
+---
+
+## "Looks Done But Isn't" Checklist
+
+Things that appear complete but are missing critical pieces.
+
+- [ ] **Puzzle generator:** Passes automated test with 1000 generated puzzles — zero degenerate results (null validTargets, zero targets, target equals piece square). Verify before connecting to UI.
+- [ ] **Progress migration:** Tested on a device with old `lepdy_chess_progress` key present. Returning user must not lose prior level completion state and must not see a crash.
+- [ ] **Deduplication:** Session ring buffer tested with 50 consecutive puzzles — no repeated FEN within a window of 15. Verify in unit test.
+- [ ] **SSR safety:** Any chess.js usage is wrapped in `dynamic` or client-only guard. Run `npm run build` and confirm zero SSR errors after integration.
+- [ ] **Difficulty persistence:** Exit game at difficulty band 2, re-enter game, confirm difficulty band is still 2 (not reset to 1).
+- [ ] **Hint correctness:** Every generated puzzle's hint squares produce "correct" tap feedback when tapped. A hinted square that produces "wrong" feedback is a teach-wrong bug.
+- [ ] **Level 1-3 path unbroken:** Existing Playwright tests still pass after progress hook refactor. Kids who haven't completed the tutorial still see the lock on Level 2.
+- [ ] **Infinite mode gate:** Kids who have NOT completed Level 3 do not see infinite puzzle mode. The gate must survive a localStorage clear (fresh user sees Level 1, not infinite).
+- [ ] **Analytics events defined:** All new milestone events added to `amplitudeEvents.ts` before feature ships. No inline string event names in `logEvent` calls.
+
+---
+
+## Recovery Strategies
+
+When pitfalls occur despite prevention, how to recover.
+
+| Pitfall | Recovery Cost | Recovery Steps |
+|---------|---------------|----------------|
+| Generator produces wrong validTargets (teach-wrong bug) | HIGH | Immediately fall back to curated puzzle set via Firebase Remote Config feature flag; fix generator; A/B test before re-enabling |
+| Progress schema corruption for returning users | HIGH | Write migration that detects corrupt schema (missing version, unexpected types) and resets to defaults; show "Your progress was reset" in-game |
+| Difficulty ramp too steep, kids quit | MEDIUM | Difficulty thresholds must be a config object (not hardcoded) so they can be tuned via Firebase Remote Config without a code deploy |
+| Puzzle repetition noticed by users | LOW | Increase ring buffer size; ship as patch; no data loss |
+| Existing Level 1-3 regression | MEDIUM | Existing Playwright test coverage will catch this; restore prior hook contract and keep backward compat shim |
+
+---
+
+## Pitfall-to-Phase Mapping
+
+How roadmap phases should address these pitfalls.
+
+| Pitfall | Prevention Phase | Verification |
+|---------|------------------|--------------|
+| Unsolvable or trivial generated puzzles | Puzzle generation phase (first phase of milestone) | 1000-puzzle automated validation test passes before UI integration |
+| Progress schema breakage on migration | Progress system redesign phase | Playwright test: load old schema key, open game, confirm no crash and correct level state |
+| Difficulty curve miscalibration | Difficulty engine phase | Thresholds in named config object; configurable via Remote Config; manual playtest with child if possible |
+| Missing micro-milestones / infinite treadmill | UX/progression design phase | Milestone triggers spec'd before generator is written; milestone fires confirmed in Amplitude test events |
+| Puzzle repetition | Puzzle generation phase | Automated: generate 50 puzzles, assert no FEN appears in previous 15 |
+| Progression state in component state | Progress system redesign phase | Code review gate: no new puzzle-related `useState` that is not reset-safe on navigation |
+| Hints broken on generated puzzles | Puzzle generation phase | Integration test: generated puzzle hint squares all produce "correct" tap response |
 
 ---
 
 ## Sources
 
-- [10 Common Mistakes Parents Make While Teaching Chess to Kids - Kingdom of Chess](https://kingdomofchess.com/mistakes-parents-make-while-teaching-chess/)
-- [react-chessboard GitHub (Clariity/react-chessboard)](https://github.com/Clariity/react-chessboard)
-- [Board resets to previous state despite value of position — react-chessboard issue #119](https://github.com/Clariity/react-chessboard/issues/119)
-- [Touch Targets on Touchscreens — Nielsen Norman Group](https://www.nngroup.com/articles/touch-target-size/)
-- [Chess.com forum: touch screen response problems](https://www.chess.com/forum/view/help-support/touch-screen-response-problems-new)
-- [Next.js hydration error documentation](https://nextjs.org/docs/messages/react-hydration-error)
-- [Chess puzzles children cognitive load — Kingdom of Chess](https://kingdomofchess.com/mistakes-parents-make-while-teaching-chess/)
-- [Creative UI/UX Design in Chess Applications — chesschest.com](https://chesschest.com/creative-ui-ux-design-in-chess-applications/)
-- [Designing for Kids UX — Ungrammary](https://www.ungrammary.com/post/designing-for-kids-ux-design-tips-for-children-apps)
-- [Using local storage for high scores and game progress — Gamedev.js](https://gamedevjs.com/articles/using-local-storage-for-high-scores-and-game-progress/)
-- [Top 10 Chess Apps and Websites for Kids: 2025 Reviews — Fable Chess](https://www.fablechess.com/post/top-10-chess-apps-and-websites-for-kids-2025-reviews)
+- Codebase direct analysis: `data/chessPuzzles.ts`, `hooks/useChessProgress.ts`, `app/[locale]/games/chess-game/MovementPuzzle.tsx`, `CapturePuzzle.tsx`, `ChessGameContent.tsx` — existing contracts and state shapes
+- Pattern: Kids' educational game retention — micro-milestones, difficulty de-escalation, visible session goals (HIGH confidence — well-established in educational game design)
+- Pattern: Chess puzzle generator edge cases — pawn, knight near corners, king near edge (HIGH confidence — deterministic chess rules)
+- Pattern: localStorage migration without versioning — common returning-user bug in React apps (HIGH confidence — recurrent pattern in web app development)
+- Pattern: SSR + chess.js — `window`/`document` access causes Next.js build failures; requires `dynamic` import (HIGH confidence — Next.js App Router constraint, verified against existing codebase SSR patterns)
+
+---
+*Pitfalls research for: Infinite replayability — random puzzle generation, escalating difficulty, progression systems*
+*Researched: 2026-03-22*

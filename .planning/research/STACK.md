@@ -1,181 +1,240 @@
-# Technology Stack: Chess Learning Game
+# Stack Research
 
-**Project:** Lepdy Chess — Kids Chess Learning Game (milestone addition)
-**Researched:** 2026-03-21
-**Scope:** Libraries needed on top of existing stack (Next.js 16, React 19, MUI 7, TypeScript 5)
-
----
-
-## Summary
-
-This is a milestone addition to an existing app, not a new project. The existing stack handles routing, i18n, theming, audio, and state. What's needed is specifically: (1) a chess board rendering component, (2) chess logic / move generation, and (3) a hand-curated puzzle dataset strategy. No AI opponent, no multiplayer, no puzzle server — just interactive board + logic.
-
-**Recommended additions:**
-
-| Purpose | Library | Version |
-|---------|---------|---------|
-| Board rendering | `react-chessboard` | ^5.10.0 |
-| Chess logic | `chess.js` | ^1.4.0 |
-| Puzzle data | Hand-curated static JSON (Lichess CC0 source) | — |
+**Domain:** Infinite replayability — random puzzle generation, escalating difficulty, progression systems
+**Project:** Lepdy Chess v1.3 (milestone addition to existing chess game)
+**Researched:** 2026-03-22
+**Confidence:** HIGH
 
 ---
 
-## Recommended Libraries
+## Context: What Already Exists
 
-### Board Rendering: react-chessboard
+The existing stack is fixed. Do not re-research these:
 
-**Install:** `npm install react-chessboard`
+| Already In Place | Version | Purpose |
+|-----------------|---------|---------|
+| `chess.js` | ^1.4.0 | Chess logic library (already installed) |
+| `react-chessboard` | ^5.10.0 | Board rendering (already installed) |
+| `react-confetti` | ^6.4.0 | Celebration effects (already installed) |
+| localStorage pattern | — | Progress persistence (established in useChessProgress hook) |
+| Difficulty field | — | `difficulty: 1 | 2 | 3` already exists on MovementPuzzle and CapturePuzzle |
 
-**Why this one:**
-
-react-chessboard (Clariity) is the clear incumbent in the React chess board space as of 2026. It was created specifically to replace `chessboardjsx`, which is unmaintained. It is actively maintained (v5.10.0 released February 2026, 89 releases total, ~3,400 dependent packages). It explicitly requires React `^19.0.0` as a peer dependency — a perfect match with Lepdy's React 19.2.3.
-
-Key capabilities that matter for this project:
-
-- `onSquareClick` handler — enables click-to-select / click-to-move interaction without drag and drop, which is essential for young children (ages 5-9) on tablets
-- `customSquareStyles` prop — map of square IDs to CSS style objects, used to highlight legal moves, target squares, and selection state (required for movement puzzles)
-- `customPieces` prop — render arbitrary React nodes as pieces, enabling future custom piece art or highlighting a selected piece
-- `arePiecesDraggable` — can be set to `false` to force click-only interaction for young users
-- `boardWidth` prop — explicit pixel width, enables consistent sizing on tablet viewports
-- TypeScript support built-in (the library is authored in TypeScript)
-- Must be wrapped in a `'use client'` component in Next.js App Router — this matches the existing `*Content.tsx` client component pattern Lepdy already uses
-
-**What NOT to use:**
-
-- `chessboardjsx` — unmaintained since ~2021, do not use
-- `chessground` — the Lichess board, designed for full chess games with server-side logic, heavier than needed, and has more complex integration requirements
-- `gchessboard` — a Web Component wrapper, not native React, adds impedance mismatch with MUI and React state
-- `react-chessboard-svg` — static SVG renderer only, no interactivity
-- Building a custom board from scratch — unnecessary complexity; react-chessboard's `customPieces` and `customSquareStyles` provide all the customization needed
-
-**Confidence:** HIGH — verified via GitHub (active releases through Feb 2026), peer dependency confirmed as React ^19.0.0, feature set confirmed via multiple sources
+The question is: what NEW additions are needed for infinite random puzzles with escalating difficulty and a progression system?
 
 ---
 
-### Chess Logic: chess.js
+## Verdict: No New Dependencies Required
 
-**Install:** `npm install chess.js`
+The v1.3 milestone can be delivered entirely using the existing stack. The work is algorithmic, not library-based.
 
-**Why this one:**
-
-chess.js v1.4.0 is the standard TypeScript chess logic library. It is headless (no UI), pairs canonically with react-chessboard, and provides exactly the operations needed for the puzzle modes:
-
-| API Method | Use in Lepdy Chess |
-|------------|-------------------|
-| `new Chess(fen)` | Load a puzzle starting position from FEN string |
-| `chess.moves({ square: 'e2' })` | Get all legal moves for a piece — highlight valid tap targets in movement puzzles |
-| `chess.move({ from, to })` | Validate and apply a player's chosen move |
-| `chess.get(square)` | Read what piece is on a square — determine piece identity for "learn the pieces" level |
-| `chess.put({ type, color }, square)` | Programmatically place pieces to set up puzzle positions |
-| `chess.turn()` | Know whose turn it is |
-| `chess.isCheckmate()`, `chess.isDraw()` | Detect puzzle completion states if needed |
-
-TypeScript types are native (the library is authored in TypeScript). Square notation (`'e2'`, `'a1'`) and piece types (`'p'`, 'n'`, `'b'`, `'r'`, `'q'`, `'k'`) are typed.
-
-The `moves({ square })` method is especially important: for the movement puzzle level ("tap where this piece can move"), you call `chess.moves({ square: selectedSquare, verbose: true })` to get an array of valid target squares, then pass those to `customSquareStyles` on the board for visual highlighting.
-
-**What NOT to use:**
-
-- `js-chess-engine` — includes an AI engine (unnecessary overhead), primarily aimed at Node.js >= 24
-- `chess.ts` — a fork of chess.js with TypeScript rewrite, much smaller ecosystem, not necessary when chess.js already ships TypeScript types natively
-- Writing custom move validation — chess rules are subtle (en passant, castling, promotion); always delegate to a tested library
-
-**Confidence:** HIGH — version 1.4.0 confirmed on npm and official docs (jhlywa.github.io/chess.js), TypeScript native confirmed, `moves({ square })` API confirmed
-
----
-
-### Puzzle Data: Hand-Curated Static JSON
-
-**No additional library needed.**
-
-**Why static JSON:**
-
-The puzzle requirements are narrow: three level types (learn pieces, movement puzzles, capture puzzles). This is not a puzzle-solving app with a progression through thousands of rated puzzles — it's a few carefully chosen positions that demonstrate concepts. Static JSON is the correct approach:
-
-- Zero runtime dependency
-- Full control over difficulty, piece composition, and Hebrew/educational annotations
-- Works entirely offline
-- No API calls, no loading states to manage for kids
-
-**Puzzle position format (FEN-based):**
-
-Each puzzle entry in `/data/chess/puzzles.ts` (matching Lepdy's data pattern):
+**chess.js already provides everything needed for puzzle generation:**
 
 ```typescript
-interface ChessPuzzle {
-  id: string;
-  type: 'movement' | 'capture';
-  piece: 'p' | 'n' | 'b' | 'r' | 'q' | 'k';
-  fen: string;           // Board position
-  targetSquare: string;  // For capture puzzles: square to capture
-  hint?: string;         // Translation key for hint text
+import { Chess } from 'chess.js';
+
+// Load any position from FEN
+const chess = new Chess('8/8/8/8/4R3/8/8/8 w - - 0 1');
+
+// Get all legal moves for the rook on e4
+const moves = chess.moves({ square: 'e4', verbose: true });
+// Returns: [{ from: 'e4', to: 'e1', ... }, { from: 'e4', to: 'e2', ... }, ...]
+
+// Extract valid target squares — these become validTargets in a GeneratedPuzzle
+const targets = moves.map(m => m.to);
+```
+
+This is the entire puzzle generation engine. No additional library is needed.
+
+---
+
+## Recommended Stack Additions
+
+### Zero new npm dependencies.
+
+All three features — random puzzle generation, escalating difficulty, and progression tracking — are implemented using patterns that already exist in the codebase:
+
+| Feature | Mechanism | Where |
+|---------|-----------|-------|
+| Random position generation | `Math.random()` + chess.js `Chess` instance | `utils/chessGenerator.ts` (new utility file) |
+| Valid move computation | `chess.moves({ square, verbose: true })` | Same utility |
+| Difficulty levels | Square count + piece mobility heuristics | Encoded in generator logic |
+| Puzzle progression | Extended `useChessProgress` hook | `hooks/useChessProgress.ts` (extended) |
+| Session streak | Extended `useChessProgress` hook | Same hook |
+| Star/reward state | Extended `useChessProgress` hook | Same hook |
+
+---
+
+## What Changes (Not What's Added)
+
+### 1. Puzzle Generator Utility — `utils/chessGenerator.ts` (new file)
+
+Replace hand-curated static arrays with a generator function:
+
+```typescript
+// Generates a valid single-piece movement puzzle for any piece type and difficulty
+function generateMovementPuzzle(pieceId: ChessPieceId, difficulty: 1 | 2 | 3): GeneratedMovementPuzzle
+
+// Generates a capture puzzle with 1 correct piece and 1-3 distractors
+function generateCapturePuzzle(difficulty: 1 | 2 | 3): GeneratedCapturePuzzle
+```
+
+The generator uses `chess.js` to place a piece at a random square appropriate to the difficulty tier, then calls `chess.moves({ square, verbose: true })` to derive valid targets. This is pure TypeScript with no new dependencies.
+
+**Difficulty heuristics for movement puzzles (no library needed — pure logic):**
+
+| Difficulty | Position Rule | Target Count |
+|------------|--------------|--------------|
+| 1 — Easy | Center-adjacent squares (c3–f6 range) | 8+ valid moves (open positions) |
+| 2 — Medium | Edge-adjacent squares | 5–7 valid moves |
+| 3 — Hard | Corner/edge squares with restricted mobility | 2–4 valid moves |
+
+For pieces like the rook and bishop, "center vs. edge" naturally produces more/fewer valid targets through chess.js move generation — no custom logic needed beyond choosing the starting square.
+
+**Why NOT a seeded random library (e.g., seedrandom):**
+Seeded RNG is only valuable when you need to reproduce the exact same puzzle sequence across sessions (e.g., daily puzzle mode where all players solve the same puzzle). For this project, puzzles should feel fresh every visit — unseeded `Math.random()` is correct. No seeded RNG library needed.
+
+### 2. Extended Progress Schema — `hooks/useChessProgress.ts` (extended)
+
+The current `ChessProgressData` only tracks `completedLevels` and `currentLevel`. Extend it to support infinite mode:
+
+```typescript
+interface ChessProgressData {
+  // Existing (keep backward-compatible)
+  completedLevels: number[];
+  currentLevel: number;
+
+  // New for v1.3
+  totalPuzzlesSolved: number;       // cumulative counter across all sessions
+  currentStreak: number;            // consecutive correct answers in current session
+  bestStreak: number;               // all-time best streak
+  difficultyLevel: number;          // 1-10 escalating difficulty (persisted)
+  lastPlayedDate: string | null;    // ISO date string — for daily streak detection
+  totalStars: number;               // star rewards collected (for progression display)
 }
 ```
 
-**Where puzzle positions come from:**
+This extends an existing hook using the established localStorage pattern. No context provider needed (existing decision: "useChessProgress as standalone hook, no context").
 
-Lichess publishes a CC0-licensed puzzle database (5.7M+ puzzles with FEN, moves, themes, and ratings) at `database.lichess.org/#puzzles`. This is a research/inspiration source — manually extract and simplify 5-10 positions per puzzle type. Do not import the dataset programmatically; curate by hand.
+**Why NOT an external streak/gamification library:**
+Lepdy already has a working streak hook (`useStreak.ts`) and category progress hooks. The chess game's progression needs are simpler (session-scoped streaks + cumulative counters). Adding a gamification library for what amounts to 3 counter fields in localStorage would be over-engineering.
 
-For the "learn pieces" level (Level 1), no puzzle logic is needed at all — it's a presentation layer (audio + piece display), analogous to Lepdy's existing `CategoryPage` pattern.
+### 3. Difficulty Escalation — Pure Logic, No Library
 
-**What NOT to use:**
+Implement difficulty as a locally computed value that increases with `totalPuzzlesSolved`:
 
-- `@react-chess-tools/react-chess-puzzle` — a higher-level puzzle component that wraps react-chessboard and chess.js together. It handles full puzzle flows (play both sides, detect solution). This is more than needed and less controllable. The Lepdy puzzle model is custom (tap a destination square, not play full sequences), so dropping in a puzzle component would fight against the UX requirements.
-- Lichess puzzle API at runtime — latency, dependency, and overkill for a curated set of ~30 positions
+```typescript
+function getDifficultyTier(totalSolved: number): 1 | 2 | 3 {
+  if (totalSolved < 10) return 1;
+  if (totalSolved < 25) return 2;
+  return 3;
+}
+```
 
-**Confidence:** MEDIUM — puzzle format and data source are well-established; the decision to hand-curate rather than programmatically import is a design choice, not a technical constraint
+This can be refined with breakpoints (e.g., reset back to easier puzzles when switching piece types), but the core mechanism is a pure function with no dependencies.
+
+**Why NOT an adaptive difficulty library (e.g., ELO rating packages):**
+ELO-based adaptive difficulty is appropriate when the system needs to track wrong answers, time-to-solve, and adjust on a per-puzzle basis — the approach used by Chess.com and Lichess. For a kids' app ages 5-9, that level of adaptation is both over-engineered and potentially demotivating (a child who keeps getting hard puzzles feels punished). A simple step-up-by-count approach is correct for this audience.
 
 ---
 
-## Integration Notes for Lepdy's Existing Stack
+## What NOT to Add
 
-### Next.js App Router
+| Do Not Add | Why | Use Instead |
+|------------|-----|-------------|
+| `seedrandom` or similar | Reproducible puzzles aren't needed — freshness is the goal | `Math.random()` |
+| ELO/rating packages (`glicko-two`, etc.) | Sophisticated rating for ages 5-9 is demotivating overkill | Simple difficulty tiers |
+| Gamification frameworks (`gamification-js`, `badgerhq`) | These require server state; Lepdy is client-only | Extended localStorage hook |
+| Puzzle API / Lichess API at runtime | Network dependency, latency, requires API key management | Generated positions via chess.js |
+| External puzzle databases (`432k-chess-puzzles` etc.) | Tactical puzzles are wrong domain — those are "find the best move", not "show where this piece can move" | chess.js move generation |
+| State management library (Zustand, Redux) | One hook with localStorage is sufficient; adding a store for 4 counters is overkill | Extended `useChessProgress` hook |
+| React Query / SWR | No server data involved | localStorage only |
 
-react-chessboard is a client-only library (uses browser drag-and-drop APIs). Wrap it in a `'use client'` component. This is already the pattern for all Lepdy games (`*Content.tsx`). The board component goes inside the Content file, not the page.tsx.
+---
 
-### RTL / MUI
+## Integration Points
 
-react-chessboard renders with absolute positioning inside a container div. It does not use Emotion or MUI's theming system, so RTL direction (`dir="rtl"`) on the document does not affect the board layout. This is correct — a chess board should always render left-to-right (a-h files). MUI layout wrappers around the board (for controls, piece labels, feedback text) should use `dir="rtl"` normally.
+### chess.js moves() API (already installed, v1.4.0)
 
-### TypeScript
+```typescript
+// Full signature of what the generator uses:
+chess.moves({ square: 'e4', verbose: true })
+// Returns: Array<{ from: Square, to: Square, piece: PieceSymbol, ... }>
 
-Both react-chessboard and chess.js ship native TypeScript types. No `@types/` packages needed.
+// For placement:
+chess.put({ type: 'r', color: 'w' }, 'e4')  // Place white rook on e4
+chess.clear()                                  // Clear board before placing
+```
 
-### Board Width on Tablets
+This API is confirmed stable in v1.4.0 (the version already installed).
 
-Pass an explicit `boardWidth` prop calculated from viewport. A safe approach: `Math.min(window.innerWidth - 32, 480)` for tablets. Use a `useEffect` + `useState` to measure on mount, since `window` is not available during SSR.
+### Backward Compatibility
+
+The extended `ChessProgressData` schema must migrate gracefully. Use the existing guard pattern in `useChessProgress`:
+
+```typescript
+// In the localStorage load useEffect:
+const totalPuzzlesSolved = typeof parsed.totalPuzzlesSolved === 'number'
+  ? parsed.totalPuzzlesSolved
+  : 0;
+```
+
+This matches the existing migration pattern already used in `useCategoryProgress` hooks.
+
+### Performance on Tablets
+
+chess.js move generation is synchronous and completes in microseconds for single-piece positions. No web worker, no async generation, no loading state needed. Generating a puzzle is fast enough to happen inline before rendering the next board.
 
 ---
 
 ## Installation
 
-```bash
-npm install react-chessboard chess.js
-```
+No new packages to install.
 
-No dev-only dependencies needed — both are runtime libraries.
+```bash
+# Nothing to add — chess.js and react-chessboard are already in package.json
+```
 
 ---
 
 ## Alternatives Considered
 
-| Category | Recommended | Alternative | Why Not |
-|----------|-------------|-------------|---------|
-| Board rendering | react-chessboard | chessboardjsx | Unmaintained since ~2021 |
-| Board rendering | react-chessboard | chessground | Lichess-specific, heavier, complex integration |
-| Board rendering | react-chessboard | Custom SVG board | Unnecessary effort; library covers all needs |
-| Chess logic | chess.js | js-chess-engine | Ships with AI engine (unused overhead), Node 24 target |
-| Chess logic | chess.js | chess.ts | Tiny ecosystem, no advantage over chess.js v1.x TypeScript |
-| Puzzle delivery | Static JSON | @react-chess-tools/react-chess-puzzle | Too opinionated about UX flow, fights the custom tap-target model |
-| Puzzle delivery | Static JSON | Lichess API at runtime | Network dependency, latency, overkill for ~30 positions |
+| Feature | Recommended | Alternative | Why Not |
+|---------|-------------|-------------|---------|
+| Puzzle generation | chess.js `moves()` API | Hand-curated static data | Finite (hits repeat after ~25 puzzles); adding more requires manual FEN authoring |
+| Puzzle generation | chess.js `moves()` API | External puzzle database | Wrong puzzle type — tactical puzzles are move sequences, not movement demonstrations |
+| Difficulty tracking | Simple tier counter | ELO rating | Ages 5-9 audience; ELO requires wrong-answer tracking and is demotivating at low levels |
+| Progression state | Extended localStorage hook | React Context | Existing decision: chess hooks are standalone (no context); one more counter field doesn't justify adding context |
+| Seeding | `Math.random()` | `seedrandom` | No daily puzzle mode planned; fresh randomness preferred over reproducibility |
+| Streaks | Extended `useChessProgress` | External streak library | The app already has `useStreak.ts`; a second streak library would conflict with the existing pattern |
+
+---
+
+## Stack Patterns for This Milestone
+
+**If the game needs a "puzzle of the day" mode (same puzzle for all users on same date):**
+- Use a date-based seed: `const seed = new Date().toISOString().slice(0, 10)` → derive square index deterministically
+- Still no seeded RNG library needed — a simple modulo over date numeric hash is sufficient
+
+**If difficulty should reset when the piece type changes:**
+- Track `currentPieceIndex` in the progress data and reset `currentStreak` but not `totalPuzzlesSolved`
+- Pure data change, no new dependencies
+
+**If a visual "level-up" moment is needed for escalating difficulty:**
+- Use the existing `react-confetti` (already installed) with a brief screen transition
+- Use MUI's existing `Fade` component (already in use) for smooth state change
 
 ---
 
 ## Sources
 
-- react-chessboard GitHub (Clariity): https://github.com/Clariity/react-chessboard — version v5.10.0, peer deps React ^19.0.0, active through Feb 2026
-- react-chessboard npm: https://www.npmjs.com/package/react-chessboard — 3,400 dependents
-- chess.js official docs: https://jhlywa.github.io/chess.js/ — v1.4.0
-- chess.js GitHub: https://github.com/jhlywa/chess.js — TypeScript native
-- Lichess puzzle database: https://database.lichess.org/#puzzles — CC0 license, 5.7M puzzles with FEN
-- Lichess puzzles on Hugging Face: https://huggingface.co/datasets/Lichess/chess-puzzles — updated Dec 2025
+- chess.js npm: https://www.npmjs.com/package/chess.js — v1.4.0 confirmed current
+- chess.js docs: https://jhlywa.github.io/chess.js/ — `moves({ square, verbose })` API confirmed
+- chess.js GitHub releases: https://github.com/jhlywa/chess.js/releases — v1.4.0 is latest
+- Existing codebase: `/utils/chessFen.ts`, `/hooks/useChessProgress.ts`, `/data/chessPuzzles.ts` — confirmed existing patterns
+- Difficulty design: Predicting Chess Puzzle Difficulty research (arxiv.org/html/2410.11078v1) — center/edge heuristic aligns with complexity findings (LOW confidence — domain insight, not direct source)
+- Kids progression UX: Duolingo gamification research via orizon.co/blog — streak + milestone mechanics (MEDIUM confidence)
+
+---
+
+*Stack research for: Lepdy Chess v1.3 Infinite Replayability*
+*Researched: 2026-03-22*
