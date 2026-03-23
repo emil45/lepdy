@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Complete Puzzle Experience
-status: Ready to execute
-stopped_at: Completed 22-01-PLAN.md
-last_updated: "2026-03-23T08:48:08.966Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 22-02-PLAN.md
+last_updated: "2026-03-23T08:53:16.817Z"
 progress:
   total_phases: 10
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 8
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 # Project State
@@ -49,6 +49,7 @@ Plan: 2 of 2
 | Phase 21-checkmate-puzzle-data-renderers P01 | 5 | 2 tasks | 5 files |
 | Phase 21 P02 | 3 | 2 tasks | 2 files |
 | Phase 22-wire-checkmate-into-sessions P01 | 6 | 2 tasks | 6 files |
+| Phase 22-wire-checkmate-into-sessions P02 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,8 @@ Recent decisions affecting current work:
 - [Phase 21]: Use puzzle.fen.split(' ')[0] to extract piece-placement FEN for Chessboard component
 - [Phase 21]: CheckmatePuzzle.tsx has no chess.js runtime dependency — component trusts pre-validated puzzle data
 - [Phase 22-wire-checkmate-into-sessions]: chessCheckmateEnabled defaults to false for safe rollout; checkmate injected at slot 9 with fixed tier 1; practice sessions remain capture/movement only
+- [Phase 22-02]: handleCheckmateAnswer only plays SUCCESS on correct — avoids double WRONG_ANSWER since CheckmatePuzzle plays it internally
+- [Phase 22-02]: Amplitude CHESS_PUZZLE_ANSWERED fires in parent handlers, not inside puzzle components — keeps analytics centralized
 
 ### Pending Todos
 
@@ -87,6 +90,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T08:48:08.964Z
-Stopped at: Completed 22-01-PLAN.md
+Last session: 2026-03-23T08:53:16.815Z
+Stopped at: Completed 22-02-PLAN.md
 Resume file: None

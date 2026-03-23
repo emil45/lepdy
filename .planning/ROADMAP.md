@@ -71,7 +71,7 @@
 - [x] **Phase 19: Menu Redesign + Sound & Celebrations** - New hub menu replacing broken 1/2/3/daily structure, correct/wrong sound effects, and streak milestone celebrations (completed 2026-03-23)
 - [x] **Phase 20: Practice Mode** - Per-piece drill mode with piece selector screen and infinite adaptive puzzles (completed 2026-03-23)
 - [x] **Phase 21: Checkmate Puzzle Data + Renderers** - 20+ curated mate-in-1 positions with dedicated renderer component (completed 2026-03-23)
-- [ ] **Phase 22: Wire Checkmate Into Sessions** - Checkmate puzzles integrated into Challenge sessions via feature flag
+- [x] **Phase 22: Wire Checkmate Into Sessions** - Checkmate puzzles integrated into Challenge sessions via feature flag (completed 2026-03-23)
 - [ ] **Phase 23: Progress & Engagement Layer** - Mastery map on hub menu and per-piece breakdown on session complete screen
 
 ## Phase Details
@@ -204,7 +204,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 22-01-PLAN.md — Feature flag, Amplitude event, session hook extension for checkmate
-- [ ] 22-02-PLAN.md — Wire CheckmatePuzzle rendering into ChessGameContent, E2E test
+- [x] 22-02-PLAN.md — Wire CheckmatePuzzle rendering into ChessGameContent, E2E test
 
 ### Phase 23: Progress & Engagement Layer
 **Goal**: Kids see a concrete, visual representation of what they have mastered and what they are still learning, making abstract progress feel real and rewarding
@@ -244,5 +244,5 @@ Plans:
 | 19. Menu Redesign + Sound & Celebrations | v1.4 | 2/2 | Complete    | 2026-03-23 |
 | 20. Practice Mode | v1.4 | 2/2 | Complete    | 2026-03-23 |
 | 21. Checkmate Puzzle Data + Renderers | v1.4 | 2/2 | Complete    | 2026-03-23 |
-| 22. Wire Checkmate Into Sessions | v1.4 | 1/2 | In Progress|  |
+| 22. Wire Checkmate Into Sessions | v1.4 | 2/2 | Complete   | 2026-03-23 |
 | 23. Progress & Engagement Layer | v1.4 | 0/TBD | Not started | - |
