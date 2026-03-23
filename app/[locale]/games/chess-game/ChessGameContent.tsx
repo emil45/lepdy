@@ -365,7 +365,7 @@ export default function ChessGameContent() {
             {t('title')}
           </Typography>
           <Box sx={{ width: '100%', maxWidth: 520, mt: 2, display: 'flex', justifyContent: 'center' }}>
-            <ChessHubMenu onNavigate={setCurrentView} isDailyCompleted={isDailyCompleted} />
+            <ChessHubMenu onNavigate={setCurrentView} isDailyCompleted={isDailyCompleted} currentTiersByPiece={currentTiersByPiece} />
           </Box>
           <ChessSettingsDrawer
             open={settingsOpen}

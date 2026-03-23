@@ -5,8 +5,12 @@ import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useTranslations } from 'next-intl';
+import { chessPieces } from '@/data/chessPieces';
+import { PiecePuzzleProgress } from '@/hooks/usePuzzleProgress';
+import { getBandKey, getTierColor } from '@/utils/chessMastery';
 
 type ChessView = 'hub' | 'level-1' | 'session' | 'daily' | 'practice-picker';
 
@@ -28,10 +32,13 @@ const HUB_TILES: HubTile[] = [
 interface ChessHubMenuProps {
   onNavigate: (view: ChessView) => void;
   isDailyCompleted: boolean;
+  currentTiersByPiece: Record<string, PiecePuzzleProgress>;
 }
 
-export default function ChessHubMenu({ onNavigate, isDailyCompleted }: ChessHubMenuProps) {
+export default function ChessHubMenu({ onNavigate, isDailyCompleted, currentTiersByPiece }: ChessHubMenuProps) {
   const t = useTranslations('chessGame');
+
+  const expertCount = chessPieces.filter((p) => (currentTiersByPiece[p.id]?.tier ?? 1) === 3).length;
 
   return (
     <Grid container spacing={2} sx={{ width: '100%', maxWidth: 520 }}>
@@ -67,6 +74,26 @@ export default function ChessHubMenu({ onNavigate, isDailyCompleted }: ChessHubM
                   <CheckCircleIcon sx={{ color: '#4caf50', fontSize: 28 }} />
                 </Box>
               )}
+              {/* Mini piece mastery row */}
+              <Box data-testid="piece-mastery-row" sx={{ direction: 'ltr', display: 'flex', flexWrap: 'nowrap', gap: 0.5, justifyContent: 'center', mt: 0.5 }}>
+                {chessPieces.map((piece) => {
+                  const tier = (currentTiersByPiece[piece.id]?.tier ?? 1) as 1 | 2 | 3;
+                  return (
+                    <Box key={piece.id} sx={{ bgcolor: getTierColor(tier), borderRadius: 1, px: 0.5, textAlign: 'center', minWidth: 0 }}>
+                      <Typography sx={{ fontSize: 18, lineHeight: 1 }}>{piece.emoji}</Typography>
+                      <Typography variant="caption" noWrap sx={{ fontSize: '0.55rem', display: 'block' }}>
+                        {t(getBandKey(tier) as Parameters<typeof t>[0])}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+              </Box>
+              {/* Overall mastery summary chip */}
+              <Chip
+                label={`${expertCount}/6 ${t('ui.masteryExpert' as Parameters<typeof t>[0])}`}
+                size="small"
+                sx={{ bgcolor: '#ffcd36', fontWeight: 'bold', fontSize: '0.7rem', mt: 0.5 }}
+              />
             </CardActionArea>
           </Card>
         </Grid>

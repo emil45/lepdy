@@ -74,6 +74,29 @@ test.describe('Chess game shell', () => {
   });
 });
 
+test.describe('Chess mastery tracking', () => {
+  test('hub tiles display mastery row for all 6 pieces', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('lepdy_chess_puzzle_progress', JSON.stringify({
+        pieces: {
+          king: { tier: 3, consecutiveCorrect: 0, consecutiveWrong: 0 },
+          rook: { tier: 2, consecutiveCorrect: 0, consecutiveWrong: 0 },
+          bishop: { tier: 1, consecutiveCorrect: 0, consecutiveWrong: 0 },
+          queen: { tier: 1, consecutiveCorrect: 0, consecutiveWrong: 0 },
+          knight: { tier: 1, consecutiveCorrect: 0, consecutiveWrong: 0 },
+          pawn: { tier: 1, consecutiveCorrect: 0, consecutiveWrong: 0 },
+        }
+      }));
+    });
+    await page.goto('/games/chess-game');
+    const masteryRows = page.locator('[data-testid="piece-mastery-row"]');
+    await expect(masteryRows.first()).toBeVisible();
+    // Each row has 6 piece elements
+    const firstRowPieces = masteryRows.first().locator('div');
+    await expect(firstRowPieces).toHaveCount(6);
+  });
+});
+
 test.describe('Chess practice mode', () => {
   test('practice picker shows 6 piece cards', async ({ page }) => {
     await page.goto('/games/chess-game');
