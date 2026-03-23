@@ -18,6 +18,14 @@
       "code": "Code: Emanuel",
       "contact": "Contact: emil45@gmail.com",
       "about": "Hebrew Learning for Kids"
+    },
+    "cloudSync": {
+      "signInTitle": "Save Your Child's Progress",
+      "signInDescription": "Parents: sign in with your Google account to save progress across all devices.",
+      "signInButton": "Sign in with Google (Parents only)",
+      "signedInAs": "Signed in as {name}",
+      "signOutButton": "Sign out",
+      "parentNote": "This feature is for parents and guardians. Your child's learning data is saved to your Google account."
     }
   },
   "games": {

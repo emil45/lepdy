@@ -10,6 +10,7 @@ import { StreakProvider } from '@/contexts/StreakContext';
 import { StickerProvider } from '@/contexts/StickerContext';
 import { StickerToastProvider } from '@/contexts/StickerToastContext';
 import { FeatureFlagProvider } from '@/contexts/FeatureFlagContext';
+import { AuthProvider } from '@/contexts/AuthContext';
 import { LettersProgressProvider } from '@/contexts/LettersProgressContext';
 import { NumbersProgressProvider } from '@/contexts/NumbersProgressContext';
 import { AnimalsProgressProvider } from '@/contexts/AnimalsProgressContext';
@@ -54,6 +55,7 @@ export default function Providers({ children, direction, locale }: ProvidersProp
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <FeatureFlagProvider>
+          <AuthProvider>
           <StreakProvider>
             <LettersProgressProvider>
               <NumbersProgressProvider>
@@ -72,6 +74,7 @@ export default function Providers({ children, direction, locale }: ProvidersProp
               </NumbersProgressProvider>
             </LettersProgressProvider>
           </StreakProvider>
+          </AuthProvider>
         </FeatureFlagProvider>
       </ThemeProvider>
     </ThemeRegistry>

@@ -18,6 +18,14 @@
       "code": "קוד: עמנואל",
       "contact": "צור קשר: emil45@gmail.com",
       "about": "לימוד עברית לילדים"
+    },
+    "cloudSync": {
+      "signInTitle": "שמרו את ההתקדמות של ילדכם",
+      "signInDescription": "הורים: התחברו עם חשבון Google כדי לשמור את ההתקדמות בכל המכשירים.",
+      "signInButton": "התחברות עם Google (להורים בלבד)",
+      "signedInAs": "מחובר/ת בתור {name}",
+      "signOutButton": "התנתקות",
+      "parentNote": "תכונה זו מיועדת להורים ולאפוטרופוסים. נתוני הלמידה של ילדכם נשמרים בחשבון Google שלכם."
     }
   },
   "games": {
