@@ -203,7 +203,7 @@ Plans:
   3. Amplitude events track checkmate puzzle correct/wrong answers separately from movement and capture puzzles
 **Plans**: 2 plans
 Plans:
-- [ ] 22-01-PLAN.md — Feature flag, Amplitude event, session hook extension for checkmate
+- [x] 22-01-PLAN.md — Feature flag, Amplitude event, session hook extension for checkmate
 - [ ] 22-02-PLAN.md — Wire CheckmatePuzzle rendering into ChessGameContent, E2E test
 
 ### Phase 23: Progress & Engagement Layer
@@ -244,5 +244,5 @@ Plans:
 | 19. Menu Redesign + Sound & Celebrations | v1.4 | 2/2 | Complete    | 2026-03-23 |
 | 20. Practice Mode | v1.4 | 2/2 | Complete    | 2026-03-23 |
 | 21. Checkmate Puzzle Data + Renderers | v1.4 | 2/2 | Complete    | 2026-03-23 |
-| 22. Wire Checkmate Into Sessions | v1.4 | 0/2 | Not started | - |
+| 22. Wire Checkmate Into Sessions | v1.4 | 1/2 | In Progress|  |
 | 23. Progress & Engagement Layer | v1.4 | 0/TBD | Not started | - |

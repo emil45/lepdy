@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Complete Puzzle Experience
-status: Ready to plan
-stopped_at: Completed 21-02-PLAN.md
-last_updated: "2026-03-23T08:30:27.238Z"
+status: Ready to execute
+stopped_at: Completed 22-01-PLAN.md
+last_updated: "2026-03-23T08:48:08.966Z"
 progress:
   total_phases: 10
   completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 8
+  completed_plans: 7
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 21 — Checkmate Puzzle Data + Renderers
+**Current focus:** Phase 22 — Wire Checkmate Into Sessions
 
 ## Current Position
 
-Phase: 22
-Plan: Not started
+Phase: 22 (Wire Checkmate Into Sessions) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Plan: Not started
 | Phase 20 P02 | 5 | 2 tasks | 3 files |
 | Phase 21-checkmate-puzzle-data-renderers P01 | 5 | 2 tasks | 5 files |
 | Phase 21 P02 | 3 | 2 tasks | 2 files |
+| Phase 22-wire-checkmate-into-sessions P01 | 6 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -72,6 +73,7 @@ Recent decisions affecting current work:
 - [Phase 21-01]: validateCheckmatePuzzle checks isCheck() first, exactly 1 mating move, then isCheckmate() after applying the move
 - [Phase 21]: Use puzzle.fen.split(' ')[0] to extract piece-placement FEN for Chessboard component
 - [Phase 21]: CheckmatePuzzle.tsx has no chess.js runtime dependency — component trusts pre-validated puzzle data
+- [Phase 22-wire-checkmate-into-sessions]: chessCheckmateEnabled defaults to false for safe rollout; checkmate injected at slot 9 with fixed tier 1; practice sessions remain capture/movement only
 
 ### Pending Todos
 
@@ -85,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T08:26:07.289Z
-Stopped at: Completed 21-02-PLAN.md
+Last session: 2026-03-23T08:48:08.964Z
+Stopped at: Completed 22-01-PLAN.md
 Resume file: None

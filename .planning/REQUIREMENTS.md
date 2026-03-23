@@ -23,7 +23,7 @@ Requirements for Complete Puzzle Experience milestone. Each maps to roadmap phas
 
 - [x] **MATE-01**: User can solve checkmate-in-1 puzzles ("find the move that checkmates")
 - [x] **MATE-02**: At least 20 curated mate-in-1 positions validated by chess.js across multiple piece types
-- [ ] **MATE-03**: Checkmate puzzles appear in Challenge sessions alongside movement and capture puzzles
+- [x] **MATE-03**: Checkmate puzzles appear in Challenge sessions alongside movement and capture puzzles
 
 ### Sound & Celebrations
 
@@ -105,7 +105,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PRAC-03 | Phase 20 | Complete |
 | MATE-01 | Phase 21 | Complete |
 | MATE-02 | Phase 21 | Complete |
-| MATE-03 | Phase 22 | Pending |
+| MATE-03 | Phase 22 | Complete |
 | SFX-01 | Phase 19 | Complete |
 | SFX-02 | Phase 19 | Complete |
 | SFX-03 | Phase 19 | Complete |
