@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useTranslations } from 'next-intl';
 
-type ChessView = 'hub' | 'level-1' | 'session' | 'daily';
+type ChessView = 'hub' | 'level-1' | 'session' | 'daily' | 'practice-picker';
 
 interface HubTile {
   id: string;
@@ -21,7 +21,7 @@ interface HubTile {
 const HUB_TILES: HubTile[] = [
   { id: 'learn', emoji: '\u2654', labelKey: 'hub.learn', color: '#9ed6ea', view: 'level-1' },
   { id: 'challenge', emoji: '\u2656', labelKey: 'hub.challenge', color: '#dbc3e2', view: 'session' },
-  { id: 'practice', emoji: '\u265E', labelKey: 'hub.practice', color: '#dee581', view: 'session' },
+  { id: 'practice', emoji: '\u265E', labelKey: 'hub.practice', color: '#dee581', view: 'practice-picker' },
   { id: 'daily', emoji: '\uD83D\uDCC5', labelKey: 'hub.daily', color: '#ffcd36', view: 'daily' },
 ];
 

@@ -20,11 +20,13 @@ import ChessHubMenu from './ChessHubMenu';
 import PieceIntroduction from './PieceIntroduction';
 import StreakBadge from './StreakBadge';
 import SessionCompleteScreen from './SessionCompleteScreen';
+import PracticePicker from './PracticePicker';
+import { usePracticeSession } from '@/hooks/usePracticeSession';
 
 const MovementPuzzle = dynamic(() => import('./MovementPuzzle'), { ssr: false });
 const CapturePuzzle = dynamic(() => import('./CapturePuzzle'), { ssr: false });
 
-type ChessView = 'hub' | 'level-1' | 'session' | 'daily';
+type ChessView = 'hub' | 'level-1' | 'session' | 'daily' | 'practice-picker' | 'practice';
 
 function assertNever(x: never): never {
   throw new Error('Unhandled ChessView: ' + x);
@@ -38,11 +40,17 @@ export default function ChessGameContent() {
   const { theme, selectTheme } = useChessPieceTheme();
   const { currentPuzzle, sessionIndex, consecutiveCorrect, firstTryCount, isSessionComplete, onAnswer, startNewSession, sessionTiers, currentTiersByPiece } = usePuzzleSession();
   const { dailyPuzzle, isCompleted: isDailyCompleted, markCompleted: markDailyCompleted } = useDailyPuzzle();
+  const { currentPuzzle: practicePuzzle, consecutiveCorrect: practiceStreak, onAnswer: practiceOnAnswer, startPractice, currentTiersByPiece: practiceTiersByPiece } = usePracticeSession();
 
   const handleAnswer = useCallback((correct: boolean) => {
     playSound(correct ? AudioSounds.SUCCESS : AudioSounds.WRONG_ANSWER);
     onAnswer(correct);
   }, [onAnswer]);
+
+  const handlePracticeAnswer = useCallback((correct: boolean) => {
+    playSound(correct ? AudioSounds.SUCCESS : AudioSounds.WRONG_ANSWER);
+    practiceOnAnswer(correct);
+  }, [practiceOnAnswer]);
 
   const STREAK_MILESTONES = new Set([3, 5, 10]);
   const [showMilestoneConfetti, setShowMilestoneConfetti] = useState(false);
@@ -55,6 +63,15 @@ export default function ChessGameContent() {
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [consecutiveCorrect]);
+
+  useEffect(() => {
+    if (!STREAK_MILESTONES.has(practiceStreak) || practiceStreak === 0) return;
+    setShowMilestoneConfetti(true);
+    playRandomCelebration();
+    const timer = setTimeout(() => setShowMilestoneConfetti(false), 2500);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [practiceStreak]);
 
   // Call completeLevel for both puzzle levels when session completes
   useEffect(() => {
@@ -186,6 +203,76 @@ export default function ChessGameContent() {
             puzzle={dailyPuzzle.puzzle}
             onAnswer={handleDailyAnswer}
             onExit={() => setCurrentView('hub')}
+          />
+        </div>
+      </Fade>
+    );
+  }
+
+  if (currentView === 'practice-picker') {
+    return (
+      <Fade in={true} timeout={300}>
+        <div>
+          <PracticePicker
+            currentTiersByPiece={practiceTiersByPiece}
+            onSelectPiece={(pieceId) => {
+              startPractice(pieceId);
+              setCurrentView('practice');
+            }}
+            onBack={() => setCurrentView('hub')}
+          />
+        </div>
+      </Fade>
+    );
+  }
+
+  if (currentView === 'practice') {
+    if (!practicePuzzle) return null;
+
+    if (practicePuzzle.type === 'movement') {
+      return (
+        <Fade in={true} timeout={300}>
+          <div>
+            {showMilestoneConfetti && (
+              <Confetti
+                recycle={false}
+                numberOfPieces={150}
+                gravity={0.3}
+                style={{ position: 'fixed', top: 0, left: 0, zIndex: 1300 }}
+              />
+            )}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1, mt: 1 }}>
+              <StreakBadge count={practiceStreak} />
+            </Box>
+            <MovementPuzzle
+              puzzle={practicePuzzle.puzzle}
+              onAnswer={handlePracticeAnswer}
+              onExit={() => setCurrentView('practice-picker')}
+            />
+          </div>
+        </Fade>
+      );
+    }
+
+    // Capture puzzle
+    return (
+      <Fade in={true} timeout={300}>
+        <div>
+          {showMilestoneConfetti && (
+            <Confetti
+              recycle={false}
+              numberOfPieces={150}
+              gravity={0.3}
+              style={{ position: 'fixed', top: 0, left: 0, zIndex: 1300 }}
+            />
+          )}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1, mt: 1 }}>
+            <StreakBadge count={practiceStreak} />
+          </Box>
+          <CapturePuzzle
+            puzzle={practicePuzzle.puzzle}
+            onAnswer={handlePracticeAnswer}
+            onExit={() => setCurrentView('practice-picker')}
           />
         </div>
       </Fade>
