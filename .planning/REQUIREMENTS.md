@@ -66,26 +66,26 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | — | Pending |
-| AUTH-02 | — | Pending |
-| AUTH-03 | — | Pending |
-| AUTH-04 | — | Pending |
-| AUTH-05 | — | Pending |
-| AUTH-06 | — | Pending |
-| SYNC-01 | — | Pending |
-| SYNC-02 | — | Pending |
-| SYNC-03 | — | Pending |
-| SYNC-04 | — | Pending |
-| SYNC-05 | — | Pending |
-| POLSH-01 | — | Pending |
-| POLSH-02 | — | Pending |
-| POLSH-03 | — | Pending |
+| AUTH-01 | Phase 25 | Pending |
+| AUTH-02 | Phase 25 | Pending |
+| AUTH-03 | Phase 25 | Pending |
+| AUTH-04 | Phase 24 | Pending |
+| AUTH-05 | Phase 24 | Pending |
+| AUTH-06 | Phase 24 | Pending |
+| SYNC-01 | Phase 26 | Pending |
+| SYNC-02 | Phase 27 | Pending |
+| SYNC-03 | Phase 27 | Pending |
+| SYNC-04 | Phase 26 | Pending |
+| SYNC-05 | Phase 26 | Pending |
+| POLSH-01 | Phase 28 | Pending |
+| POLSH-02 | Phase 28 | Pending |
+| POLSH-03 | Phase 28 | Pending |
 
 **Coverage:**
 - v1.5 requirements: 14 total
-- Mapped to phases: 0
-- Unmapped: 14 ⚠️
+- Mapped to phases: 14
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-24*
-*Last updated: 2026-03-24 after initial definition*
+*Last updated: 2026-03-24 — traceability filled after roadmap creation*
