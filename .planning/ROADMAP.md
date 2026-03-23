@@ -72,7 +72,7 @@
 - [x] **Phase 20: Practice Mode** - Per-piece drill mode with piece selector screen and infinite adaptive puzzles (completed 2026-03-23)
 - [x] **Phase 21: Checkmate Puzzle Data + Renderers** - 20+ curated mate-in-1 positions with dedicated renderer component (completed 2026-03-23)
 - [x] **Phase 22: Wire Checkmate Into Sessions** - Checkmate puzzles integrated into Challenge sessions via feature flag (completed 2026-03-23)
-- [ ] **Phase 23: Progress & Engagement Layer** - Mastery map on hub menu and per-piece breakdown on session complete screen
+- [x] **Phase 23: Progress & Engagement Layer** - Mastery map on hub menu and per-piece breakdown on session complete screen (completed 2026-03-23)
 
 ## Phase Details
 
@@ -219,7 +219,7 @@ Plans:
   3. Mastery is displayed as a named state label only — no numeric counter toward the next tier that could incentivize rapid tapping
 **Plans**: 2 plans
 Plans:
-- [ ] 23-01-PLAN.md — Shared mastery helpers, hub menu mastery row + summary chip
+- [x] 23-01-PLAN.md — Shared mastery helpers, hub menu mastery row + summary chip
 - [ ] 23-02-PLAN.md — Per-piece answer breakdown on session complete screen
 **UI hint**: yes
 
@@ -251,4 +251,4 @@ Plans:
 | 20. Practice Mode | v1.4 | 2/2 | Complete    | 2026-03-23 |
 | 21. Checkmate Puzzle Data + Renderers | v1.4 | 2/2 | Complete    | 2026-03-23 |
 | 22. Wire Checkmate Into Sessions | v1.4 | 2/2 | Complete    | 2026-03-23 |
-| 23. Progress & Engagement Layer | v1.4 | 1/2 | In Progress|  |
+| 23. Progress & Engagement Layer | v1.4 | 1/2 | Complete    | 2026-03-23 |
