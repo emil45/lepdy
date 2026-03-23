@@ -69,7 +69,7 @@
 **Milestone Goal:** Transform the chess game from a working prototype into a polished, engaging kids puzzle app that a child wants to revisit daily and a parent would proudly recommend.
 
 - [x] **Phase 19: Menu Redesign + Sound & Celebrations** - New hub menu replacing broken 1/2/3/daily structure, correct/wrong sound effects, and streak milestone celebrations (completed 2026-03-23)
-- [ ] **Phase 20: Practice Mode** - Per-piece drill mode with piece selector screen and infinite adaptive puzzles
+- [x] **Phase 20: Practice Mode** - Per-piece drill mode with piece selector screen and infinite adaptive puzzles (completed 2026-03-23)
 - [ ] **Phase 21: Checkmate Puzzle Data + Renderers** - 20+ curated mate-in-1 positions with dedicated renderer component
 - [ ] **Phase 22: Wire Checkmate Into Sessions** - Checkmate puzzles integrated into Challenge sessions via feature flag
 - [ ] **Phase 23: Progress & Engagement Layer** - Mastery map on hub menu and per-piece breakdown on session complete screen
@@ -175,8 +175,8 @@ Plans:
   5. User can exit practice back to the piece picker (not straight to the hub menu)
 **Plans**: 2 plans
 Plans:
-- [ ] 20-01-PLAN.md — usePracticeSession hook and PracticePicker component
-- [ ] 20-02-PLAN.md — Wire practice views into ChessGameContent, update hub menu, E2E tests
+- [x] 20-01-PLAN.md — usePracticeSession hook and PracticePicker component
+- [x] 20-02-PLAN.md — Wire practice views into ChessGameContent, update hub menu, E2E tests
 
 ### Phase 21: Checkmate Puzzle Data + Renderers
 **Goal**: The game has a validated set of mate-in-1 positions and a dedicated puzzle component that teaches kids the concept of checkmate with clear instruction
@@ -236,7 +236,7 @@ Plans:
 | 17. Session Complete + Progression UI | v1.3 | 2/2 | Complete | 2026-03-22 |
 | 18. Daily Featured Puzzle | v1.3 | 2/2 | Complete | 2026-03-22 |
 | 19. Menu Redesign + Sound & Celebrations | v1.4 | 2/2 | Complete    | 2026-03-23 |
-| 20. Practice Mode | v1.4 | 0/2 | Not started | - |
+| 20. Practice Mode | v1.4 | 2/2 | Complete   | 2026-03-23 |
 | 21. Checkmate Puzzle Data + Renderers | v1.4 | 0/TBD | Not started | - |
 | 22. Wire Checkmate Into Sessions | v1.4 | 0/TBD | Not started | - |
 | 23. Progress & Engagement Layer | v1.4 | 0/TBD | Not started | - |

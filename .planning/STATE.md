@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Complete Puzzle Experience
-status: Ready to plan
-stopped_at: Completed 19-02-PLAN.md
-last_updated: "2026-03-23T00:30:25.448Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 20-02-PLAN.md
+last_updated: "2026-03-23T07:02:24.728Z"
 progress:
   total_phases: 10
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  completed_phases: 2
+  total_plans: 4
+  completed_plans: 4
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 19 — Menu Redesign + Sound & Celebrations
+**Current focus:** Phase 20 — Practice Mode
 
 ## Current Position
 
-Phase: 20
-Plan: Not started
+Phase: 20 (Practice Mode) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -44,6 +44,8 @@ Plan: Not started
 | v1.3 Phases 14-18 | 10 plans | ~30 min | ~3 min |
 | Phase 19-menu-redesign-sound-celebrations P01 | 10 | 2 tasks | 6 files |
 | Phase 19-menu-redesign-sound-celebrations P02 | 5 | 1 tasks | 1 files |
+| Phase 20-practice-mode P01 | 2 | 2 tasks | 2 files |
+| Phase 20 P02 | 5 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -60,6 +62,10 @@ Recent decisions affecting current work:
 - [Phase 19-menu-redesign-sound-celebrations]: Grid from @mui/material/Grid (not Grid2) — MUI 7.x Grid2 path does not exist; Grid is the v2 API
 - [Phase 19-menu-redesign-sound-celebrations]: ChessHubMenu replaces DailyPuzzleCard + LevelMapCard — hub Daily tile with checkmark covers daily display
 - [Phase 19-menu-redesign-sound-celebrations]: Keep playRandomCelebration on daily correct only — no SUCCESS sound added to daily correct path (locked decision)
+- [Phase 20-practice-mode]: Separate usePracticeSession hook (not modifying usePuzzleSession) prevents challenge session corruption
+- [Phase 20-practice-mode]: buildPracticeBatch falls back to all-movement if no capture puzzles for piece (pawn edge case)
+- [Phase 20]: Exit from practice returns to practice-picker (not hub) per locked PRAC-03 decision
+- [Phase 20]: Shared showMilestoneConfetti state for both challenge session and practice — mutually exclusive views
 
 ### Pending Todos
 
@@ -73,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T00:27:15.730Z
-Stopped at: Completed 19-02-PLAN.md
+Last session: 2026-03-23T07:02:24.726Z
+Stopped at: Completed 20-02-PLAN.md
 Resume file: None
