@@ -1,220 +1,245 @@
 # Pitfalls Research
 
-**Domain:** Adding practice modes, new puzzle types (check/checkmate-in-1), menu redesign, and engagement features to an existing kids chess learning app (ages 5-9) — v1.4 Complete Puzzle Experience
+**Domain:** Adding optional Firebase Auth + cloud sync to an existing localStorage-based kids learning app (Next.js SSR, offline-first, union merge on first login)
 **Researched:** 2026-03-23
-**Confidence:** HIGH (direct codebase analysis of existing v1.3 system, chess.js constraints, MUI/RTL patterns, kids' educational game design)
+**Confidence:** HIGH (Firebase Auth/Firestore official docs, community issue reports, codebase analysis of 11 localStorage hooks across 14 distinct storage keys)
 
 ---
 
 ## Critical Pitfalls
 
-### Pitfall 1: Practice Mode Bypasses usePuzzleSession Contract, Creating Parallel State
+### Pitfall 1: First Login Overwrites Local Progress Instead of Union-Merging It
 
 **What goes wrong:**
-Practice mode ("pick a piece, drill puzzles for it") is added as a new view in `ChessGameContent` with its own puzzle selection logic outside of `usePuzzleSession`. Progress recorded during practice does not flow through `recordCorrect`/`recordWrong` in `usePuzzleProgress`, so practice answers never advance or de-escalate the adaptive tier. The per-piece tier displayed on `SessionCompleteScreen` becomes stale relative to what the child actually practiced. Alternatively, teams wire practice directly to `usePuzzleSession` and accidentally count practice puzzles toward the 10-puzzle session, triggering a premature session-complete screen mid-practice.
+A parent signs in for the first time on their child's device. The device has 6 weeks of learning progress in localStorage (letters heard, chess tiers, stickers unlocked, streak data). The sign-in flow writes the fresh empty cloud document to localStorage, or the cloud sync reads the empty cloud document and "syncs" it down, overwriting all local data. The child's progress is gone. The parent has no way to recover it.
 
 **Why it happens:**
-`usePuzzleSession` builds a 10-puzzle queue (`buildSessionQueue`) with interleaved movement and capture puzzles across all 5 pieces. This is the "mixed session" contract. A per-piece drill doesn't fit this queue shape — you need a different selection strategy that filters by `pieceId`. The natural instinct is to either: (a) create a totally separate parallel progress hook, or (b) reuse the session hook but override its queue logic — both routes create divergence.
+The sync logic reads the cloud document first, finds it empty (new account), and treats "no cloud data" as authoritative — as if the cloud is the source of truth and the device is a cache to be replaced. This is the natural direction for a sync system that was designed for "returning users who already have cloud data," not for the "first login, migrate local data up" case.
 
 **How to avoid:**
-- Practice mode should call `recordCorrect`/`recordWrong` from `usePuzzleProgress` directly (not through `usePuzzleSession`). This keeps adaptive difficulty synchronized.
-- Practice mode needs its own queue builder — a `buildPracticeQueue(pieceId, tier)` function that filters puzzles by `pieceId` and selects from the correct tier. Extract this logic as a util function.
-- Practice sessions should NOT use the `SESSION_STORAGE_KEY` or `SESSION_SIZE=10` constants. Use a separate `PRACTICE_STORAGE_KEY` (or no persistence at all, since practice is casual).
-- Progress display on `SessionCompleteScreen` continues to work correctly because it reads from `usePuzzleProgress` state, not from the session.
+- Implement a first-login check: when a user signs in and their cloud document does not exist yet (or is empty), read ALL localStorage data first, then write it to the cloud. Never read cloud-first on first login.
+- Use a two-phase merge on first login: (1) load localStorage data, (2) load cloud data, (3) compute the union (take the MAX for numeric progress fields like `totalClicks`, UNION for set fields like `heardItemIds`), (4) write the merged result to both cloud and localStorage.
+- Store a `cloudSyncVersion` field in the cloud document. If absent, treat the document as "new account" and trigger the migration path.
+- Test this path explicitly: create a fresh Firebase account, load it on a device with existing localStorage data, sign in, then verify localStorage data is preserved in the cloud and locally.
 
 **Warning signs:**
-- Piece tier does not change after drilling 5+ correct answers in practice mode
-- Practice session triggers `isSessionComplete` after 10 puzzles and shows the SessionCompleteScreen
-- Practice exit shows stale mastery bands that don't reflect drilling
+- After first login, category progress counters reset to 0
+- Stickers the child earned are gone after signing in
+- Chess tier progress reverts to Beginner after sign-in
 
-**Phase to address:** Practice mode phase. Define the data contract (which hook owns what) before any UI for practice is written.
+**Phase to address:** Auth + sync core phase. The merge contract must be defined and tested before any sync write logic ships.
 
 ---
 
-### Pitfall 2: Check/Checkmate Puzzles Require a Different Puzzle Schema but Existing Components Assume MovementPuzzle or CapturePuzzle
+### Pitfall 2: Cloud Sync Overwrites Progress on Second Device (Last-Write-Wins Without Merge)
 
 **What goes wrong:**
-`MovementPuzzle.tsx` and `CapturePuzzle.tsx` both accept their typed puzzle data as a prop (`puzzle: MovementPuzzleData` / `puzzle: CapturePuzzleData`). Check puzzles ask "is the king in check?" — a boolean evaluation, not a tap-a-target interaction. Checkmate-in-1 asks the child to execute a winning move — closer to movement but requires verifying legality via chess.js. Teams try to shoehorn these into the `MovementPuzzle` shape (reuse the component, add a new flag prop like `isCheckPuzzle`) and end up with increasingly conditional render logic that makes the component unmaintainable.
+A family uses two iPads. iPad A has chess tier data for rook = Expert, pawn = Intermediate. iPad B has pawn = Expert, rook = Beginner (different child played different puzzles). When iPad B comes online and syncs, it writes its full progress object to Firestore. Firestore's `set()` overwrites the document — rook tier is now Beginner again on all devices, and the rook Expert progress from iPad A is permanently lost.
 
 **Why it happens:**
-The existing components are clean and focused. The temptation is to add an `if (isCheckPuzzle)` branch rather than create a third component, since the board rendering code is identical. But the interaction model and feedback logic differ enough that branching multiplies bugs.
+The simplest sync implementation serializes the entire localStorage object and calls `doc.set(localData)` on every change. This is correct for single-device use but destructive for multi-device. Firestore's default `set()` replaces the entire document; `set(data, { merge: true })` only merges at the top level of the document, not deeply nested fields.
 
 **How to avoid:**
-- Define a new `CheckPuzzle` interface and `CheckmatePuzzle` interface in `chessPuzzles.ts` alongside the existing `MovementPuzzle` and `CapturePuzzle` types.
-- Create `CheckPuzzle.tsx` and `CheckmatePuzzle.tsx` as separate components following the existing component contract (`puzzle`, `onAnswer`, `onExit` props). Board rendering code can be extracted to a shared `ChessBoardDisplay` component to avoid duplication.
-- Extend the `SessionPuzzle` discriminated union in `usePuzzleSession.ts` with `type: 'check'` and `type: 'checkmate'` to keep the session routing exhaustive.
-- Checkmate-in-1 validation: use `chess.js` to verify the child's tap is the correct mating move. `chess.load(fen)`, apply the move, then call `chess.isCheckmate()`.
+- Use field-level merge semantics for progress data. For numeric "max" fields (totalClicks, totalHeard), store as separate Firestore fields and use `doc.update({ 'letters.totalClicks': Math.max(local, cloud) })` rather than replacing the whole object.
+- For set fields (heardItemIds arrays), convert to a map (`{ itemId: true }`) in Firestore so individual item completions can be merged without read-modify-write conflicts.
+- For streak data (timestamps), the device with the more recent activity wins — but never reduce the longest streak.
+- For settings/preferences (chess piece theme, board theme), last-write-wins is acceptable — settings are not progress.
+- Add a `lastSyncedAt` timestamp per device to enable conflict detection.
 
 **Warning signs:**
-- `MovementPuzzle.tsx` has more than 2 conditional blocks keyed on a `puzzleType` prop
-- `CapturePuzzle.tsx` grows a new boolean prop that changes core interaction behavior
-- TypeScript type assertions (`as MovementPuzzle`) used to fit a check puzzle into an existing type
+- Progress regresses on one device after another device syncs
+- Two children using separate accounts on shared device (shouldn't happen — this is a single-family app — but worth confirming the data model enforces per-UID isolation)
+- Firestore document grows larger than expected (duplicate heardItemIds)
 
-**Phase to address:** New puzzle types phase. Define schemas and components before wiring to session.
+**Phase to address:** Auth + sync core phase. Define merge semantics per data type before any write path is implemented.
 
 ---
 
-### Pitfall 3: Menu Redesign Breaks the ChessView State Machine and Leaves Orphan Views
+### Pitfall 3: onAuthStateChanged Causes a Loading Flash on Every Page (SSR Hydration Mismatch)
 
 **What goes wrong:**
-The current `ChessView` type is `'map' | 'level-1' | 'session' | 'daily'`. A redesigned menu adds entries for practice mode, piece-specific practice, check puzzles, and possibly a progress screen. Teams add new values to `ChessView` inline, but `ChessGameContent` uses an if-chain (`if (currentView === 'level-1')`) not a switch. New views added to the union are silently unhandled and fall through to the map render — the child taps "Practice" and the menu reappears with no feedback.
+`onAuthStateChanged` is async. On page load, the Firebase SDK has not yet resolved auth state — the user is neither logged in nor logged out from React's perspective. If the UI renders a "Sign In" button while auth is resolving, and then re-renders to "Signed in as [name]" 200-500ms later, users see a visible flicker. Worse: the server renders no auth state (SSR doesn't know who the user is), the client hydrates with no auth state, then 300ms later Firebase resolves and the auth state appears. This causes a React hydration mismatch warning and a layout shift.
 
 **Why it happens:**
-TypeScript discriminated union exhaustiveness is not enforced in if-chains the way it is in `switch` + `default: assertNever(x)`. The current component has 4 if-blocks returning early, then a final map render. A fifth view falls through silently. This is a pre-existing structural fragility.
+Firebase Auth uses IndexedDB (not cookies) for session persistence. IndexedDB is only available in the browser, not on the server. So the server-rendered HTML always reflects "not authenticated," and the client must wait for the Firebase SDK to initialize and read from IndexedDB before knowing the auth state. This gap is unavoidable — it must be handled gracefully.
 
 **How to avoid:**
-- When redesigning the menu, refactor `ChessView` handling to use a `switch` with an `assertNever` fallback so TypeScript flags unhandled states at compile time.
-- Or, if staying with if-chains, add an explicit `else` block that renders an error indicator (or at least `console.error`) for unknown views.
-- New view values (`'practice'`, `'practice-piece'`, `'check-session'`) must be added to the `ChessView` type AND handled in the routing logic before any component that navigates to them is written.
+- Add an `isAuthLoading` state (initially `true`) to the auth context. Do not render auth-dependent UI (sign-in button, user avatar) until `isAuthLoading` is `false`.
+- For the settings sidebar that contains the sign-in option: show a neutral placeholder (no login button, no user name) while `isAuthLoading` is true. The settings content is below-the-fold, so this is not a LCP concern.
+- Do NOT make page routes auth-gated (this app's login is optional — never block content behind auth loading).
+- Since login is optional and the app is "not logged in" by default, SSR renders the non-logged-in state which is always correct. The transition after auth resolves is "not logged in → logged in" (additive), not "logged in → not logged in" (disruptive). Design the UI so the additive case does not cause layout shift.
 
 **Warning signs:**
-- Tapping a new menu entry silently returns the child to the map
-- TypeScript does not error on unhandled `ChessView` values despite the value existing in the union
-- New "view" is a new component that sets `currentView` but `ChessGameContent` has no branch for it
+- Hydration warnings in the browser console mentioning auth context
+- Sign-in button flickers into view then out then back
+- Settings sidebar layout shifts after 300ms on page load
 
-**Phase to address:** Menu redesign phase, as the first structural change before any new feature is added.
+**Phase to address:** Auth integration phase. The `isAuthLoading` guard pattern must be established before any auth-dependent UI is added.
 
 ---
 
-### Pitfall 4: Per-Piece Progress Screen Reads Stale Data Because usePuzzleProgress Is Not a Context Provider
+### Pitfall 4: signInWithPopup Blocked on Mobile Safari and iOS Home Screen Mode
 
 **What goes wrong:**
-A new "progress screen" or "mastery overview" is added to the menu. It imports `usePuzzleProgress` to display tier badges per piece. But `usePuzzleProgress` is a standalone hook — each component that calls it gets its own `useState` + localStorage load cycle. The progress screen and the active puzzle session each hold their own copy of the data, and they can diverge during a session (one sees tier 2, the other sees tier 1 because the puzzle session's recordCorrect has written tier 2 to localStorage but the progress screen's state hasn't been reloaded).
+Google sign-in uses a popup by default (`signInWithPopup`). On iOS Safari 16.1+, popups that are not triggered directly by a user gesture are blocked by the browser. In iOS home-screen mode (add to home screen), popup windows are blocked entirely regardless of user gesture. Firebase itself acknowledges this and recommends `signInWithRedirect` as the fallback. If the app only uses `signInWithPopup`, parent sign-in will silently fail on iPhone and iPad — the primary devices for this kids app.
 
 **Why it happens:**
-The hook was intentionally designed as standalone (noted in Key Decisions: "Single useChessProgress hook (no context provider)"). This works when only `usePuzzleSession` consumes `usePuzzleProgress`. Adding a second consumer (a mastery display component) creates two independent state machines reading and writing the same localStorage key.
+`signInWithPopup` requires the popup to open in the same event loop as the user's tap. Any async delay (auth context resolution, loading state) between the tap and the `signInWithPopup()` call breaks this requirement. iOS Safari considers it an untrusted popup and blocks it.
 
 **How to avoid:**
-- If a mastery/progress screen is added as a separate view, it should read from the same `usePuzzleProgress` instance as the session. The cleanest solution is to lift `usePuzzleProgress` into `ChessGameContent` and pass `data.pieces` as a prop to the mastery display — no second hook instantiation.
-- Do NOT wrap `usePuzzleProgress` in a context just for the mastery screen. The existing design is correct; the mastery screen should be a child that receives data as props.
-- The `SessionCompleteScreen` already follows this pattern correctly (receives `currentTiersByPiece` as a prop from `ChessGameContent`).
+- Use `signInWithRedirect` as the primary sign-in method. It redirects the user to Google's auth page, then back to the app — no popup needed, no iOS restrictions.
+- After redirect, call `getRedirectResult()` on page load to complete the sign-in and retrieve the credential.
+- `signInWithRedirect` requires the authorized domain list in the Firebase Auth console to include `lepdy.com` — verify this before shipping.
+- Alternatively: use `signInWithPopup` with a try-catch that falls back to `signInWithRedirect` when `auth/popup-blocked` is thrown. Firebase documents this as the recommended pattern for cross-browser compatibility.
 
 **Warning signs:**
-- Mastery screen shows tier 1 for a piece that was just drilled to tier 2
-- Two components both logging `[chess] Failed to save puzzle progress` on the same action
-- `usePuzzleProgress` called in more than one component in the chess subtree
+- Sign-in works on desktop but silently does nothing on iPhone
+- Error `auth/popup-blocked` in the browser console on iOS
+- Parent reports "the sign in button does nothing" on their phone
 
-**Phase to address:** Progress and engagement phase, when mastery visualization is added.
+**Phase to address:** Auth integration phase. Use redirect-first from the start — it is not worth retrofitting after the popup approach ships.
 
 ---
 
-### Pitfall 5: Check/Checkmate Puzzle FEN Validity — chess.js Requires Full FEN, Not Piece-Placement FEN
+### Pitfall 5: Firebase Initialized at Module Level Causes "window is not defined" in SSR
 
 **What goes wrong:**
-All 95 existing puzzles use piece-placement FEN (e.g., `'8/8/8/8/4R3/8/8/8'`) — 8 rank segments separated by `/` without side-to-move, castling rights, or en passant. `react-chessboard` accepts this format. But chess.js `chess.load()` requires full FEN (e.g., `'8/8/8/8/4R3/8/8/8 w - - 0 1'`). Check and checkmate puzzles need chess.js to evaluate position legality (`chess.isCheck()`, `chess.isCheckmate()`, `chess.moves()`). Passing a piece-placement FEN to `chess.load()` silently loads an empty/invalid board in some chess.js versions, causing `isCheckmate()` to always return false.
+Firebase Auth, Firestore, and the Firebase App SDK access browser APIs at initialization time (`indexedDB`, `window`, `navigator`). In Next.js App Router, modules are imported on the server during SSR. If `initializeApp()` or `getAuth()` is called at the top level of a module (not inside a function or useEffect), the server throws `ReferenceError: window is not defined` or `ReferenceError: indexedDB is not defined`.
 
 **Why it happens:**
-Teams copy the existing puzzle FEN format (piece-placement) when authoring check/checkmate puzzles, not realizing chess.js has a stricter FEN requirement. The existing `moveFenPiece` utility in `utils/chessFen.ts` works with piece-placement FEN, so the format looks consistent and correct.
+The existing codebase already initializes Firebase at module level in `lib/firebase.ts` and `lib/firebaseApp.ts` — this works currently because those modules are only imported by client components (`'use client'`). Adding Firebase Auth in a way that touches server-side code (layouts, server components, or a context file that is imported from a server component) will trigger this error.
 
 **How to avoid:**
-- For check and checkmate puzzle types, store full FEN (with side-to-move, castling, en passant) in the puzzle data.
-- Write a validation step that calls `chess.load(fullFen)` and asserts `chess.isCheck()` or `chess.isCheckmate()` returns the expected value for each authored puzzle.
-- Keep `react-chessboard` receiving only the position portion (or convert full FEN to piece-placement FEN for board display, keep full FEN for chess.js evaluation).
-- Do NOT use the `utils/chessFen.ts` FEN manipulation utilities for these new puzzle types — those utilities strip position-only segments and are not designed for full FEN.
+- All Firebase Auth initialization and `getAuth()` calls must stay inside `'use client'` components or hooks. Never import auth from a server component.
+- The auth context provider (`AuthContext.tsx`) must have `'use client'` at the top.
+- Use the existing `lib/firebase.ts` pattern (already client-safe) as the template for the auth module.
+- If Firebase is imported in `app/providers.tsx` (which is already `'use client'`), this is safe — verify the new auth imports follow the same pattern.
+- Verify with `npm run build` — Next.js will throw at build time if server components import client-only modules.
 
 **Warning signs:**
-- `chess.isCheckmate()` always returns false for authored checkmate positions
-- `chess.moves()` returns empty array on a board that visually has legal moves
-- Board renders correctly but chess.js evaluation functions behave unexpectedly
+- `ReferenceError: window is not defined` in the build output or server logs
+- Build succeeds but server-side rendered pages throw 500 errors
+- `getAuth()` called outside a function body in a file without `'use client'`
 
-**Phase to address:** New puzzle types phase, before any check/checkmate puzzle data is authored.
+**Phase to address:** Auth integration phase. Run `npm run build` after each Firebase module addition to catch SSR violations immediately.
 
 ---
 
-### Pitfall 6: Animation and Sound Layering Causes Cumulative Confetti on Fast Interactions
+### Pitfall 6: Sync Writes on Every localStorage Change — Firestore Write Cost Explosion
 
 **What goes wrong:**
-Visual polish adds additional `Confetti` instances for milestone moments (5 correct in a row, session complete, tier advance). The existing code already mounts a per-puzzle confetti burst in both `MovementPuzzle.tsx` and `CapturePuzzle.tsx`. If a child taps rapidly through multiple correct answers, each correct answer mounts a new `Confetti` with `recycle={false}`. On low-end tablets (the primary device for ages 5-9), 3-4 concurrent confetti instances cause visible frame drops.
-
-The same layering problem applies to sound effects: the existing `playRandomCelebration()` is called on every correct tap. Additional celebration sounds for milestones can overlap with per-puzzle sounds, creating audio cacophony.
+The naive implementation wraps each localStorage write with a Firestore `doc.update()` call. The `useCategoryProgress` hook updates localStorage on every item tap — a child hearing 20 letters triggers 20 Firestore writes in one session. Across 14 storage keys and active gameplay, this can generate hundreds of writes per session. Firestore's free tier is 20,000 writes/day — a single active user can exhaust this.
 
 **Why it happens:**
-Each puzzle component manages its own confetti state independently (`showCorrectConfetti` local state). Visual polish features add more celebration triggers at the session level (in `ChessGameContent` or `SessionCompleteScreen`). The two systems don't coordinate.
+The localStorage hooks fire synchronously on every state change. Wrapping them with a Firestore write call (in a useEffect) means every state change triggers a write. Debouncing is not applied because it wasn't needed for localStorage.
 
 **How to avoid:**
-- Implement a celebration coordinator: a lightweight singleton (or a simple `useRef` flag) that prevents more than one confetti instance from being active at once. If a milestone confetti fires, skip the per-puzzle confetti for that answer.
-- For audio: classify sounds as "per-puzzle" (low priority) vs. "milestone" (high priority). If a milestone sound fires, it should preempt the per-puzzle sound, not layer on top.
-- Limit confetti `numberOfPieces` as difficulty decreases on smaller screens — use `boardWidth` breakpoints already computed in each puzzle component.
-- Test on a mid-range Android tablet, not a development machine.
+- Debounce cloud writes: accumulate local changes and write to Firestore at most once every 30-60 seconds per storage key. Use a `useRef` timer or a write-batching utility.
+- Write on visibility change (`document.visibilitychange → hidden`) and on `beforeunload` — these are the natural "session end" moments where a sync must be guaranteed.
+- Use Firestore batch writes to merge multiple key updates into a single network round-trip.
+- Do NOT write on every item tap. Write at session boundaries (game session complete, page unload, 60-second debounce).
+- Firestore free tier: 20,000 writes/day, 50,000 reads/day. With batching, a typical session (15 items, 1 game) = 1-2 writes. Without batching = 50+ writes.
 
 **Warning signs:**
-- Confetti visibly stutters or drops to below 30fps during a correct-answer streak
-- Multiple audio tracks playing simultaneously (celebration + milestone sound)
-- `Confetti` components visible in React DevTools multiple levels of nesting
+- Firestore usage dashboard shows writes count climbing sharply after a single user plays
+- Noticeable lag on item taps because each tap awaits a Firestore write
+- Firebase billing alert fires unexpectedly
 
-**Phase to address:** Visual polish phase. Establish the celebration coordinator pattern before adding any new confetti or sound triggers.
+**Phase to address:** Sync infrastructure phase. Write batching and debounce strategy must be designed before any write hook is added. This is the most significant cost risk for the project.
 
 ---
 
-### Pitfall 7: i18n Translation Keys for New Features Added Inconsistently Across Three Locales
+### Pitfall 7: Offline Sync Queue Not Implemented — Progress Lost When App Used Without Network
 
 **What goes wrong:**
-New features (practice mode, check puzzles, progress screen) add new translation keys to `messages/en.json` but developers either forget to add them to `messages/he.json` and `messages/ru.json`, or add them with placeholder values that ship to production. `next-intl` throws at runtime if a key is missing (in strict mode) or silently falls back, depending on configuration. Hebrew (the primary user locale and RTL) missing a key for the menu redesign means the main user base sees broken UI.
-
-A subtler version: new keys are added under the correct `chessGame` namespace in English but placed under a different namespace in Hebrew/Russian due to copy-paste drift, causing the fallback to the wrong string or a type error in `useTranslations('chessGame')`.
+The app is used on a plane, in a car, or in a school with no WiFi. The child plays 30 minutes of chess puzzles. The parent's account is signed in. But because Firestore is offline, the sync writes fail silently. When the device goes online, the sync hook sees "up to date" because it has no pending write queue — the changes were never queued, they were simply dropped.
 
 **Why it happens:**
-Three JSON files must be kept in sync manually. The existing chess game already has over 30 keys under `chessGame`. With practice mode + new puzzle types + progress screen, this grows significantly. Developers add keys as they code, often forgetting to update all three locale files simultaneously.
+Firestore has built-in offline persistence for its own SDK, but it applies to Firestore reads/writes made through the Firestore SDK. If the app's offline-first path is "write to localStorage, then write to Firestore in a useEffect," the useEffect's Firestore write fails and there is no retry mechanism. The localStorage write succeeded, so the local state is correct, but the cloud is never updated.
 
 **How to avoid:**
-- Update all three locale files (`he.json`, `en.json`, `ru.json`) in the same commit that introduces a new translation key. Never add a key to only one locale.
-- Hebrew strings for new chess features need care: Hebrew has grammatical gender agreement (piece names are grammatically masculine/feminine), and RTL layout means button placement in instruction strings may need reordering.
-- For check/checkmate instruction text in Hebrew, the key phrase "is the king in check?" should be authored by a native speaker — do not machine-translate.
-- Add a lint step (or at least a manual check) that verifies the key count under `chessGame` is identical across all three locale files before each phase ships.
+- Enable Firestore's offline persistence: `enableIndexedDbPersistence(db)` (or `enableMultiTabIndexedDbPersistence` for multi-tab support). This makes Firestore queue writes locally when offline and flush them when connectivity returns.
+- With offline persistence enabled, write to Firestore the same way you would online — Firestore handles the queuing transparently. Do not build a separate write queue.
+- Call `enablePersistence` once, early, before any Firestore reads or writes. If called after a read/write has started, it will throw.
+- Verify Firestore offline persistence is compatible with the existing Firebase SDK version (firebase 12.8.0 in this project).
+- For the Realtime Database (used for leaderboards): it has offline persistence enabled by default. No additional configuration needed.
 
 **Warning signs:**
-- `next-intl` console warnings about missing keys in he.json or ru.json
-- Hebrew UI shows English text inline (fallback to English key)
-- RTL layout breaks because an instruction string includes inline pieces that need direction override
+- Chess puzzle progress not synced after offline session even when device returns to online
+- Firestore write errors logged during flight mode test
+- Cloud document timestamps show gaps corresponding to offline sessions
 
-**Phase to address:** Every phase that adds user-visible text. Treat locale synchronization as a per-phase acceptance criterion.
+**Phase to address:** Sync infrastructure phase. Offline persistence must be enabled before any Firestore write hooks are added — it cannot be retrofitted without risk to existing writes.
 
 ---
 
-### Pitfall 8: Practice Mode "Pick a Piece" Screen Introduces Stateful Navigation That Conflicts with Existing ChessView Back-Button Behavior
+### Pitfall 8: Firestore Security Rules Left Open — Any User Can Read/Write Any User's Data
 
 **What goes wrong:**
-Practice mode requires a two-step navigation: (1) "Practice" entry on the menu → (2) piece picker → (3) puzzle drill. The existing `ChessView` state machine is flat (`map` → `session` or `map` → `daily`). Adding nested navigation to select a piece before entering the drill requires either: (a) a sub-view within the practice state (adding state variables inside `ChessGameContent` like `selectedPracticepiece`), or (b) additional `ChessView` values (`'practice-picker'`, `'practice-drill'`). Teams choose (a) and leave the "Back" button wired to `onExit={() => setCurrentView('map')}` which skips the picker — pressing Back during a drill goes to the map instead of the piece picker.
+Development starts with open rules (`allow read, write: if true`) for convenience. These rules ship to production. Any authenticated user can read or overwrite any other user's learning progress by knowing (or guessing) their UID. The default Firebase rules after project creation are already `allow read, write: if false` — but the project uses existing Firebase rules that may not include a `users` collection yet.
 
 **Why it happens:**
-The existing exit pattern in `MovementPuzzle.tsx` and `CapturePuzzle.tsx` calls `onExit` which always navigates to `'map'`. This is correct for session mode. Practice mode needs a different back destination. But both puzzle components currently receive `onExit: () => void` with no context about where "back" leads.
+Open rules are copied from Firebase quickstart documentation. The developer moves to the next feature, the rules are never tightened. The app ships. Because Lepdy is a kids' app, the risk is not financial fraud — it is unauthorized data deletion (a troll deleting a child's progress) or privacy exposure of a child's usage patterns.
 
 **How to avoid:**
-- Use separate `ChessView` values for practice navigation states: `'practice'` (the picker) and `'practice-drill'` (the active puzzle). This makes the back-navigation logic explicit in `ChessGameContent`'s routing.
-- The `onExit` prop passed to puzzle components during practice should navigate to `'practice'` (the picker), not `'map'`.
-- Never encode back-destination logic inside `MovementPuzzle.tsx` or `CapturePuzzle.tsx` — they receive `onExit` as a prop and call it. The correct destination is the caller's responsibility.
+- Add Firestore security rules in the same phase that creates the `users/{uid}` data structure.
+- Minimal correct rule: `allow read, write: if request.auth.uid == resource.data.uid` or path-based: `match /users/{userId} { allow read, write: if request.auth.uid == userId; }`.
+- Include the rules file in the codebase (not only managed via the Firebase console) so they are versioned and reviewed.
+- Test rules with the Firebase Emulator's rules testing before shipping to production.
+- The Realtime Database already has rules for the leaderboard feature — verify the new `users` path has explicit rules and does not inherit from a top-level open rule.
 
 **Warning signs:**
-- "Back" in a practice drill skips the piece picker and returns to the main menu
-- `currentView === 'practice'` path has a nested `if (selectedPiece)` branch rendering a drill view
-- `MovementPuzzle.tsx` imports or references `ChessView` — this should never happen
+- Firebase console Security Rules tab shows `allow read, write: if true` for the users path
+- No `firestore.rules` file in the repository
+- Rules not tested with the Firebase Emulator
 
-**Phase to address:** Practice mode phase, when the navigation structure is first designed.
+**Phase to address:** Auth integration phase. Rules must be defined before the first user data write goes to production.
 
 ---
 
-### Pitfall 9: Progress/Engagement Features Add Visible Mastery Meters That Kids Can Game by Rapid Wrong-Answer Cycling
+### Pitfall 9: Auth State Propagated Through a New Context That Competes with Existing Context Hierarchy
 
 **What goes wrong:**
-A mastery progress bar or "Expert" badge visible on the menu motivates kids — but also motivates rapid tapping. A 6-year-old who sees they are 3 correct answers from "Expert" will tap any square rapidly to get there. The tier system (`consecutiveCorrect >= 5 → advance`) already handles this at the session level, but a prominently displayed "X more correct answers to Expert!" meter creates explicit goal-setting that encourages careless tapping rather than thoughtful play.
-
-A related failure: if the mastery display shows a visible count toward the next tier, kids will notice the bar not filling when they answer wrong, making wrong answers feel more punishing than intended. Ages 5-7 do not handle visible failure signals well.
+The existing context hierarchy in `providers.tsx` nests 8 providers in a specific order (FeatureFlagProvider → StreakProvider → progress providers → sticker providers). A new `AuthProvider` is added at the wrong level — either too deep (auth state not available to a hook that needs it) or too high (re-renders on auth state change cause all 8 nested providers to re-render). Since the app's content is not auth-gated, auth context should not force re-renders of the learning content tree.
 
 **Why it happens:**
-Progress meters are the standard engagement mechanic in mobile/learning apps. The team adds them without considering the incentive structure specific to chess puzzle play with young children.
+Adding a new context provider is typically done at the top of the `providers.tsx` stack for convenience ("it needs to wrap everything"). But `onAuthStateChanged` fires on every auth state change (sign in, sign out, token refresh every hour) — placing it at the top of the provider tree means a token refresh re-renders every context consumer in the app.
 
 **How to avoid:**
-- Show mastery level (Beginner/Intermediate/Expert) as a state, not a progress bar toward the next level. Kids see "You are Intermediate" not "3 more to Expert."
-- Do not display the consecutive-correct counter or how many answers are needed to advance. The tier advancement message ("Getting harder!") on `SessionCompleteScreen` is sufficient.
-- Engagement features should reward completion (played a session today, played 3 days this week) not puzzle-level metrics that encourage gaming.
-- Streak is safer than tier progress as a visible metric — it rewards showing up, not rapid tapping.
+- Place `AuthProvider` at the top of the providers stack (it needs to be available everywhere), but ensure the auth context value object is memoized with `useMemo` so that token refresh (which does not change the user object) does not trigger consumer re-renders.
+- The auth context should expose: `{ user, isAuthLoading, signIn, signOut }`. The `user` object from Firebase changes reference on every token refresh even if the user has not changed — memoize by `user.uid` to prevent spurious re-renders.
+- Progress hooks (`useLettersProgress`, `useChessProgress`, etc.) must not depend on auth context. Their behavior when logged out (pure localStorage) must be identical to their current behavior.
 
 **Warning signs:**
-- Child plays the same piece 50+ times in one sitting without improvement (metric gaming)
-- "Getting harder!" badge appears after a session with high wrong-answer count (tier advanced despite poor accuracy because consecutive-correct reset correctly)
-- Parent complains the child is "just tapping randomly to get the badge"
+- Category item taps cause unnecessary re-renders in unrelated contexts (visible in React DevTools Profiler)
+- Token refresh at 1-hour intervals causes a brief loading state in the settings sidebar
+- Error thrown in a progress hook because auth context is undefined (auth provider placed too low in tree)
 
-**Phase to address:** Progress and engagement phase. Design constraint: visible metrics must reward showing up, not raw puzzle volume.
+**Phase to address:** Auth integration phase. Provider placement and memoization strategy must be decided before the AuthProvider is wired in.
+
+---
+
+### Pitfall 10: COPPA Considerations for Google Sign-In on a Kids App
+
+**What goes wrong:**
+The app targets ages 5-9. COPPA (Children's Online Privacy Protection Act, updated rules effective June 23, 2025) applies to apps directed at children under 13. Adding Google sign-in collects a Google account's email address and persistent user identifier. If the Google account belongs to a child under 13 (a Google Family account, school Google Workspace account, or an account created without age verification), this triggers COPPA data collection requirements — specifically: verifiable parental consent before collection, data retention limits, and parent access/deletion rights.
+
+**Why it happens:**
+Developers focus on the technical implementation and defer legal review. The sign-in is framed as "optional" and for parents — but the app cannot technically verify that the person signing in is a parent rather than the child.
+
+**How to avoid:**
+- Frame the Google sign-in explicitly as "parent/guardian login" in all UI copy, with a brief confirmation step: "I am a parent or guardian signing in for my child." This creates a reasonable record of consent context.
+- Do NOT collect or display the Google account's email in the child-facing UI. Store only the Firebase UID and display name as needed.
+- Firebase's privacy documentation explicitly states that COPPA compliance depends on the app's implementation, not Firebase itself. The app developer is responsible.
+- Add a data deletion flow (or at minimum, a contact path) so parents can request data deletion — COPPA 2025 requires honoring this.
+- Consult legal counsel before shipping if lepdy.com serves US users. This pitfall has LOW implementation complexity but HIGH legal risk if ignored.
+
+**Warning signs:**
+- Sign-in button labeled "Sign in" without any indication it is for parents
+- Child's Google account used to sign in (no parent confirmation step)
+- No data deletion path in the app or privacy policy
+
+**Phase to address:** Auth integration phase. UI copy and parental consent framing must be decided before the sign-in button is designed.
 
 ---
 
@@ -222,12 +247,13 @@ Progress meters are the standard engagement mechanic in mobile/learning apps. Th
 
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
 |----------|-------------------|----------------|-----------------|
-| Adding `puzzleType: 'check'` flag to existing `MovementPuzzle` type | No new type, no new component | MovementPuzzle grows unbounded conditional logic; breaks discriminated union exhaustiveness for session routing | Never |
-| Reusing `SESSION_STORAGE_KEY` for practice sessions | One storage key, simpler code | Practice session persists as a mixed session; re-entering the game after practice tries to restore a practice queue as a regular session | Never |
-| Hardcoding practice piece selection as a local `useState` inside `ChessGameContent` | No ChessView changes needed | Back navigation goes to wrong destination; selected piece lost on re-mount | Acceptable only for a demo prototype, never shipped |
-| Copying MovementPuzzle.tsx into CheckPuzzle.tsx wholesale | Fast to bootstrap | Board render logic diverges; future board changes must be applied N times | Acceptable only as bootstrap — extract `ChessBoardDisplay` shared component in same PR |
-| Adding translation keys only to `en.json` during development | Faster iteration | Hebrew users (primary locale) see broken UI or English text | Never in a shipped PR |
-| Showing tier advancement count as a progress bar | Strong visual engagement signal | Encourages metric gaming behavior in ages 5-9 | Never for tier-to-tier progress; acceptable for session-level goals only |
+| Write full localStorage object to Firestore on every change | Simple implementation, no debounce logic | Firestore write costs explode with active users; per-tap writes create noticeable lag | Never — debounce from day one |
+| `signInWithPopup` only (no redirect fallback) | Simpler flow, no redirect handling | Silently fails on iOS Safari and home-screen mode (the primary device for this app) | Never — redirect fallback is required |
+| Open Firestore rules during development | Move fast, no auth friction | Ships to production; any authenticated user can delete any child's progress | Acceptable in local emulator only, never in deployed Firebase project |
+| Store all localStorage data as one flat Firestore document | Simple to serialize/deserialize | Whole document must be read/written even for a single field change; 14-key doc grows with every new feature | Acceptable for MVP, must be refactored when write costs become visible |
+| Skip offline persistence setup initially | Fewer moving parts | Any offline session drops cloud writes permanently; not recoverable without user action | Never — offline persistence must be enabled before first write |
+| Auth provider placed at root without memoization | Auth available everywhere | Token refresh every 60 minutes re-renders entire app tree | Acceptable for prototype; must be fixed before shipping |
+| Derive "first login" flag from Firestore document absence | No extra state to manage | A bug that accidentally deletes the cloud document (network error, rule misconfiguration) is treated as "first login" and triggers a re-migration, potentially overwriting cloud with stale local data | Never — use a dedicated `accountCreatedAt` field |
 
 ---
 
@@ -235,13 +261,14 @@ Progress meters are the standard engagement mechanic in mobile/learning apps. Th
 
 | Integration | Common Mistake | Correct Approach |
 |-------------|----------------|------------------|
-| chess.js for check/checkmate evaluation | Pass piece-placement FEN to `chess.load()` | Pass full FEN (`'{position} w - - 0 1'`) for side-to-move to be valid; validate with `chess.validate_fen()` first |
-| chess.js `isCheck()` | Call on a freshly constructed `Chess()` without loading a position | Always `chess.load(fullFen)` before calling any evaluation method; default constructor loads starting position |
-| react-chessboard v5 `onSquareClick` | Access `square` directly from event — API changed from `(square) =>` to `({ square }) =>` in v5 | Use destructured `({ square })` — existing codebase already correct, maintain this in all new puzzle components |
-| `usePuzzleProgress` in new components | Call the hook inside a practice or mastery component directly | Lift the hook to `ChessGameContent` and pass `data.pieces` as a prop; avoid multiple hook instances reading/writing the same key |
-| Confetti (react-confetti 6.x) | Mount multiple instances for simultaneous celebrations | One instance at a time with `recycle={false}`; implement a coordinator to prevent layering |
-| next-intl `useTranslations` | Add a translation call with a key that does not exist in all three locale files | Add key to `he.json`, `en.json`, `ru.json` in the same commit; TypeScript `t()` call will catch typos at compile time |
-| Hebrew RTL in instruction text | String like "Tap the king to check" renders mirrored in RTL — word order may need adjustment | Author Hebrew instruction strings natively, not as translated word-for-word English; test in RTL mode |
+| Firebase Auth + Next.js SSR | Import `getAuth()` in a server component or module without `'use client'` | All Firebase Auth imports must be in `'use client'` files; auth context must have `'use client'` directive |
+| `onAuthStateChanged` | Subscribe inside a component body without unsubscribing | Call inside `useEffect` and return the unsubscribe function: `return onAuthStateChanged(auth, handler)` |
+| `signInWithRedirect` + `getRedirectResult` | Only call `getRedirectResult` on the sign-in page | Call `getRedirectResult` on every page load (in the auth context provider) — the redirect can land on any page |
+| Firestore `set()` for sync writes | Replace the entire user document on every sync | Use `setDoc(ref, data, { merge: true })` or `updateDoc(ref, fieldUpdates)` to avoid overwriting fields from other devices |
+| Firestore offline persistence | Call `enableIndexedDbPersistence` after any Firestore read or write | Enable persistence once, before any other Firestore call, in the Firebase initialization module |
+| Realtime Database + Firestore in same app | Mix RTDB and Firestore for user progress | Keep RTDB for leaderboards (already there), Firestore for user sync — do not split a user's progress across both databases |
+| Firebase UID as localStorage key | Prefix localStorage keys per user when logged in | Keep single-device localStorage keys as-is (no UID prefix) — the device belongs to one family; use UID only as the Firestore document path |
+| Google Auth redirect on `lepdy.com` | Authorized domain not added to Firebase Auth console | Add `lepdy.com` to Firebase Auth → Sign-in method → Authorized domains before testing redirect on production |
 
 ---
 
@@ -249,10 +276,23 @@ Progress meters are the standard engagement mechanic in mobile/learning apps. Th
 
 | Trap | Symptoms | Prevention | When It Breaks |
 |------|----------|------------|----------------|
-| Multiple Confetti instances on milestone + per-puzzle events | Frame drops below 30fps on Android tablet during correct-answer streaks | Confetti coordinator: skip per-puzzle confetti when milestone confetti is active | Any session with 3+ consecutive correct answers |
-| chess.js `Chess()` instantiated inside render body for check evaluation | New Chess instance on every re-render during animation state changes | Instantiate in `useMemo([puzzleFen])` or `useEffect`; never in render body | Any animation-triggered re-render (e.g., flashSquare state change) |
-| Practice mode generates new puzzle on every wrong answer (regenerates from random) | Board resets mid-animation because state change triggers new puzzle selection | Stabilize puzzle reference in `useState` initializer or `useMemo`; only advance to next puzzle on explicit correct answer | First wrong answer during practice |
-| Progress screen re-reads localStorage directly on every render | Perceptible flicker/delay when navigating to progress screen | Progress data flows from parent as props (existing pattern in SessionCompleteScreen); never read localStorage in render | Every navigation to progress screen |
+| Firestore write on every item tap | Item tap latency increases; Firestore write count in dashboard is proportional to items tapped | Debounce writes to 30-60s; batch multiple key updates into one write | Every active gameplay session without batching |
+| `onAuthStateChanged` re-render propagation | Profiler shows all context consumers re-rendering every 60 minutes (token refresh) | Memoize auth context value by `user.uid`; only update context when uid actually changes | At 60-minute token refresh cycle on any active session |
+| First-login migration reads 14 localStorage keys synchronously | Migration blocks UI while reading and writing all keys | Already synchronous (localStorage reads are fast); the bottleneck is the single Firestore write — ensure it is non-blocking | Only on first login — acceptable one-time cost |
+| Firestore `onSnapshot` real-time listener for progress sync | Continuous network connection open; battery drain on tablets | Use `getDoc` (one-time fetch) not `onSnapshot` (real-time listener) for user progress — real-time sync is not needed for this use case | Any session where `onSnapshot` is used instead of `getDoc` |
+| Firestore `getDoc` called on every page mount | Redundant reads when user navigates between pages | Fetch cloud data once on sign-in, cache in memory (auth context state); only re-fetch on explicit "refresh" or sync event | Every page navigation if fetch is in page-level useEffect |
+
+---
+
+## Security Mistakes
+
+| Mistake | Risk | Prevention |
+|---------|------|------------|
+| Open Firestore rules (`allow read, write: if true`) in production | Any authenticated user can read/write any child's progress | Path-based rules: `match /users/{userId} { allow read, write: if request.auth.uid == userId; }` |
+| Storing sensitive parent data (email, Google profile) in Firestore user document | COPPA/GDPR exposure if data is breached | Store only Firebase UID, display name, and app-specific progress data — never email in child-visible storage |
+| No data deletion path | COPPA 2025 requires honoring parent deletion requests | Implement `deleteUser()` + Firestore document deletion path; document it in the privacy policy |
+| Firebase API keys in client-side code | Exposure risk (low — Firebase public keys are safe for client use) | Firebase client config keys are designed to be public; they are NOT secret keys. Security enforced by Security Rules, not key secrecy. |
+| Missing Firestore rules for the `users` collection while RTDB rules exist | New collection inherits default-deny or is accidentally left open | Add explicit Firestore rules for `users/{userId}` in the same commit that creates the collection |
 
 ---
 
@@ -260,27 +300,27 @@ Progress meters are the standard engagement mechanic in mobile/learning apps. Th
 
 | Pitfall | User Impact | Better Approach |
 |---------|-------------|-----------------|
-| Practice mode shows all 6 pieces as options without progressive disclosure | Overwhelms ages 5-7 with choice; they may pick a piece they don't know yet | Only show pieces the child has unlocked/encountered; pawn can be a bonus unlock |
-| "Find the best move" puzzle type with no context about what "best" means | Ages 5-9 cannot reason about positional evaluation; this feels arbitrary | Defer "best move" to a future milestone; for v1.4 stick to check and checkmate-in-1 which have clear right/wrong answers |
-| Menu redesign removes the level 1/2/3 structure without a transition | Kids who played v1.3 have a mental model of "I'm on level 2" — removing levels disorientation | Redesigned menu should surface the progression state kids already have (pieces learned, sessions played) rather than erasing the old structure |
-| Check puzzle feedback says "wrong" without explaining why | "Try again" is sufficient for movement/capture; check requires understanding "the king is attacked" | Check puzzles need a specific wrong-answer explanation — at minimum, a visual indicator (king square highlighted in red) |
-| Session mode and practice mode both use `startNewSession` callback | New session resets streak counter; calling it from practice exit inadvertently resets a mid-session streak | Practice mode should NEVER call `startNewSession` — use a separate reset function scoped to practice |
-| Daily puzzle can now appear as "already done" if child did it in practice mode (if same puzzle appears) | Daily puzzle's completion state would be incorrect | Daily puzzle has its own `markCompleted` state separate from session/practice; confirm this isolation holds when new puzzle types are added |
+| Sign-in button visible in child-facing UI | Child taps "Sign in with Google" accidentally, interrupts gameplay | Place sign-in only in the settings/parent drawer, behind a parent gate (age verification tap already exists) |
+| Auth loading state shows nothing (blank settings area) | Parent opens settings, sees empty sidebar while Firebase resolves | Show a neutral placeholder (settings icon, no login button text) for 300ms, not a blank space |
+| "Sync failed" error shown to child | Child is confused and worried about data loss | Never surface sync errors to the child — log to console only; show subtle indicator only in parent settings area |
+| Sign-out deletes local cache | Child's progress disappears from device after parent signs out | Sign-out should preserve localStorage — local data is the offline-first source of truth regardless of auth state |
+| Progress sync forces reload to see updated data | Multi-device families see stale progress on second device | Fetch fresh cloud data on every sign-in (not on every page load) and merge with local state at that point |
+| Login mandatory to use the app | Friction kills engagement for kids whose parents don't set up accounts | Enforce "not logged in = zero behavior change" throughout — no banners, no prompts, no degraded features |
 
 ---
 
 ## "Looks Done But Isn't" Checklist
 
-- [ ] **Practice mode progress wiring:** Correct and wrong answers during practice change the tier in `usePuzzleProgress` — verify by completing 5 practice puzzles for a piece and confirming its tier advances on the next regular session.
-- [ ] **ChessView exhaustiveness:** Add a TypeScript `assertNever` or `default: console.error` to the `currentView` routing block so unhandled views are caught at build or runtime.
-- [ ] **Check/Checkmate FEN format:** Every check/checkmate puzzle's FEN passes `chess.validate_fen()` and `chess.load()` without errors. Verify `chess.isCheck()` or `chess.isCheckmate()` returns `true` for each authored position.
-- [ ] **Back navigation in practice:** Pressing exit during practice drill returns to the piece picker, not the main map. Confirm the `onExit` prop wired in practice drill view navigates to `'practice'`, not `'map'`.
-- [ ] **All three locale files updated:** Run a key-count diff between `he.json`, `en.json`, `ru.json` under `chessGame` namespace before every phase merges. Counts must match.
-- [ ] **Confetti coordinator:** During a correct-answer streak in a session, confirm only one Confetti instance is mounted at any time. Check in React DevTools.
-- [ ] **Mastery display shows level, not counter:** Progress screen shows "Intermediate" not "3/5 to Expert" — verify no progress bar toward next tier is visible to the child.
-- [ ] **No usePuzzleProgress called in child components:** Confirm `usePuzzleProgress` is only instantiated in `ChessGameContent` or `usePuzzleSession`. New mastery/practice components receive data as props.
-- [ ] **New puzzle types added to SessionPuzzle union:** If check or checkmate puzzles are added to regular sessions, confirm the `SessionPuzzle` discriminated union includes them and the session routing handles them without falling through to null render.
-- [ ] **Daily puzzle completion unaffected by practice:** Completing the daily puzzle piece type in practice mode does not mark the daily puzzle as done. Verify `useDailyPuzzle`'s `isCompleted` state is isolated.
+- [ ] **First login union merge:** Sign in on a device with 6 weeks of localStorage data. Verify cloud document contains all local progress. Verify local state was not overwritten. Check each of the 14 storage keys.
+- [ ] **Second device merge:** Sign in on a fresh device where cloud has progress from device 1. Verify cloud progress is written to localStorage. Play 2 items. Verify cloud shows merged (not replaced) progress.
+- [ ] **Sign-out preserves local data:** Sign out. Verify all 14 localStorage keys still exist with the same values as before sign-out.
+- [ ] **Offline session sync:** Enable airplane mode. Play a chess session (complete 5 puzzles). Re-enable network. Verify Firestore document updates within 60 seconds without any user action.
+- [ ] **SSR no window errors:** Run `npm run build`. Zero `window is not defined` or `indexedDB is not defined` errors in build output or server logs.
+- [ ] **iOS Safari sign-in works:** Test `signInWithRedirect` on an iPhone (Safari). Verify Google auth completes and user is signed in after redirect back.
+- [ ] **Security rules lock user data:** Using Firebase Emulator, attempt to read `/users/{uid-A}` while authenticated as uid-B. Verify permission denied.
+- [ ] **No sync writes during gameplay:** Open Firestore usage dashboard. Play 20 item taps. Verify write count does not increment by more than 2 (one debounced write, one on session end).
+- [ ] **Auth context memoized:** Open React DevTools Profiler during a token refresh (wait 60 minutes or force it). Verify only auth-context consumers re-render, not the entire component tree.
+- [ ] **Parent consent framing in UI:** Sign-in UI copy explicitly states this is for parents/guardians. A child-specific account warning is present.
 
 ---
 
@@ -288,12 +328,12 @@ Progress meters are the standard engagement mechanic in mobile/learning apps. Th
 
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| Practice answers not recording to usePuzzleProgress | MEDIUM | Wire `recordCorrect`/`recordWrong` directly — no localStorage migration needed, just hook the calls |
-| Check puzzle FEN invalid — chess.js evaluation always wrong | HIGH | Replace puzzle data with corrected full FEN; if already shipped, add a Firebase Remote Config flag to hide check puzzles and disable them until fixed |
-| New ChessView value silently falls through to map render | LOW | Add the missing `if/else` branch; no data loss, children just saw wrong screen |
-| Three locale files out of sync (Hebrew missing keys) | MEDIUM | Add missing keys to he.json and ru.json; ship as a hotfix; Hebrew users see temporary fallback text (English) which is readable but not ideal |
-| Confetti layering causes tablet performance issues | LOW | Reduce `numberOfPieces` via feature flag; or disable celebration at the per-puzzle level (keep only session-level confetti) via Remote Config flag |
-| Mastery display incentivizes gaming behavior | MEDIUM | Remove progress-toward-tier display; replace with session-level goals (e.g., "play 1 session today") which are harder to game |
+| First login overwrote local progress | HIGH | No automatic recovery — localStorage was overwritten. Prevention is the only option. Implement a backup-before-overwrite: store a `preMigrationBackup` key in localStorage before the first write. |
+| Second device last-write-wins destroyed progress | MEDIUM | Add `lastWriteWins` timestamp comparison; restore from Firestore backup if available (Firestore has point-in-time recovery on paid plans). Implement merge-semantics retroactively using `updateDoc` field operations. |
+| Firestore rules left open in production | HIGH | Update rules immediately in Firebase console (takes effect within seconds). Audit logs in Firebase console to check if any unauthorized reads/writes occurred. |
+| Write cost explosion before debounce implemented | LOW-MEDIUM | Add debounce immediately — one PR. Existing writes are already charged. Enable Firebase billing alerts at $1 and $5 thresholds to catch this early. |
+| `signInWithPopup` blocked on iOS, parents can't sign in | MEDIUM | Add `signInWithRedirect` fallback in one PR. No data loss, purely UX regression. Can be fixed in a hotfix without touching sync logic. |
+| COPPA compliance gap discovered post-launch | HIGH | Consult legal counsel. Add parental consent UI. Implement data deletion path. Update privacy policy. May require disabling auth feature until compliant. |
 
 ---
 
@@ -301,28 +341,33 @@ Progress meters are the standard engagement mechanic in mobile/learning apps. Th
 
 | Pitfall | Prevention Phase | Verification |
 |---------|------------------|--------------|
-| Practice mode parallel state | Practice mode phase — define hook contract before UI | Play 5 practice puzzles for one piece; tier advances on next regular session |
-| Check/Checkmate wrong schema type | New puzzle types phase — author interfaces before components | Each new puzzle type: `chess.load(fen)` succeeds + evaluation returns expected result |
-| ChessView unhandled states | Menu redesign phase — add assertNever on first structural change | TypeScript compilation catches all unhandled ChessView cases |
-| usePuzzleProgress multi-instantiation | Progress/engagement phase — prop-drilling contract established | React DevTools shows usePuzzleProgress hook called from only one component |
-| Piece-placement FEN passed to chess.js | New puzzle types phase — FEN format defined before any puzzle authored | Automated validation: all check/checkmate puzzle FENs pass chess.validate_fen() |
-| Confetti layering | Visual polish phase — celebration coordinator added before any new confetti trigger | Correct-answer streak test: React DevTools shows max 1 Confetti instance |
-| i18n desync across locales | Every phase — per-phase acceptance criterion | Key count under chessGame in he.json == en.json == ru.json before phase merges |
-| Back navigation destination in practice | Practice mode phase — ChessView routing designed for two-step navigation | Pressing exit in practice drill navigates to piece picker, not main map |
-| Visible tier progress encouraging gaming | Progress/engagement phase — design constraint applied before any mastery meter is built | Progress screen shows tier label only, no numeric counter or progress bar toward next tier |
-| Daily puzzle isolation from practice | Practice mode phase — verify useDailyPuzzle state is not touched by practice flow | Complete the daily puzzle piece type in practice; daily puzzle still shows as available |
+| First login overwrites local progress | Auth + sync core — define merge contract first | Sign in on device with data; verify 14 keys present in Firestore and localStorage unchanged |
+| Second device last-write-wins | Auth + sync core — define field-level merge semantics | Two devices with different progress; sync both; verify no regression on either |
+| onAuthStateChanged loading flash | Auth integration — `isAuthLoading` guard in auth context | Settings sidebar shows no flicker during 300ms auth resolution window |
+| signInWithPopup blocked on iOS | Auth integration — use redirect-first approach | Test Google sign-in on iPhone Safari before shipping |
+| Firebase SSR "window is not defined" | Auth integration — `'use client'` discipline | `npm run build` produces zero SSR window errors |
+| Firestore write cost explosion | Sync infrastructure — debounce before first write hook | 20 item taps = max 2 Firestore writes in usage dashboard |
+| Offline writes dropped | Sync infrastructure — enable Firestore persistence before writes | Airplane mode session; writes appear in Firestore after reconnect |
+| Open Firestore security rules | Auth integration — rules file in repo, tested in emulator | Emulator rules test: cross-user read returns PERMISSION_DENIED |
+| Auth context re-render propagation | Auth integration — memoized context value | React Profiler shows no full-tree re-render on 60-minute token refresh |
+| COPPA parental consent framing | Auth integration — UI copy reviewed before design | Sign-in UI contains explicit parental consent language; no child-facing sign-in prompt |
 
 ---
 
 ## Sources
 
-- Direct codebase analysis: `app/[locale]/games/chess-game/ChessGameContent.tsx`, `MovementPuzzle.tsx`, `CapturePuzzle.tsx`, `SessionCompleteScreen.tsx`, `hooks/usePuzzleSession.ts`, `hooks/usePuzzleProgress.ts`, `hooks/useChessProgress.ts`, `hooks/useDailyPuzzle.ts`, `data/chessPuzzles.ts`
-- chess.js FEN requirements: piece-placement vs. full FEN distinction (HIGH confidence — chess.js v1.x API, verified from codebase usage patterns)
-- react-chessboard v5 API: `onSquareClick: ({ square }) =>` destructured form already confirmed in existing codebase
-- Pattern: Kids' educational game engagement mechanics — tier visibility anti-patterns for ages 5-9 (HIGH confidence — well-documented in educational game design, Duolingo's hearts removal cited in project key decisions)
-- Pattern: Discriminated union exhaustiveness in TypeScript if-chains vs. switch statements (HIGH confidence — TypeScript language specification)
-- Pattern: MUI + next-intl i18n file drift with multiple locales (MEDIUM confidence — common React i18n failure mode, observed in existing codebase where translation files must be manually kept in sync)
+- Firebase Auth SSR/Next.js patterns: [Authenticated server-side rendering with Next.js and Firebase](https://colinhacks.com/essays/nextjs-firebase-authentication) (MEDIUM confidence — pre-2025 but pattern is stable)
+- Firebase Auth redirect best practices for Safari 16.1+: [Best practices for using signInWithRedirect](https://firebase.google.com/docs/auth/web/redirect-best-practices) (HIGH confidence — official Firebase docs)
+- Firebase Auth state persistence: [Authentication State Persistence](https://firebase.google.com/docs/auth/web/auth-state-persistence) (HIGH confidence — official Firebase docs)
+- Firestore vs Realtime Database: [Choose a database](https://firebase.google.com/docs/database/rtdb-vs-firestore) (HIGH confidence — official Firebase docs)
+- Firestore offline persistence: [Offline-First with Firestore](https://bootstrapped.app/guide/how-to-use-firebase-firestores-offline-capabilities-with-synchronization) (MEDIUM confidence — community guide, patterns consistent with official docs)
+- Firestore conflict resolution strategies: [10 Common Challenges with Firebase Data Syncing](https://moldstud.com/articles/p-10-common-challenges-with-firebase-data-syncing-and-how-to-overcome-them) (MEDIUM confidence — community)
+- Firebase security rules user isolation: [Basic Security Rules](https://firebase.google.com/docs/rules/basics) (HIGH confidence — official Firebase docs)
+- COPPA 2025 updated rules: [Children's Online Privacy in 2025](https://www.loeb.com/en/insights/publications/2025/05/childrens-online-privacy-in-2025-the-amended-coppa-rule) (HIGH confidence — legal publication)
+- Firebase privacy documentation: [Privacy and Security in Firebase](https://firebase.google.com/support/privacy) (HIGH confidence — official Firebase docs)
+- React auth context loading patterns: [onAuthStateChanged flicker patterns](https://blog.logrocket.com/implementing-authentication-in-next-js-with-firebase/) (MEDIUM confidence — community, pattern verified against known Next.js hydration behavior)
+- Codebase analysis: 14 localStorage storage keys identified across 11 hooks — direct codebase inspection (HIGH confidence)
 
 ---
-*Pitfalls research for: v1.4 Complete Puzzle Experience — practice modes, check/checkmate puzzles, menu redesign, engagement features added to existing kids chess learning app*
+*Pitfalls research for: v1.5 Cloud Sync — optional Firebase Auth + cloud sync added to existing localStorage-based kids learning app*
 *Researched: 2026-03-23*

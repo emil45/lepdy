@@ -1,579 +1,571 @@
 # Architecture Research
 
-**Domain:** v1.4 Complete Puzzle Experience — new menu, practice mode, check/checkmate puzzles, visual polish, progress engagement layered onto existing chess game
+**Domain:** v1.5 Cloud Sync — Firebase Auth + user progress sync layered onto existing Lepdy context/localStorage architecture
 **Researched:** 2026-03-23
-**Confidence:** HIGH — based on direct codebase reading of all existing chess files
+**Confidence:** HIGH — based on direct codebase reading of all existing hooks/contexts + verified Firebase Auth patterns
 
 ---
 
-## Existing Architecture (as-shipped, v1.3)
+## Existing Architecture Snapshot (v1.4, as-shipped)
 
-The foundation all v1.4 features must integrate with.
+The foundation all v1.5 features integrate with.
 
-### Current System Overview
+### Storage Layer (7 localStorage keys, 1 sessionStorage key)
+
+| Key | Hook | Data |
+|-----|------|------|
+| `lepdy_streak_data` | `useStreak` | `StreakData` (currentStreak, lastActivityDate, longestStreak, freezes) |
+| `lepdy_sticker_data` | `useStickers` | `StickerData` (earnedStickerIds[]) |
+| `lepdy_word_collection` | `useWordCollectionProgress` | `WordCollectionData` (collectedWords[], totalWordsBuilt) |
+| `lepdy_letters_progress` | `useCategoryProgress` | `CategoryProgressData` (heardItemIds[], totalClicks) |
+| `lepdy_numbers_progress` | `useCategoryProgress` | `CategoryProgressData` |
+| `lepdy_animals_progress` | `useCategoryProgress` | `CategoryProgressData` |
+| `lepdy_chess_progress` | `useChessProgress` | `ChessProgressData` (completedLevels[], currentLevel) |
+| `lepdy_chess_puzzle_progress` | `usePuzzleProgress` | `PuzzleProgressData` (pieces: Record<pieceId, tier+streaks>) |
+| `lepdy_chess_daily_*` | `useDailyPuzzle` | date-keyed completion flag |
+| `lepdy_chess_piece_theme` | `useChessPieceTheme` | `'staunty' \| 'horsey'` |
+| `lepdy_chess_session` (sessionStorage) | `usePuzzleSession` | in-progress session queue |
+| `lepdy_first_visit` | `providers.tsx` | ISO timestamp |
+| `lepdy_games_progress` | `useGamesProgress` | game completion data |
+
+### Context Provider Stack (in `providers.tsx`)
 
 ```
-app/[locale]/games/chess-game/
-├── page.tsx                    (Server: locale, metadata)
-├── ChessGameContent.tsx        (Client: state machine — 'map' | 'level-1' | 'session' | 'daily')
-├── PieceIntroduction.tsx       (View: swipe through 6 pieces, Hebrew names + audio)
-├── MovementPuzzle.tsx          (View: pure renderer — tap where piece can move)
-├── CapturePuzzle.tsx           (View: pure renderer — tap which piece can capture)
-├── SessionCompleteScreen.tsx   (View: 1-3 stars, per-piece mastery chips, next/back)
-├── DailyPuzzleCard.tsx         (UI atom: daily puzzle entry on map)
-├── StreakBadge.tsx             (UI atom: consecutive correct counter)
-├── ChessSettingsDrawer.tsx     (Settings: piece theme selector)
-└── pieceThemes.tsx             (Factory: staunty/horsey SVG render objects)
+ThemeRegistry
+  ThemeProvider (MUI)
+    FeatureFlagProvider        ← Firebase Remote Config
+      StreakProvider           ← useStreak → localStorage
+        LettersProgressProvider
+          NumbersProgressProvider
+            AnimalsProgressProvider
+              GamesProgressProvider
+                WordCollectionProvider
+                  StickerToastProvider
+                    StickerProvider   ← useStickers + unlock detector
+                      {children}
+```
+
+### Firebase Existing Integration
+
+- `lib/firebaseApp.ts` — singleton `getFirebaseApp()`, lazy-initialized, prevents duplicate-app errors
+- `lib/firebase.ts` — Realtime Database access: `submitScore()`, `getTopScore()` (leaderboard)
+- `lib/featureFlags/providers/firebaseRemoteConfig.ts` — Remote Config feature flag provider
+- Firebase project: `lepdy-c29da`, config is public (client keys only — correct for web)
+
+---
+
+## v1.5 Integration Architecture
+
+### Design Principles
+
+1. **Zero behavior change when not logged in.** Every hook continues reading/writing localStorage exactly as today. Auth is opt-in.
+2. **localStorage is always the source of truth at runtime.** Cloud is a sync target, not a live data source. No app reads come from Firebase at runtime.
+3. **`AuthContext` wraps the existing provider stack.** Auth resolves first; then the existing providers mount as they do today. No changes to the existing provider tree.
+4. **Sync layer is a side-effect service.** The cloud sync worker listens to auth state and data changes, then writes to Firebase. It does not sit in the render path.
+
+### System Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                         BROWSER (Client)                             │
+├─────────────────────────────────────────────────────────────────────┤
+│  ┌──────────────────────────────────────────────────────────────┐   │
+│  │                      AuthProvider (NEW)                       │   │
+│  │  user: FirebaseUser | null   loading: boolean                 │   │
+│  │  signInWithGoogle()  signOut()  onAuthStateChanged listener   │   │
+│  │                                                               │   │
+│  │  ┌──────────────────────────────────────────────────────┐    │   │
+│  │  │          Existing Provider Stack (UNCHANGED)          │    │   │
+│  │  │  FeatureFlagProvider → StreakProvider → ...           │    │   │
+│  │  │                                                       │    │   │
+│  │  │  ┌───────────────────────────────────────────────┐   │    │   │
+│  │  │  │        CloudSyncProvider (NEW)                 │   │    │   │
+│  │  │  │  Reads: useAuthContext + all progress contexts │   │    │   │
+│  │  │  │  Writes: Firestore/RTDB on data change + login │   │    │   │
+│  │  │  │  Merges: localStorage ← cloud on first login   │   │    │   │
+│  │  │  │  Status: syncStatus ('idle'|'syncing'|'error') │   │    │   │
+│  │  │  └───────────────────────────────────────────────┘   │    │   │
+│  │  │                                                       │    │   │
+│  │  │     {children}                                        │    │   │
+│  │  └──────────────────────────────────────────────────────┘    │   │
+│  └──────────────────────────────────────────────────────────────┘   │
+├─────────────────────────────────────────────────────────────────────┤
+│                      localStorage (always)                           │
+│  lepdy_streak_data | lepdy_sticker_data | lepdy_letters_progress ... │
+├─────────────────────────────────────────────────────────────────────┤
+│                    Firebase (when logged in)                          │
+│  /users/{uid}/progress/{key}    — cloud mirror of localStorage data  │
+│  /leaderboard/{game}            — existing (unchanged)               │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### New Files
+
+```
+lib/
+├── auth.ts                         NEW  Firebase Auth lazy init, GoogleAuthProvider
+├── firebaseSync.ts                 NEW  Read/write user progress to RTDB path /users/{uid}/progress/
+
+contexts/
+├── AuthContext.tsx                 NEW  AuthProvider, useAuthContext hook
+
+components/
+├── GoogleSignInButton.tsx          NEW  "Sign in with Google" button, handles popup + loading state
+├── UserAccountChip.tsx             NEW  Avatar + display name + sign-out button for settings drawer
 
 hooks/
-├── useChessProgress.ts         (localStorage: completedLevels[], currentLevel)
-├── useChessPieceTheme.ts       (localStorage: 'staunty' | 'horsey')
-├── usePuzzleProgress.ts        (localStorage: per-piece tier + streak counters)
-├── usePuzzleSession.ts         (sessionStorage: 10-puzzle queue, head index, streak)
-└── useDailyPuzzle.ts           (localStorage: date-keyed completion flag)
-
-data/
-├── chessPieces.ts              (6 piece configs: id, translationKey, audioFile, fenChar, order)
-└── chessPuzzles.ts             (movementPuzzles[61] + capturePuzzles[34], difficulty 1|2|3)
-
-utils/
-├── chessFen.ts                 (moveFenPiece: FEN piece-placement string manipulation)
-└── puzzleGenerator.ts          (selectNextPuzzle: tier-aware random with 15-dedup window)
+├── useCloudSync.ts                 NEW  Orchestrates sync: merge on login, write on change, read on login
 ```
 
-### Current State Machine (ChessGameContent)
+### Modified Files
 
 ```
-ChessView = 'map' | 'level-1' | 'session' | 'daily'
-
-'map'     → LevelMapCard × 3 (unlock: level N requires N-1 complete)
-            DailyPuzzleCard (always visible, date-keyed)
-'level-1' → <PieceIntroduction onComplete={() => setView('map')} completeLevel />
-'session' → if isSessionComplete → <SessionCompleteScreen />
-            else → <MovementPuzzle> or <CapturePuzzle> (dispatched by currentPuzzle.type)
-'daily'   → <MovementPuzzle> or <CapturePuzzle> (dispatched by dailyPuzzle.type)
+app/providers.tsx                   MODIFIED  Wrap existing provider stack with AuthProvider
+components/SettingsDrawer.tsx       MODIFIED  Add GoogleSignInButton / UserAccountChip section
+next.config.ts                      MODIFIED  Add rewrite proxy for Firebase Auth redirect flow
 ```
-
-The `session` view is currently entered from Level 2 OR Level 3 on the map — both route to the same mixed session (5 movement + 5 capture interleaved). This is the "broken 1/2/3/daily structure" the redesigned menu must fix.
-
-### Key Data Structures
-
-```typescript
-// ChessView type — will be extended for new views
-type ChessView = 'map' | 'level-1' | 'session' | 'daily';
-
-// SessionPuzzle — current union type; check/checkmate types will extend this
-type SessionPuzzle =
-  | { type: 'movement'; puzzle: MovementPuzzle }
-  | { type: 'capture'; puzzle: CapturePuzzle };
-
-// PiecePuzzleProgress — per-piece adaptive difficulty data
-interface PiecePuzzleProgress {
-  tier: 1 | 2 | 3;
-  consecutiveCorrect: number;
-  consecutiveWrong: number;
-}
-
-// MovementPuzzle + CapturePuzzle — the current puzzle data contracts
-interface MovementPuzzle { id, pieceId, fen, pieceSquare, validTargets, difficulty }
-interface CapturePuzzle  { id, fen, targetSquare, correctPieceSquare, correctPieceId,
-                           targetPieceId, distractorSquares, difficulty }
-```
-
----
-
-## v1.4 Integration Map: Feature by Feature
-
-### 1. Redesigned Game Menu
-
-**What changes:** The current map has a flat list: Daily Puzzle + Level 1 + Level 2 + Level 3. Levels 2 and 3 both launch the same mixed session, which is confusing. The redesign replaces this with a clear, intuitive structure.
-
-**Integration approach — minimum shell surgery:**
-
-The `ChessView` union type is extended, and `ChessGameContent.tsx` gets new view branches. The existing `LevelMapCard` component is replaced or augmented with a new menu layout component. The LEVELS constant and the `map` render branch are the only code paths that change.
-
-```
-BEFORE: ChessView = 'map' | 'level-1' | 'session' | 'daily'
-AFTER:  ChessView = 'menu' | 'learn' | 'practice' | 'challenge' | 'daily'
-```
-
-The `'map'` view becomes `'menu'`. The `'level-1'` view becomes `'learn'`. A new `'practice'` view enables per-piece drilling. The `'session'` view becomes `'challenge'` (or the session concept is embedded in the renamed view).
-
-**New component:**
-- `ChessMenuScreen.tsx` — replaces the inline map render in `ChessGameContent.tsx`. Owns the layout of menu tiles (Learn, Practice, Challenge, Daily). Receives unlock state and completion callbacks as props.
-
-**Existing components that remain unchanged:**
-- `DailyPuzzleCard.tsx` — reused in `ChessMenuScreen`
-- `PieceIntroduction.tsx` — still renders for `'learn'` view
-- `ChessSettingsDrawer.tsx` — still opened from menu header
-
-**Modified:**
-- `ChessGameContent.tsx` — extend `ChessView` type, add new view branches, replace inline map JSX with `<ChessMenuScreen />`
-
----
-
-### 2. Practice Mode (Per-Piece Drilling)
-
-**What it does:** User selects a specific piece, then drills movement and/or capture puzzles for that piece only — no mixed sessions.
-
-**Integration approach:**
-
-Practice mode reuses `usePuzzleSession` with a filtered puzzle pool. The key change is that `buildSessionQueue` in `usePuzzleSession.ts` currently hardcodes a 5+5 mixed interleave. For practice mode, the queue needs to be piece-filtered and configurable.
-
-**Two options:**
-
-Option A — Parameterize `usePuzzleSession`:
-Pass a `pieceFilter?: ChessPieceId` option. When set, `buildSessionQueue` uses only puzzles for that piece. This is the lower-risk change — no new hook, existing session persistence logic is reused.
-
-Option B — New `usePracticeSession` hook:
-Separate hook with simplified logic (no mixed interleave, no sessionStorage persistence needed for practice). Cleaner interface, more testable.
-
-**Recommendation: Option A.** The session queue builder is a pure function inside `usePuzzleSession.ts`. Adding a `pieceFilter` parameter to `buildSessionQueue` is a 10-line change. The rest of the session machinery (queue persistence, onAnswer, startNewSession, streak counting) is unchanged.
-
-**New components:**
-- `PieceSelectorScreen.tsx` — grid of 6 pieces, tap to start drilling. Receives `onSelect: (pieceId: ChessPieceId) => void`.
-- ChessGameContent adds `'practice'` view branch that renders `PieceSelectorScreen`, then on piece select transitions to `'session'` view with `pieceFilter` prop threaded through.
-
-**Modified:**
-- `usePuzzleSession.ts` — add optional `pieceFilter?: ChessPieceId` parameter to `buildSessionQueue` call
-- `ChessGameContent.tsx` — add `'practice'` view, thread `selectedPiece` state down to session
-
-**Data flow:**
-```
-User taps Practice on menu
-  → setView('practice')
-  → PieceSelectorScreen renders 6 piece tiles
-  → User taps "Rook"
-  → setSelectedPiece('rook'), setView('session')
-  → usePuzzleSession({ pieceFilter: 'rook' })
-      → buildSessionQueue filters: only rook movement + rook capture puzzles
-  → Normal session flow (streak, onAnswer, SessionCompleteScreen)
-```
-
----
-
-### 3. New Puzzle Types: Check and Checkmate-in-1
-
-**What these are:**
-- Check puzzle: Board position where the player must tap the piece currently giving check, or tap the king's escape square.
-- Checkmate-in-1: Board position where one move delivers checkmate. Player taps the attacking piece and target square.
-
-**Architecture fit:**
-
-The existing `SessionPuzzle` discriminated union must be extended:
-
-```typescript
-// BEFORE
-type SessionPuzzle =
-  | { type: 'movement'; puzzle: MovementPuzzle }
-  | { type: 'capture'; puzzle: CapturePuzzle };
-
-// AFTER — additive extension
-type SessionPuzzle =
-  | { type: 'movement'; puzzle: MovementPuzzle }
-  | { type: 'capture'; puzzle: CapturePuzzle }
-  | { type: 'check'; puzzle: CheckPuzzle }
-  | { type: 'checkmate'; puzzle: CheckmatePuzzle };
-```
-
-**New data interfaces:**
-
-```typescript
-export interface CheckPuzzle {
-  id: string;
-  fen: string;
-  checkingPieceSquare: string;   // piece giving check — player taps this
-  kingSquare: string;            // king in check (highlight target)
-  difficulty: 1 | 2 | 3;
-}
-
-export interface CheckmatePuzzle {
-  id: string;
-  fen: string;
-  attackingPieceSquare: string;  // piece that delivers checkmate
-  targetSquare: string;          // square the piece moves to
-  difficulty: 1 | 2 | 3;
-}
-```
-
-**New renderer components:**
-- `CheckPuzzle.tsx` — board renderer: highlights king in check, player taps checking piece
-- `CheckmatePuzzle.tsx` — board renderer: player taps attacking piece then target square (two-tap interaction)
-
-Both follow the existing renderer pattern: pure components, receive `puzzle`, `onAnswer`, `onExit` props, use `useChessPieceTheme`, `moveFenPiece`, and confetti on correct.
-
-**Modified:**
-- `data/chessPuzzles.ts` — add `checkPuzzles[]` and `checkmatePuzzles[]` arrays
-- `hooks/usePuzzleSession.ts` — extend `buildSessionQueue` to optionally include check/checkmate types
-- `ChessGameContent.tsx` — add dispatch branches for `type === 'check'` and `type === 'checkmate'` in the session render block
-
-**chess.js usage for validation:**
-Check and checkmate puzzles use chess.js for validation during authoring (data file creation), not at runtime. The FEN positions are pre-validated and stored statically, matching the existing curated puzzle approach. No new chess.js runtime dependency.
-
----
-
-### 4. Visual Polish: Animations, Sounds, Celebrations
-
-**What changes:**
-
-This is not a new architecture layer — it's enhancement of existing component internals. Each polished element targets a specific component.
-
-**Animation enhancements:**
-
-| Location | Current | v1.4 |
-|----------|---------|-------|
-| `MovementPuzzle.tsx` | 200ms FEN slide (react-chessboard built-in) + confetti on correct | Add entrance animation for new puzzle (board slide-in or fade-scale), piece highlight pulse on load |
-| `CapturePuzzle.tsx` | Same as MovementPuzzle | Same enhancements |
-| `SessionCompleteScreen.tsx` | Confetti on 3 stars, Fade in | Add star reveal animation (stars appear one-by-one with 300ms stagger via MUI Grow) |
-| `ChessMenuScreen.tsx` (new) | N/A | Tile entrance stagger (Grow × 4 tiles, 80ms delay offset) |
-| `PieceSelectorScreen.tsx` (new) | N/A | Grid entrance stagger (Grow × 6 pieces) |
-
-MUI's `Grow` and `Fade` are already used in the codebase (Fade in `ChessGameContent`, Grow in existing Lepdy components). No new animation library needed.
-
-**Sound effects:**
-
-The existing `playSound(AudioSounds.X)` system covers celebration sounds (`playRandomCelebration()`). The `AudioSounds` enum in `utils/audio.ts` may need new values for:
-- Wrong-answer soft "thud" (currently silent per FEED-02 — evaluate if a gentle sound fits v1.4)
-- Session complete fanfare (distinct from single-puzzle celebration)
-- Tier advance notification sound ("getting harder!")
-
-**Integration:** Callers already exist in `MovementPuzzle.tsx` and `CapturePuzzle.tsx`. Adding new `AudioSounds` values and calling `playSound()` at the right moments is self-contained. The `utils/audio.ts` file defines the enum — add values there, add audio files to `public/audio/common/`, done.
-
-**Micro-rewards:**
-
-The `StreakBadge.tsx` component already renders at streak milestones. Visual polish here means: add a brief scale-bounce animation when streak count increments (CSS keyframe via MUI's `sx` prop or a local `@keyframes` block). This is fully self-contained in `StreakBadge.tsx`.
-
----
-
-### 5. Progress and Engagement (Visible Mastery, Return Motivation)
-
-**What changes:**
-
-The current `SessionCompleteScreen` already shows per-piece mastery bands (Beginner/Intermediate/Expert via chips with tier colors). The gap is that this mastery is invisible on the menu — kids don't know what level they're at when they arrive.
-
-**Mastery display on menu:**
-
-The `ChessMenuScreen.tsx` (new) should render visible mastery indicators for each piece directly on the menu. This requires reading from `usePuzzleProgress` — the hook that tracks `PiecePuzzleProgress` (tier + streaks) per piece.
-
-`usePuzzleProgress` is currently only consumed inside `usePuzzleSession`. The menu can consume it directly — it's a standalone hook with no side effects when read.
-
-**Return motivation (daily streak / visit counter):**
-
-The Lepdy app already has `useStreak` for the broader app. The chess game has `useDailyPuzzle` which tracks per-day completion. v1.4 can surface the daily puzzle more prominently on the menu (e.g., highlight when uncompleted, show "come back tomorrow" state with a countdown or date).
-
-No new storage needed — `useDailyPuzzle` already provides `isCompleted` and `dateKey`. The `ChessMenuScreen` just needs to render a more prominent daily card.
-
-**Progress persistence — no changes needed to the storage layer.** The following hooks already cover everything:
-
-| Hook | Stores | v1.4 Reads |
-|------|--------|-----------|
-| `usePuzzleProgress` | Per-piece tier (1/2/3) + consecutive counts | Menu mastery display |
-| `useDailyPuzzle` | Date-keyed completion flag | Menu daily status |
-| `useChessProgress` | Completed levels, currentLevel | Menu unlock state |
-| `usePuzzleSession` | sessionStorage queue (session continuity) | Session resume |
-
----
-
-## Recommended Component Structure (v1.4)
-
-```
-app/[locale]/games/chess-game/
-├── page.tsx                      (unchanged)
-├── ChessGameContent.tsx          (modified: extend ChessView, add view branches)
-├── ChessMenuScreen.tsx           (new: replaces inline map JSX)
-├── PieceSelectorScreen.tsx       (new: 6-piece grid for practice mode entry)
-├── PieceIntroduction.tsx         (unchanged)
-├── MovementPuzzle.tsx            (light polish: entrance animation, sound)
-├── CapturePuzzle.tsx             (light polish: entrance animation, sound)
-├── CheckPuzzle.tsx               (new: check detection renderer)
-├── CheckmatePuzzle.tsx           (new: checkmate-in-1 renderer)
-├── SessionCompleteScreen.tsx     (modified: star reveal animation, sounds)
-├── DailyPuzzleCard.tsx           (modified: more prominent, contextual states)
-├── StreakBadge.tsx               (modified: bounce animation on increment)
-├── ChessSettingsDrawer.tsx       (unchanged)
-└── pieceThemes.tsx               (unchanged)
-
-hooks/
-├── useChessProgress.ts           (unchanged — level gating)
-├── useChessPieceTheme.ts         (unchanged)
-├── usePuzzleProgress.ts          (unchanged — mastery tiers)
-├── usePuzzleSession.ts           (modified: add pieceFilter param to buildSessionQueue)
-└── useDailyPuzzle.ts             (unchanged)
-
-data/
-├── chessPieces.ts                (unchanged)
-└── chessPuzzles.ts               (modified: add checkPuzzles[], checkmatePuzzles[])
-
-utils/
-├── chessFen.ts                   (unchanged)
-└── puzzleGenerator.ts            (unchanged)
-```
-
----
-
-## Data Flow
-
-### New View Routing Flow (ChessGameContent)
-
-```
-User opens chess game
-  → ChessGameContent renders 'menu' view
-  → <ChessMenuScreen> shows: Learn | Practice | Challenge | Daily + mastery summary
-
-User taps Learn
-  → setView('learn')
-  → <PieceIntroduction onComplete={() => setView('menu')} completeLevel />
-  → on complete: back to 'menu'
-
-User taps Practice
-  → setView('practice')
-  → <PieceSelectorScreen onSelect={(pieceId) => { setSelectedPiece(pieceId); setView('session'); }} />
-
-User taps Challenge
-  → setView('session')
-  → usePuzzleSession (no pieceFilter — mixed session)
-  → normal 10-puzzle session flow
-
-User taps Piece in PieceSelectorScreen
-  → setSelectedPiece('rook')
-  → setView('session')
-  → usePuzzleSession({ pieceFilter: 'rook' })
-  → filtered session flow — same SessionCompleteScreen on finish
-```
-
-### New Puzzle Type Dispatch (Session View)
-
-```typescript
-// ChessGameContent session view render block — extended
-if (currentPuzzle.type === 'movement') return <MovementPuzzle ... />;
-if (currentPuzzle.type === 'capture')  return <CapturePuzzle ... />;
-if (currentPuzzle.type === 'check')    return <CheckPuzzle puzzle={currentPuzzle.puzzle} ... />;
-if (currentPuzzle.type === 'checkmate') return <CheckmatePuzzle puzzle={currentPuzzle.puzzle} ... />;
-```
-
-### Check/Checkmate Puzzle Flow
-
-```
-usePuzzleSession builds queue
-  → if check/checkmate types enabled (feature flag or unlock condition):
-      buildSessionQueue may include CheckPuzzle or CheckmatePuzzle entries
-  → currentPuzzle.type dispatched in ChessGameContent
-  → CheckPuzzle or CheckmatePuzzle renderer mounts
-  → User interaction → onAnswer(correct: boolean)
-  → usePuzzleProgress.recordCorrect/recordWrong (same as movement/capture)
-  → advance to next puzzle
-```
-
----
-
-## Component Boundary Contracts
-
-| Component | Props In | Calls Out | Notes |
-|-----------|----------|-----------|-------|
-| `ChessMenuScreen` | `onSelectLearn`, `onSelectPractice`, `onSelectChallenge`, `onSelectDaily`, `isLevelUnlocked`, `isLevelCompleted`, `isDailyCompleted` | Reads `usePuzzleProgress` directly for mastery display | New component, pure UI + read-only hook access |
-| `PieceSelectorScreen` | `onSelect: (pieceId: ChessPieceId) => void`, `onExit: () => void` | None | Pure UI picker; reads `usePuzzleProgress` for per-piece mastery badges |
-| `CheckPuzzle` | `puzzle: CheckPuzzle`, `onAnswer: (correct: boolean) => void`, `onExit: () => void` | `playAudio`, `playRandomCelebration` | Mirrors MovementPuzzle structure |
-| `CheckmatePuzzle` | `puzzle: CheckmatePuzzle`, `onAnswer: (correct: boolean) => void`, `onExit: () => void` | `playAudio`, `playRandomCelebration` | Two-tap interaction: piece then target square |
-| `usePuzzleSession` | `pieceFilter?: ChessPieceId` (new optional param) | `usePuzzleProgress`, `selectNextPuzzle` | Additive change — no breaking change to existing callers |
 
 ---
 
 ## Architectural Patterns
 
-### Pattern 1: Additive Extension of Discriminated Unions
+### Pattern 1: Auth Context — Outermost Provider
 
-**What:** New puzzle types (`check`, `checkmate`) are added to the `SessionPuzzle` union without removing existing members.
-**When to use:** Any time a new puzzle type is added. TypeScript exhaustiveness checking will catch unhandled cases.
-**Trade-offs:** ChessGameContent dispatch block grows, but remains explicit and type-safe. Each type is independently testable.
+**What:** `AuthProvider` wraps the entire provider stack. All other contexts can read `useAuthContext()` as needed.
+
+**Why outermost:** Firebase Auth state resolves asynchronously. If `AuthProvider` is inside other providers, those providers initialize with `user = null`, then the user resolves and triggers full tree re-renders. Outermost placement ensures the auth state is known before any progress contexts mount.
+
+**Trade-off:** Auth loading (`user === undefined` → loading, `user === null` → signed out, `user instanceof User` → signed in) must be handled carefully to avoid brief "not logged in" flashes that trigger incorrect merges.
+
+**Implementation contract:**
 
 ```typescript
-// Extending the union — existing type narrowing in ChessGameContent continues to work
-type SessionPuzzle =
-  | { type: 'movement'; puzzle: MovementPuzzle }
-  | { type: 'capture'; puzzle: CapturePuzzle }
-  | { type: 'check'; puzzle: CheckPuzzle }      // new
-  | { type: 'checkmate'; puzzle: CheckmatePuzzle }; // new
+// contexts/AuthContext.tsx
+interface AuthContextValue {
+  user: FirebaseUser | null;
+  loading: boolean;              // true while onAuthStateChanged has not fired yet
+  signInWithGoogle: () => Promise<void>;
+  signOut: () => Promise<void>;
+}
+
+// lib/auth.ts — lazy singleton
+async function getFirebaseAuth(): Promise<Auth>
+async function getGoogleProvider(): Promise<GoogleAuthProvider>
+export async function signInWithGoogle(): Promise<void>
+export async function signOut(): Promise<void>
 ```
 
-### Pattern 2: View-as-State (Existing Pattern, Extended)
+### Pattern 2: localStorage-First, Cloud-Mirror Strategy
 
-**What:** `currentView` state in `ChessGameContent` drives which component renders. Each view is a full-screen component with its own exit callback.
-**When to use:** All new screens follow this pattern. Add a new `ChessView` union member, add a render branch.
-**Trade-offs:** Keeps ChessGameContent as a single-source-of-truth router. Risk is ChessGameContent growing — acceptable for this codebase size.
+**What:** Every hook reads and writes localStorage exactly as today. The sync layer observes the React state exposed by contexts and mirrors it to Firebase. No hook ever reads from Firebase at runtime.
 
-### Pattern 3: Pure Renderer Components
+**Why:** Eliminates all async data dependencies in the render path. The app renders instantly from localStorage, then sync happens in the background. Network failures do not affect the user experience.
 
-**What:** `MovementPuzzle`, `CapturePuzzle`, and new `CheckPuzzle`, `CheckmatePuzzle` are pure renderers. They receive `puzzle`, `onAnswer`, `onExit` via props. State is local feedback state (flash, hints, isAdvancing). No hooks for session logic.
-**When to use:** Every new puzzle type renderer.
-**Trade-offs:** Session coordination lives in `usePuzzleSession`, not scattered across renderers. Clean separation.
+**Data flow:**
 
-### Pattern 4: Optional Filter Parameterization
+```
+User action (tap letter)
+    ↓
+recordItemHeard('aleph')
+    ↓
+setProgressData(newData)  ←→  localStorage.setItem(key, JSON.stringify(newData))
+    ↓
+React state update
+    ↓ (CloudSyncProvider observes via context)
+useCloudSync.ts detects change
+    ↓
+Firebase RTDB write: set(ref(db, `/users/${uid}/progress/${key}`), newData)
+    ↓ (fire and forget — failures are logged, not thrown)
+```
 
-**What:** `usePuzzleSession` accepts an optional `pieceFilter` that narrows the puzzle pool. Default (undefined) preserves current mixed-session behavior.
-**When to use:** Practice mode, or any future "drill this specific thing" mode.
-**Trade-offs:** One hook serves both session modes. The `buildSessionQueue` function inside the hook needs a conditional — straightforward.
+**On login (first time or new device):**
+
+```
+onAuthStateChanged fires with user
+    ↓
+useCloudSync: read all keys from /users/{uid}/progress/
+    ↓
+For each key:
+  cloudData = await get(ref(db, `/users/${uid}/progress/${key}`))
+  localData = JSON.parse(localStorage.getItem(key))
+  merged = mergeProgressData(key, localData, cloudData)
+    ↓
+localStorage.setItem(key, JSON.stringify(merged))
+    ↓
+Each context hook's next storage read gets the merged data
+    ↓
+(contexts do not need to be told about the merge — they use localStorage, which now has merged data)
+```
+
+**Limitation:** Contexts have already loaded their initial data on mount. After merge, contexts must re-read localStorage or the merged data only appears on next page load.
+
+**Solution:** `useCloudSync` calls a `reloadAllContexts()` function after merge completes. This is implemented as a `reloadKey` counter in each context, or by exposing a `reload()` function from each context. The simpler alternative: reload the page after first-login merge (acceptable UX, user just signed in).
+
+**Recommended approach:** On first login (no prior cloud data), just write local → cloud. On returning login (cloud data exists), perform merge, then call `window.location.reload()`. This is the simplest correct implementation. Page reload is a one-time event per device per login.
+
+### Pattern 3: Merge Strategy for First Login
+
+**What:** When a user logs in for the first time on a device that has localStorage data, merge local + cloud using union (additive) semantics.
+
+**Rules per data type:**
+
+| Data Type | Merge Rule | Rationale |
+|-----------|-----------|-----------|
+| `heardItemIds[]` | Union of both arrays (deduplicated) | A heard item is heard on any device |
+| `totalClicks` | Sum of both | Total practice count |
+| `earnedStickerIds[]` | Union (deduplicated) | An earned sticker stays earned |
+| `collectedWords[]` | Union by wordId; on conflict keep higher `timesBuilt` + earliest `firstBuiltDate` | Preserve full history |
+| `StreakData` | Keep higher `currentStreak`; keep higher `longestStreak`; take most recent `lastActivityDate` | Optimistic: reward the longer streak |
+| `completedLevels[]` | Union | A completed level stays completed |
+| `PiecePuzzleProgress` | Per piece: keep higher `tier` | Reward the more advanced device |
+| Chess daily flags | Keep `true` over `false` per date key | A completed daily stays completed |
+| `lepdy_chess_piece_theme` | Keep cloud (user's chosen preference) | Last-write-wins for preference |
+
+**Implementation:** `lib/firebaseSync.ts` exports a `mergeProgressData(key, local, cloud)` pure function. This is independently testable.
+
+### Pattern 4: Firebase Auth with signInWithPopup (Vercel-hosted)
+
+**What:** Use `signInWithPopup` for Google sign-in. Add a Next.js rewrite proxy so the auth popup origin matches the app domain, eliminating cross-domain storage access failures on mobile browsers (Chrome M115+, Firefox 109+, Safari 16.1+).
+
+**Why not signInWithRedirect:** Redirect causes a full page reload, disrupting the React state and localStorage initialization sequence. Popup is cleaner for this app's UX.
+
+**Required next.config.ts change:**
+
+```typescript
+// next.config.ts — rewrite so Firebase auth popup appears same-origin
+async rewrites() {
+  return [
+    {
+      source: '/__/auth/:path*',
+      destination: `https://lepdy-c29da.firebaseapp.com/__/auth/:path*`,
+    },
+  ];
+}
+```
+
+**Required firebaseApp.ts change:** Update `authDomain` from `'lepdy-c29da.firebaseapp.com'` to `'lepdy.com'` (custom domain). This tells the Firebase SDK to use the proxied auth endpoint.
+
+**Required Firebase console change:** Add `lepdy.com` to Authorized Domains in Firebase Auth settings.
+
+**Confidence:** MEDIUM — proxy approach is well-documented for Vercel-hosted apps. The `signInWithPopup` + rewrite pattern resolves cross-origin storage access errors on modern browsers.
+
+### Pattern 5: Firebase Realtime Database Data Path Structure
+
+**What:** All user progress is stored under `/users/{uid}/progress/{storageKey}`.
+
+**Why RTDB over Firestore:** The app already uses RTDB (leaderboard). Adding Firestore adds a second Firebase product, second SDK bundle chunk, and second billing dimension. RTDB is sufficient for key-value progress data.
+
+**Security rules:**
+
+```json
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "leaderboard": {
+      ".read": true,
+      ".write": "auth != null"
+    }
+  }
+}
+```
+
+**Data size estimate:** All progress data combined is well under 50KB per user — trivially within RTDB free tier (1GB stored, 10GB/month transfer).
+
+---
+
+## Component Responsibilities
+
+### New Components
+
+| Component | Responsibility | Location |
+|-----------|---------------|----------|
+| `AuthProvider` | Firebase Auth state, `onAuthStateChanged` listener, `signInWithGoogle`, `signOut` | `contexts/AuthContext.tsx` |
+| `useAuthContext` | Hook to consume auth state in any client component | `contexts/AuthContext.tsx` |
+| `useCloudSync` | Reads auth + all progress contexts; writes to RTDB on change; merges on login | `hooks/useCloudSync.ts` |
+| `CloudSyncProvider` | Mounts `useCloudSync` inside the provider tree; exposes `syncStatus` | `contexts/CloudSyncContext.tsx` |
+| `GoogleSignInButton` | "Sign in with Google" button with loading/error states, calls `signInWithGoogle()` | `components/GoogleSignInButton.tsx` |
+| `UserAccountChip` | Shows avatar, display name, "Sign out" when logged in | `components/UserAccountChip.tsx` |
+| `lib/auth.ts` | Lazy Firebase Auth singleton, `signInWithGoogle()`, `signOut()` pure async functions | `lib/auth.ts` |
+| `lib/firebaseSync.ts` | RTDB read/write for progress data; `mergeProgressData()` pure merge function | `lib/firebaseSync.ts` |
+
+### Modified Components
+
+| Component | What Changes | What Stays the Same |
+|-----------|-------------|---------------------|
+| `app/providers.tsx` | Add `AuthProvider` outermost; add `CloudSyncProvider` inside existing stack | All existing providers and their order unchanged |
+| `components/SettingsDrawer.tsx` | Add login/account section (Google sign-in button or user chip) | Language switching, streak display unchanged |
+| `next.config.ts` | Add `/__/auth/:path*` rewrite | All existing config unchanged |
+| `lib/firebaseApp.ts` | Change `authDomain` to `'lepdy.com'` | All other config unchanged |
+
+---
+
+## Data Flow
+
+### First Load (Not Logged In)
+
+```
+App mounts
+  → AuthProvider: onAuthStateChanged fires → user = null, loading = false
+  → All existing context providers load from localStorage (unchanged behavior)
+  → CloudSyncProvider: user = null → sync idle, no Firebase reads
+  → User sees app in <200ms, all data from localStorage
+```
+
+### First Load (Logged In, Returning User)
+
+```
+App mounts
+  → AuthProvider: onAuthStateChanged fires → user = FirebaseUser, loading = false
+  → All existing context providers load from localStorage
+  → CloudSyncProvider: user !== null → triggers cloud sync check
+  → useCloudSync: reads /users/{uid}/progress/* from RTDB
+  → If cloud has newer/more data: merge → write merged back to localStorage
+  → If merge needed: page.reload() (one-time per device per new-login event)
+  → If no merge needed: sync writes local → cloud silently
+```
+
+### Sign In Flow
+
+```
+User opens SettingsDrawer
+  → Sees GoogleSignInButton
+  → Taps "Sign in with Google"
+  → signInWithGoogle() → signInWithPopup(auth, googleProvider)
+  → Google OAuth popup appears (proxied via /__/auth/* rewrite)
+  → User approves
+  → popup closes → onAuthStateChanged fires in AuthProvider
+  → AuthContext: user = FirebaseUser
+  → CloudSyncProvider detects auth change
+  → useCloudSync: read cloud data, merge with local, write merged to localStorage
+  → page.reload() if merge changed any data
+  → SettingsDrawer now shows UserAccountChip (avatar + name + sign out)
+```
+
+### Ongoing Sync (Logged In)
+
+```
+User taps a letter (triggers recordItemHeard)
+  → useLettersProgress: state update → localStorage write
+  → CloudSyncProvider (via useEffect watching letters context state)
+  → Debounced 2s write: set(ref(db, `/users/${uid}/progress/lepdy_letters_progress`), data)
+  → Fire and forget — failure logged, not thrown, user not notified
+```
+
+### Sign Out Flow
+
+```
+User taps "Sign out" in SettingsDrawer
+  → signOut() called
+  → onAuthStateChanged fires → user = null
+  → CloudSyncProvider: sync idle
+  → App continues with localStorage data (unchanged)
+```
+
+---
+
+## Recommended Project Structure (New Files Only)
+
+```
+lib/
+├── auth.ts                  Firebase Auth lazy init, GoogleAuthProvider, signIn/signOut
+├── firebaseSync.ts          RTDB progress read/write, mergeProgressData() per-key logic
+
+contexts/
+├── AuthContext.tsx           AuthProvider + useAuthContext hook
+├── CloudSyncContext.tsx      CloudSyncProvider + useSyncStatus hook
+
+components/
+├── GoogleSignInButton.tsx    MUI Button with Google icon, loading state
+├── UserAccountChip.tsx       Avatar + name + sign-out; shown in SettingsDrawer when logged in
+
+hooks/
+├── useCloudSync.ts           Core sync orchestration: merge on login, write on change
+```
+
+### Structure Rationale
+
+- **`lib/auth.ts` separate from `lib/firebaseApp.ts`:** Auth and RTDB are distinct Firebase services. Keeps `firebaseApp.ts` unchanged (avoids breaking leaderboard/Remote Config).
+- **`lib/firebaseSync.ts` separate from `lib/firebase.ts`:** The existing `lib/firebase.ts` handles leaderboard only. Sync is a new, unrelated concern. Keeps the leaderboard file stable.
+- **`useCloudSync.ts` as a hook, not inlined in `CloudSyncContext.tsx`:** Testable in isolation. The hook contains all sync logic; the context provider just mounts it and exposes status.
+- **`CloudSyncContext.tsx` inside the existing provider stack:** Must be inside all progress providers to read their context values.
 
 ---
 
 ## Build Order (Phase Dependencies)
 
-Dependencies flow bottom-up. Items later in the list depend on items above.
+Dependencies flow bottom-up. Build in this order to avoid blocked work.
 
 ```
-Phase A: Redesigned menu (no new data dependencies)
-  ChessMenuScreen.tsx — new layout component
-  ChessGameContent.tsx — extend ChessView, replace inline map JSX
-  DailyPuzzleCard.tsx — visual enhancement
-  i18n: new menu label keys
-  [Depends on: nothing new — reads existing hooks]
-  [Enables: visible foundation for other features; kids see the new menu immediately]
+Phase 1: Firebase Auth foundation (no UI yet)
+  lib/auth.ts                     — lazy Auth init, signIn/signOut functions
+  contexts/AuthContext.tsx         — AuthProvider, useAuthContext
+  app/providers.tsx               — wrap with AuthProvider (outermost)
+  next.config.ts                  — add /__/auth/* rewrite
+  lib/firebaseApp.ts              — change authDomain to lepdy.com
+  Firebase console                — add lepdy.com to Authorized Domains
+  [Enables: auth state available everywhere; no user-visible change]
+  [Risk: authDomain change must be tested on mobile before continuing]
 
-Phase B: Practice mode (depends on Phase A: 'practice' view exists in ChessView)
-  PieceSelectorScreen.tsx — new component
-  usePuzzleSession.ts — add pieceFilter param (additive)
-  ChessGameContent.tsx — add 'practice' → PieceSelectorScreen flow
-  [Depends on: Phase A (new view routing), usePuzzleSession]
+Phase 2: Sign-in UI in SettingsDrawer
+  components/GoogleSignInButton.tsx
+  components/UserAccountChip.tsx
+  components/SettingsDrawer.tsx    — add sign-in section
+  i18n: add auth translation keys (he/en/ru)
+  [Depends on: Phase 1 (AuthContext)]
+  [Enables: users can actually sign in; cloud sync not yet wired]
 
-Phase C: Check/checkmate puzzle data (independent of Phase A/B)
-  data/chessPuzzles.ts — add checkPuzzles[], checkmatePuzzles[]
-  SessionPuzzle type — extend union (additive)
-  [Depends on: nothing — pure data + type addition]
-  [Enables: Phase D renderers and Phase E session inclusion]
+Phase 3: Cloud sync write path (local → cloud)
+  lib/firebaseSync.ts             — writeProgressToCloud() per key
+  hooks/useCloudSync.ts           — watch all contexts, debounced write on change
+  contexts/CloudSyncContext.tsx   — mount useCloudSync, expose syncStatus
+  app/providers.tsx               — add CloudSyncProvider inside existing stack
+  Firebase RTDB security rules    — add /users/$uid rules
+  [Depends on: Phase 1 (AuthContext), Phase 2 (user can sign in to test)]
+  [Enables: progress syncs to cloud; no merge yet]
 
-Phase D: Check/checkmate renderers (depends on Phase C data)
-  CheckPuzzle.tsx — new renderer
-  CheckmatePuzzle.tsx — new renderer
-  ChessGameContent.tsx — add dispatch branches for new types
-  [Depends on: Phase C (data + types)]
-
-Phase E: Include check/checkmate in sessions (depends on C + D)
-  usePuzzleSession.ts — include check/checkmate in buildSessionQueue
-  Feature flag gate (chessCheckPuzzles) recommended during rollout
-  [Depends on: Phase C data, Phase D renderers]
-
-Phase F: Visual polish (can run in parallel with any phase)
-  MovementPuzzle.tsx — entrance animation
-  CapturePuzzle.tsx — entrance animation
-  StreakBadge.tsx — bounce on increment
-  SessionCompleteScreen.tsx — star reveal stagger
-  AudioSounds enum — new values (session complete fanfare, tier advance)
-  [Depends on: nothing new — internal component polish]
-
-Phase G: Progress engagement (depends on Phase A: new menu exists)
-  ChessMenuScreen.tsx — mastery summary section (reads usePuzzleProgress)
-  PieceSelectorScreen.tsx — per-piece mastery badges (reads usePuzzleProgress)
-  DailyPuzzleCard.tsx — streak/return motivation display
-  [Depends on: Phase A (ChessMenuScreen), Phase B (PieceSelectorScreen)]
+Phase 4: Cloud sync read + merge path (cloud → local, first login)
+  lib/firebaseSync.ts             — readProgressFromCloud(), mergeProgressData() per key
+  hooks/useCloudSync.ts           — add merge-on-login logic
+  [Depends on: Phase 3 (write path must exist before merge is meaningful)]
+  [Enables: multi-device sync complete; progress merges on login]
 ```
-
-**Recommended shipping order:**
-1. Phase A + F together (menu redesign + visual polish — immediately visible improvement)
-2. Phase B (practice mode — high value, low risk)
-3. Phase C + D together (data + renderers)
-4. Phase E (wired into sessions, feature-flagged)
-5. Phase G (engagement layer, informed by Phase A/B being stable)
-
----
-
-## What Must NOT Change
-
-These components and hooks are stable, well-tested, and should not be modified for v1.4:
-
-| File | Reason to Preserve |
-|------|-------------------|
-| `PieceIntroduction.tsx` | Level 1 learning phase — correct and complete |
-| `useChessProgress.ts` | Level gating logic — works correctly |
-| `useChessPieceTheme.ts` + `pieceThemes.tsx` | Theme system — well-designed, no new themes needed |
-| `ChessSettingsDrawer.tsx` | Settings UI — adequate for v1.4 |
-| `useDailyPuzzle.ts` | Daily puzzle logic — deterministic hash is correct |
-| `usePuzzleProgress.ts` | Adaptive difficulty per piece — working correctly |
-| `utils/chessFen.ts` | FEN manipulation — tested |
-| `utils/puzzleGenerator.ts` | Random selection with dedup — working |
-| `data/chessPieces.ts` | Piece data — complete and stable |
-| `localStorage` keys | All existing keys must be preserved — no migration needed |
-
----
-
-## Anti-Patterns to Avoid
-
-### Anti-Pattern 1: Rebuilding usePuzzleSession Instead of Extending It
-
-**What people do:** Create `usePracticeSession` as a new hook because practice mode "feels different" from challenge mode.
-**Why it's wrong:** The session machinery (queue persistence, onAnswer flow, streak counting, SessionCompleteScreen integration) is identical. Duplicating it creates maintenance burden and inconsistent behavior.
-**Do this instead:** Add `pieceFilter?: ChessPieceId` to the existing hook. The `buildSessionQueue` function is a pure helper — filtering by piece is a one-liner.
-
-### Anti-Pattern 2: Storing New View State as Multiple useState Flags
-
-**What people do:** `const [isPractice, setIsPractice] = useState(false)` alongside `const [isLearn, setIsLearn] = useState(false)`.
-**Why it's wrong:** Mutually exclusive views as boolean flags create impossible states (both true) and make flow hard to follow.
-**Do this instead:** Extend the existing `ChessView` union: `'menu' | 'learn' | 'practice' | 'challenge' | 'daily'`. One state, exhaustive type.
-
-### Anti-Pattern 3: Dynamic Puzzle Generation for Check/Checkmate
-
-**What people do:** Use chess.js to algorithmically generate check/checkmate positions at runtime.
-**Why it's wrong:** The existing architecture is entirely curated-FEN-based. Runtime generation requires chess.js position evaluation, filtering for "kid-appropriate" complexity, and adds latency. The curated pattern is proven to work well for this age group.
-**Do this instead:** Author check/checkmate puzzles as hand-curated FEN arrays (same as `movementPuzzles` and `capturePuzzles`). Validate with chess.js during authoring, not at runtime.
-
-### Anti-Pattern 4: Putting Mastery Display Logic in ChessGameContent
-
-**What people do:** Read `usePuzzleProgress` in `ChessGameContent` and pass mastery data down via props to the menu.
-**Why it's wrong:** ChessGameContent is already a busy coordination shell. Prop-threading mastery data through it increases coupling.
-**Do this instead:** Let `ChessMenuScreen` and `PieceSelectorScreen` consume `usePuzzleProgress` directly. These are client components — direct hook access is clean and follows the existing pattern (e.g., MovementPuzzle and CapturePuzzle both call `useChessPieceTheme` directly).
-
-### Anti-Pattern 5: Feature-Flagging Visual Polish
-
-**What people do:** Put animation additions behind feature flags to allow "safe rollback."
-**Why it's wrong:** Animations are cosmetic and additive. Feature-flagging them adds complexity without meaningful benefit. If an animation causes an issue, it's a CSS fix.
-**Do this instead:** Ship visual polish directly. Reserve feature flags for behavioral changes (new puzzle types entering session queues, practice mode until stable).
 
 ---
 
 ## Integration Points
 
-### Internal Boundaries
+### Placement of CloudSyncProvider in Provider Stack
 
-| Boundary | Communication | Notes |
-|----------|---------------|-------|
-| `ChessGameContent` ↔ `ChessMenuScreen` | Props: unlock state, completion state, navigation callbacks | ChessGameContent remains the coordinator |
-| `ChessGameContent` ↔ `PieceSelectorScreen` | Props: `onSelect`, `onExit` | selectedPiece lives in ChessGameContent state |
-| `ChessGameContent` ↔ new puzzle renderers | Props: `puzzle`, `onAnswer`, `onExit` — same contract as existing renderers | New types slot into existing dispatch pattern |
-| `usePuzzleSession` ↔ `buildSessionQueue` | `pieceFilter?: ChessPieceId` parameter — additive | Existing callers pass nothing — unchanged behavior |
-| `ChessMenuScreen` ↔ `usePuzzleProgress` | Direct hook read for mastery display | No writes — read-only consumption |
-| `PieceSelectorScreen` ↔ `usePuzzleProgress` | Direct hook read for per-piece badges | No writes — read-only consumption |
-| `CheckPuzzle/CheckmatePuzzle` ↔ `chessFen.ts` | `moveFenPiece` for animation on correct answer | Same pattern as MovementPuzzle/CapturePuzzle |
+`CloudSyncProvider` must be **inside all progress providers** (to read their state) and **inside AuthProvider** (to read auth state). It must be **outside `{children}`** (to mount independently of page content).
 
-### External Services
+```typescript
+// app/providers.tsx — final nesting order
+<AuthProvider>                          // Phase 1
+  <FeatureFlagProvider>
+    <StreakProvider>
+      <LettersProgressProvider>
+        <NumbersProgressProvider>
+          <AnimalsProgressProvider>
+            <GamesProgressProvider>
+              <WordCollectionProvider>
+                <StickerToastProvider>
+                  <StickerProvider>
+                    <CloudSyncProvider>   // Phase 3 — inside all progress providers
+                      {children}
+                      <InstallPrompt />
+                    </CloudSyncProvider>
+                  </StickerProvider>
+                </StickerToastProvider>
+              </WordCollectionProvider>
+            </GamesProgressProvider>
+          </AnimalsProgressProvider>
+        </NumbersProgressProvider>
+      </LettersProgressProvider>
+    </StreakProvider>
+  </FeatureFlagProvider>
+</AuthProvider>
+```
 
-| Service | Integration | Notes |
-|---------|-------------|-------|
-| Firebase Remote Config | `chessCheckPuzzles` flag to gate check/checkmate types entering sessions | Use existing `useFeatureFlagContext()` in `usePuzzleSession` |
-| Amplitude | New events: `practice_mode_started`, `piece_selected_for_practice`, `check_puzzle_solved` | Use existing `logEvent()` pattern |
-| localStorage | No new keys — all existing keys preserved | `lepdy_chess_progress`, `lepdy_chess_puzzle_progress`, `lepdy_chess_daily_*`, `lepdy_chess_piece_theme` |
-| sessionStorage | `lepdy_chess_session` — no change | Session persistence continues to work; practice sessions also persist across page refresh |
+### Hooks That Do NOT Need Modification
+
+All existing progress hooks (`useCategoryProgress`, `useStreak`, `useStickers`, `useWordCollectionProgress`, `useChessProgress`, `usePuzzleProgress`, `useDailyPuzzle`, `useChessPieceTheme`) are **unchanged**. They continue to read/write localStorage exactly as today.
+
+### What `useCloudSync` Reads from Contexts
+
+```typescript
+// hooks/useCloudSync.ts — context consumption
+const { user } = useAuthContext();                           // NEW
+const { streakData } = useStreakContext();
+const { stickerData } = useStickerContext();
+const { collectedWords, totalWordsBuilt } = useWordCollectionContext();
+// letters/numbers/animals: need to expose raw progressData from their contexts
+// — or useCloudSync reads localStorage directly (simpler, equivalent)
+```
+
+**Recommendation:** For progress contexts that don't expose raw data (letters, numbers, animals, games), `useCloudSync` reads localStorage directly using the known storage keys. This avoids modifying those contexts and is equivalent — they are always in sync with localStorage.
+
+---
+
+## Anti-Patterns to Avoid
+
+### Anti-Pattern 1: Reading Progress Data from Firebase at Runtime
+
+**What people do:** On app load, check if user is logged in and fetch progress from Firebase before rendering.
+**Why it's wrong:** Adds a Firebase round-trip (100–500ms) to every page load. The app currently renders in <200ms from localStorage. Any Firebase read blocks this.
+**Do this instead:** Always render from localStorage. Firebase is a write-only sync target at runtime. Reads from Firebase happen only once: during first-login merge.
+
+### Anti-Pattern 2: Putting Auth State in Every Progress Hook
+
+**What people do:** Pass `userId` into `useStreak`, `useCategoryProgress`, etc. and make them conditionally read from Firebase.
+**Why it's wrong:** Multiplies sync complexity by the number of hooks (currently 8+). Each hook needs its own Firebase read/write/merge logic. A single centralized sync layer is far simpler and less error-prone.
+**Do this instead:** All sync lives in `useCloudSync.ts`. Progress hooks are unmodified.
+
+### Anti-Pattern 3: Using Firestore Instead of RTDB
+
+**What people do:** Choose Firestore because it has more features (queries, subcollections, offline persistence).
+**Why it's wrong for this project:** The app already uses RTDB (leaderboard, same Firebase project). Firestore would add a second Firebase service, a larger SDK bundle, and Firestore's offline persistence is designed for structured queries — overkill for flat key-value progress data. localStorage already handles offline persistence.
+**Do this instead:** Use RTDB with path `/users/{uid}/progress/{storageKey}`. Simple, already initialized, no bundle cost.
+
+### Anti-Pattern 4: Merge on Every App Load
+
+**What people do:** Every time the app loads for a logged-in user, read cloud data and merge with local.
+**Why it's wrong:** Adds a Firebase read to every cold start. Defeats the purpose of localStorage-first. Creates race conditions if the user makes a quick action before the read completes.
+**Do this instead:** Merge only on `onAuthStateChanged` firing with a non-null user AND only when the previous auth state was null (i.e., just logged in, not just returning from a page refresh).
+
+### Anti-Pattern 5: Syncing sessionStorage Keys
+
+**What people do:** Include `lepdy_chess_session` (in-progress puzzle session) in the cloud sync set.
+**Why it's wrong:** Session state is ephemeral — it represents the current in-progress game. Syncing it across devices creates confusing mid-session state on a different device. It also changes frequently (every puzzle answer), making it expensive to sync.
+**Do this instead:** Only sync durable progress keys. The session key (`lepdy_chess_session`) is explicitly excluded from sync.
+
+### Anti-Pattern 6: Not Handling the Auth Loading State
+
+**What people do:** Treat `user = null` as "not logged in" from the first render.
+**Why it's wrong:** `onAuthStateChanged` is async. On first render, auth state is unknown (loading). If merge logic runs on `null` user, it may incorrectly treat a returning user as unauthenticated and skip merge.
+**Do this instead:** Three-state auth: `loading = true` (initial), `user = null` (signed out), `user = FirebaseUser` (signed in). `useCloudSync` does nothing while `loading = true`.
 
 ---
 
 ## Scaling Considerations
 
-| Concern | v1.4 | Future |
-|---------|-------|--------|
-| Puzzle pool for check/checkmate | 20-30 curated FEN positions per type (sufficient for "feels infinite" at 10 per session) | Could expand like movement/capture; algorithmic generation possible but not needed |
-| Practice mode session variety | Piece filter + 3 tiers per piece × 10 puzzles per session = meaningful repetition before fatigue | Add "mixed" mode per piece (movement + capture for same piece) as a filter option |
-| Visual animation performance | MUI Grow/Fade are CSS-based, zero JS overhead | Board entrance animations should use CSS transform, not layout-triggering properties |
-| New puzzle type authoring | Manual FEN authoring with chess.js validation script | A simple CLI tool (`scripts/validatePuzzles.ts`) could auto-validate all FENs — already implicit in the codebase pattern |
+| Concern | Current scale | Future |
+|---------|--------------|--------|
+| RTDB data per user | ~50KB total progress data | Grows linearly with new categories; negligible at RTDB pricing |
+| Sync write frequency | Max 1 write per context change, debounced 2s | At 10 active users: trivial; at 10K: still trivial (user-specific paths) |
+| Auth overhead | `onAuthStateChanged` fires once per app load | Negligible; client-side only |
+| Merge complexity | 13 localStorage keys, simple union logic | Grows with new keys — `mergeProgressData` handles one key at a time, extend by adding a case |
+| RTDB security | Per-uid read/write rules | Fine for current and foreseeable scale; no cross-user data access |
+
+---
+
+## What Must NOT Change
+
+| File | Reason to Preserve |
+|------|-------------------|
+| All existing progress hooks | Zero modifications — this is the key architectural constraint |
+| All existing progress contexts | Zero modifications — contexts are unchanged |
+| `lib/firebase.ts` (leaderboard) | Leaderboard code unchanged; new sync uses separate `lib/firebaseSync.ts` |
+| All localStorage storage keys | Must be preserved exactly — cloud sync mirrors them by key name |
+| `lib/featureFlags/` | Remote Config unchanged |
 
 ---
 
 ## Sources
 
-- Direct codebase reading: `ChessGameContent.tsx`, `MovementPuzzle.tsx`, `CapturePuzzle.tsx` (HIGH confidence — first-hand)
-- Direct codebase reading: `usePuzzleSession.ts`, `usePuzzleProgress.ts`, `useChessProgress.ts`, `useDailyPuzzle.ts` (HIGH confidence — first-hand)
-- Direct codebase reading: `data/chessPieces.ts`, `data/chessPuzzles.ts`, `utils/puzzleGenerator.ts` (HIGH confidence — first-hand)
-- Direct codebase reading: `messages/en.json` (HIGH confidence — first-hand)
-- PROJECT.md v1.4 milestone description (HIGH confidence — first-hand)
-- Existing `.planning/research/ARCHITECTURE.md` (v1.3 research — HIGH confidence — first-hand)
+- Direct codebase reading: all hooks in `hooks/`, all contexts in `contexts/`, `app/providers.tsx`, `lib/firebaseApp.ts`, `lib/firebase.ts`, `components/SettingsDrawer.tsx` (HIGH confidence — first-hand)
+- Firebase Auth signInWithRedirect best practices: [duncanleung.com proxy guide](https://duncanleung.com/missing-initial-state-firebase-auth-proxy-nextjs-vercel/) (MEDIUM confidence — community, verified against official docs)
+- Firebase Auth Vercel hosting issues: [GitHub firebase-js-sdk discussion](https://github.com/firebase/firebase-js-sdk/discussions/6359) (MEDIUM confidence — community, known issue)
+- Firebase RTDB security rules: [Firebase documentation](https://firebase.google.com/docs/database/security) (HIGH confidence — official)
+- Firebase Auth Google sign-in web: [Firebase documentation](https://firebase.google.com/docs/auth/web/google-signin) (HIGH confidence — official)
+- React Context provider pattern for Firebase Auth: [LogRocket blog](https://blog.logrocket.com/implementing-authentication-in-next-js-with-firebase/) (MEDIUM confidence — community, consistent with official docs)
+- PROJECT.md v1.5 milestone description (HIGH confidence — first-hand)
 
 ---
 
-*Architecture research for: v1.4 Complete Puzzle Experience — chess learning game*
+*Architecture research for: v1.5 Cloud Sync — Firebase Auth + user progress sync*
 *Researched: 2026-03-23*

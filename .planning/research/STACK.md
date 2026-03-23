@@ -1,15 +1,15 @@
 # Stack Research
 
-**Domain:** Kids chess puzzle game — v1.4 new features (menu redesign, practice mode, check/checkmate puzzles, visual polish, progress engagement)
-**Project:** Lepdy Chess v1.4 Complete Puzzle Experience
+**Domain:** Firebase Auth + Cloud Sync — optional Google login with offline-first progress sync
+**Project:** Lepdy v1.5 Cloud Sync
 **Researched:** 2026-03-23
 **Confidence:** HIGH
 
 ---
 
-## Verdict: No New Dependencies Required
+## Verdict: No New npm Packages Required
 
-**Zero new npm packages needed for v1.4.** Every capability required by the new features is already available in the installed stack. This is a build-on-what-exists milestone, identical to the v1.3 precedent.
+**Zero new npm packages needed for v1.5.** Firebase Auth and Cloud Firestore are already included in the installed `firebase@12.8.0` package. All required APIs — `firebase/auth`, `firebase/firestore` — ship inside the existing dependency.
 
 ---
 
@@ -17,220 +17,296 @@
 
 | Already In Place | Version | Purpose |
 |-----------------|---------|---------|
-| `chess.js` | 1.4.0 | `inCheck()`, `isCheckmate()`, `moves()` — covers all new puzzle types |
-| `react-chessboard` | 5.10.0 | Board rendering for new puzzle components |
-| `react-confetti` | 6.4.0 | Celebration effects — already used in chess game |
-| `@mui/material` | 7.3.7 | All layout, animation, and progress UI components |
-| `@emotion/react` | 11.14.0 | CSS-in-JS for custom keyframe animations |
-| `next-intl` | 4.7.0 | New translation keys for new UI sections |
-| `localStorage` pattern | — | Progress persistence in `usePuzzleProgress`, `useChessProgress` |
-| Audio system | — | `utils/audio.ts` `AudioSounds` enum + `playSound()` / `playRandomCelebration()` |
+| `firebase` | 12.8.0 (latest: 12.11.0) | Auth + Firestore modules included; no new install |
+| `firebase/database` | — | Realtime Database — used for leaderboards |
+| `firebase/remote-config` | — | Feature flags |
+| `lib/firebaseApp.ts` | — | Lazy-init singleton pattern (`getFirebaseApp()`) |
+| `lib/firebase.ts` | — | Lazy `getFirebaseDatabase()` pattern to follow |
+| `contexts/*Context.tsx` | — | Pattern for auth context (matches `FeatureFlagContext`) |
+| `localStorage` (12 keys) | — | All user progress; remains the immediate source of truth |
 
 ---
 
-## Capability Map by Feature
+## Recommended Stack
 
-### 1. Menu Redesign
+### Core Technologies (New Modules, No New Packages)
 
-**What's needed:** Replace the broken 1/2/3/daily card stack with an intuitive layout — distinct sections for Practice, Daily Puzzle, and Sessions.
+| Technology | Module | Purpose | Why Recommended |
+|------------|--------|---------|-----------------|
+| Firebase Auth | `firebase/auth` | Google sign-in, user identity, auth state listener | Already in `firebase@12.8.0`. `onAuthStateChanged` is the standard pattern for React. Handles token refresh automatically. Zero additional bundle cost beyond what's tree-shaken in. |
+| Cloud Firestore | `firebase/firestore` | Cloud document store for per-user progress sync | Already in `firebase@12.8.0`. Chosen over Realtime Database (already used for leaderboards) because Firestore has first-class web offline persistence via IndexedDB, structured document model, and per-document merge writes. |
+| Firestore Offline Cache | `initializeFirestore` + `persistentLocalCache` | IndexedDB-backed offline cache so reads/writes work without connection | Modern API (Firebase 10+). The deprecated `enableIndexedDbPersistence()` must NOT be used. Supports multi-tab via `persistentMultipleTabManager()`. Offline persistence is a Firestore differentiator vs RTDB on web. |
 
-**How the current stack covers it:**
+### Supporting Libraries (All Already Installed)
 
-- MUI `Box`, `Card`, `CardActionArea`, `Typography`, `Chip`, `Badge` — all in MUI 7.3.7
-- MUI `Fade` — already used for all chess view transitions (`ChessGameContent.tsx`)
-- New `ChessView` values (`'practice'`, `'practice-select'`) slot directly into the existing `ChessView` type union and `useState<ChessView>` routing pattern
+| Library | Version | Purpose | When to Use |
+|---------|---------|---------|-------------|
+| `@mui/material` | 7.3.7 | Google sign-in button, auth state UI in settings drawer | For the login/logout UI affordance in existing settings drawer |
+| `next-intl` | 4.7.0 | Translate auth UI strings (sign in, sign out, syncing...) | All user-visible auth text needs he/en/ru translations |
+| `react` context | 19.2.3 | Auth state context (`AuthContext.tsx`) | Follows existing `FeatureFlagContext` / `StreakContext` pattern |
 
-**Integration point:** `ChessGameContent.tsx` already handles view routing via a `currentView` state string; adding new views is an additive change with no architectural change.
+### Development Tools (No Changes Needed)
 
-**No new packages.**
-
----
-
-### 2. Practice Mode (per-piece drilling)
-
-**What's needed:** A mode where the child picks a specific piece and drills movement + capture puzzles for it only, with per-piece mastery progress visible.
-
-**How the current stack covers it:**
-
-- `utils/puzzleGenerator.ts` `selectNextPuzzle()` already accepts any puzzle pool; a filtered single-piece pool is a one-liner
-- `hooks/usePuzzleProgress.ts` already tracks tier (1/2/3) per piece and exposes `recordCorrect(pieceId)` / `recordWrong(pieceId)`
-- `hooks/usePuzzleSession.ts` already builds a `SessionPuzzle[]` queue; a `usePracticeModeSession` hook wraps the same primitives with a single-piece filter
-- Piece picker UI: MUI `Grid2` + `Card` with piece SVGs (already in `pieceThemes.tsx`)
-- `usePuzzleProgress` already exposes `data.pieces` (the `currentTiersByPiece` from `usePuzzleSession`) — mastery display reads from here
-
-**No new packages.**
+| Tool | Purpose | Notes |
+|------|---------|-------|
+| Firebase Console | Configure Firestore Security Rules, enable Auth providers | Enable Google sign-in in Firebase Console → Authentication → Sign-in providers |
+| Firebase Emulator Suite | Local Firestore + Auth emulation for dev/test | Optional but useful; `firebase emulators:start` |
 
 ---
 
-### 3. New Puzzle Types: Check and Checkmate-in-1
+## Implementation Patterns
 
-**What's needed:** (a) Check puzzle — child identifies/resolves a check position; (b) Checkmate-in-1 — child finds the one mating move.
-
-**chess.js 1.4.0 provides (verified via direct test against installed version):**
-
-| Method | Return | Confirmed |
-|--------|--------|-----------|
-| `inCheck()` | `true` if side to move is in check | YES — tested at runtime |
-| `isCheckmate()` | `true` if side to move is checkmated | YES — tested at runtime |
-| `moves({ verbose: true })` | All legal moves with full metadata | YES — existing usage in v1.3 |
-| `move(san)` / `undo()` | Make and undo moves for brute-force scan | YES — standard chess.js API |
-
-**Checkmate-in-1 validation pattern (no new deps, pure chess.js):**
+### Firebase Auth Initialization (Follow Existing Pattern)
 
 ```typescript
-// Used offline during puzzle authoring to validate FEN positions
-function isCheckmateIn1(fen: string): { matingMove: string } | null {
-  const chess = new Chess(fen);
-  for (const move of chess.moves()) {
-    chess.move(move);
-    if (chess.isCheckmate()) {
-      chess.undo();
-      return { matingMove: move };
-    }
-    chess.undo();
+// lib/firebaseAuth.ts — mirrors lib/firebase.ts pattern
+import type { Auth } from 'firebase/auth';
+import { getFirebaseApp } from './firebaseApp';
+
+let auth: Auth | null = null;
+
+export async function getFirebaseAuth(): Promise<Auth> {
+  if (!auth) {
+    const app = await getFirebaseApp();
+    const { getAuth } = await import('firebase/auth');
+    auth = getAuth(app);
   }
-  return null;
+  return auth;
 }
 ```
 
-**New data types** (extend `data/chessPuzzles.ts`):
+**Why lazy import:** `firebase/auth` must never be imported at module top-level in Next.js — it accesses browser APIs and breaks SSR. The `getFirebaseAuth()` pattern matches `getFirebaseDatabase()` already in `lib/firebase.ts`.
+
+### Google Sign-In: Popup + Redirect Split
 
 ```typescript
-export interface CheckPuzzle {
-  id: string;
-  fen: string;              // Position where a piece can deliver check
-  pieceSquare: string;      // Piece to move
-  checkSquare: string;      // Where to move to deliver check
-  difficulty: 1 | 2 | 3;
-}
-
-export interface CheckmatePuzzle {
-  id: string;
-  fen: string;              // Position with exactly one mating move
-  pieceSquare: string;      // The mating piece's current square
-  matingSquare: string;     // Where to move to checkmate
-  difficulty: 1 | 2 | 3;
+// Use popup on desktop, redirect on mobile
+const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+if (isMobile) {
+  // Redirect avoids popup-blocking on iOS Safari and Android
+  await signInWithRedirect(auth, provider);
+  // Result handled via getRedirectResult() on next page load
+} else {
+  // Popup is better UX on desktop (no full-page nav)
+  const result = await signInWithPopup(auth, provider);
 }
 ```
 
-**Puzzle authoring workflow:** Same as v1.3 — compose FEN positions, run `isCheckmateIn1()` or `chess.inCheck()` to validate, store as typed arrays. No runtime generation.
+**Why the split:** `signInWithPopup` fails silently on iOS Safari and some Android browsers. On Vercel (non-Firebase-Hosting), the default `Cross-Origin-Opener-Policy: same-origin` header blocks the popup's `window.closed` polling, breaking the auth flow. `signInWithRedirect` bypasses both issues.
 
-**New `SessionPuzzle` union variants** in `usePuzzleSession.ts`:
+**Vercel COOP fix if popup is used on desktop** (add to `next.config.ts`):
+```typescript
+async headers() {
+  return [{
+    source: '/(.*)',
+    headers: [{ key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' }],
+  }];
+}
+```
+
+### Firestore Initialization with Offline Persistence
 
 ```typescript
-export type SessionPuzzle =
-  | { type: 'movement'; puzzle: MovementPuzzle }
-  | { type: 'capture'; puzzle: CapturePuzzle }
-  | { type: 'check'; puzzle: CheckPuzzle }         // new
-  | { type: 'checkmate'; puzzle: CheckmatePuzzle } // new
-```
+// lib/firebaseFirestore.ts
+import type { Firestore } from 'firebase/firestore';
+import { getFirebaseApp } from './firebaseApp';
 
-**No new packages.**
+let firestoreInstance: Firestore | null = null;
 
----
-
-### 4. Visual Polish (animations, sounds, micro-rewards)
-
-**What's needed:** Richer animations on puzzle solve, mastery band upgrades, session completion screen polish, micro-reward moments.
-
-**MUI 7 transition components (all already installed):**
-
-| Component | Use Case | Already Used |
-|-----------|----------|--------------|
-| `Fade` | View transitions, hint reveals | Yes — chess game throughout |
-| `Grow` | "Pop in" rewards, mastery badge reveals | Available |
-| `Zoom` | Star reveal on session complete | Available |
-| `Slide` | New puzzle sliding in from the side | Available |
-| `Collapse` | Expandable mastery details panel | Available |
-
-**Emotion CSS keyframes** (via `@emotion/react`, already installed as MUI's engine) — for custom animations like the existing screen shake in `utils/celebrations.ts`. Same `document.createElement('style')` singleton pattern already in use.
-
-**react-confetti 6.4.0** — already installed and already used in `MovementPuzzle.tsx`, `CapturePuzzle.tsx`, `SessionCompleteScreen.tsx`. Confirmed working with React 19.2.3 in this codebase.
-
-**Audio:** `utils/audio.ts` `AudioSounds` enum already has `LEVEL_UP`, `SUCCESS`, `CELEBRATION*`, `DING`, `SPARKLE`, `WHOOSH`, `POP`, `HINT`. Adding a new chess-specific sound (e.g., a distinct "king in check" tone) only requires adding one `AudioSounds` enum entry + one MP3 file in `/public/audio/common/`. No library change.
-
-**No new packages.**
-
----
-
-### 5. Progress & Engagement (visible mastery, rewarding feedback)
-
-**What's needed:** Per-piece mastery bars, visible tier (Beginner/Intermediate/Expert), session history indicators, encouragement for daily return.
-
-**MUI 7 progress components (already installed):**
-
-| Component | Use Case |
-|-----------|----------|
-| `LinearProgress variant="determinate"` | Per-piece mastery fill bar (0–100%) |
-| `CircularProgress variant="determinate"` | Optional ring indicator for overall mastery |
-
-**Custom styling:** MUI `sx` prop with Lepdy's pastel palette (already defined in `theme/theme.ts`) — no external CSS library.
-
-**Existing hooks to extend (no new hook files needed):**
-
-- `usePuzzleProgress.ts` — already tracks `tier` (1/2/3) per piece plus `correctCount`/`wrongCount`. Mastery percentage derivable as `(correctCount / (correctCount + wrongCount)) * 100` with no schema migration.
-- `usePuzzleSession.ts` — already exposes `currentTiersByPiece` and `sessionTiers`. The `SessionCompleteScreen` already receives these — progress display is a UI extension, not a data change.
-
-**Mastery band display (no new data):**
-
-```typescript
-// Derives from existing PiecePuzzleProgress.tier (already persisted)
-function getMasteryLabel(tier: 1 | 2 | 3): string {
-  return { 1: 'Beginner', 2: 'Intermediate', 3: 'Expert' }[tier];
+export async function getFirestoreDb(): Promise<Firestore> {
+  if (!firestoreInstance) {
+    const app = await getFirebaseApp();
+    const {
+      initializeFirestore,
+      persistentLocalCache,
+      persistentMultipleTabManager,
+    } = await import('firebase/firestore');
+    firestoreInstance = initializeFirestore(app, {
+      localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager(),
+      }),
+    });
+  }
+  return firestoreInstance;
 }
 ```
 
-**No new packages.**
+**Why `initializeFirestore` not `getFirestore`:** The `localCache` option is only settable at init time. `getFirestore()` returns the default memory-only instance. Initialization must happen before any reads or writes.
 
----
+### Auth Context (New File, Follows Existing Pattern)
 
-## What NOT to Add
+```typescript
+// contexts/AuthContext.tsx
+// Exposes: user (User | null), isLoading, signInWithGoogle(), signOut()
+// Wrap in app/providers.tsx before progress providers
+// Uses onAuthStateChanged for reactive state
+```
 
-| Avoid | Why | Use Instead |
-|-------|-----|-------------|
-| `framer-motion` / `motion` | 143 kB gzipped; dual animation system conflicts with MUI transitions already in use | MUI `Fade`/`Grow`/`Zoom`/`Slide` + Emotion keyframes |
-| `lottie-react` | Heavy (40+ kB) for a few micro-animations; overkill for this scope | CSS animations + react-confetti already installed |
-| `react-spring` | Overlaps with MUI transitions; introduces two animation systems in one codebase | MUI transitions cover all use cases |
-| Stockfish WASM | 500 kB+ binary; not needed — puzzles are curated static FENs, not AI-generated | chess.js `isCheckmate()` on static positions |
-| Lichess puzzle API at runtime | Network dependency, latency, licensing, API key management | Curated local FEN arrays (proven v1.3 approach) |
-| Zustand / Redux | One hook per feature with localStorage is the established pattern; adding a store for this data is over-engineering | React `useState` + custom hooks |
-| `react-query` / SWR | No server data fetching involved | localStorage only |
-| ELO/Glicko rating packages | Meaningless to ages 5-9; already decided in v1.3 (named mastery bands instead) | Simple tier step-up (already implemented) |
+In `app/providers.tsx`, wrap outside all progress providers — auth must resolve before sync can run.
+
+### Firestore Document Shape (1:1 Mapping from localStorage Keys)
+
+```
+Firestore path: users/{uid}/progress/{key}
+
+Each localStorage key → one Firestore document:
+  users/{uid}/progress/lepdy_letters_progress
+  users/{uid}/progress/lepdy_numbers_progress
+  users/{uid}/progress/lepdy_animals_progress
+  users/{uid}/progress/lepdy_chess_progress
+  users/{uid}/progress/lepdy_chess_puzzle_progress
+  users/{uid}/progress/lepdy_sticker_data
+  users/{uid}/progress/lepdy_word_collection
+  users/{uid}/progress/lepdy_streak_data
+  users/{uid}/progress/lepdy_games_progress
+
+Preferences (not merged, last-write-wins):
+  users/{uid}/settings/lepdy_chess_piece_theme   → { value: "staunty" }
+  users/{uid}/settings/lepdy_chess_board_theme   → { value: "pastel" }
+```
+
+**Why direct key mapping:** No data transformation needed. Sync layer is a thin wrapper. First-login merge is at document level: union `heardItemIds` arrays, take `max` of numeric counters.
+
+**Sync writes use `setDoc` with `{ merge: true }`:** Prevents overwriting concurrent edits.
+
+### First-Login Merge Strategy
+
+```typescript
+// On first login (cloud doc exists + localStorage exists):
+// 1. Read localStorage data
+// 2. Read Firestore document
+// 3. heardItemIds: new Set([...local.heardItemIds, ...cloud.heardItemIds])
+// 4. totalClicks: Math.max(local.totalClicks, cloud.totalClicks)
+// 5. Write merged result to both Firestore and localStorage
+```
+
+### Offline-First Flow
+
+```
+User interaction → localStorage (immediate, synchronous)
+                 → Firestore write (async, queued if offline)
+Reconnect       → Firestore flushes queued writes automatically
+New device login → Read Firestore → hydrate localStorage → hooks read localStorage as normal
+```
+
+Progress hooks (`useCategoryProgress`, `useChessProgress`, etc.) never change — they continue reading from localStorage. The sync layer runs alongside them as a side effect.
 
 ---
 
 ## Installation
 
-No new packages are required.
+No new packages required. All Firebase modules are already available in `firebase@12.8.0`:
 
 ```bash
-# Nothing to install — zero new dependencies for v1.4
+# Nothing to install — firebase@12.8.0 already includes:
+# firebase/auth        → Auth, getAuth, GoogleAuthProvider, signInWithPopup,
+#                        signInWithRedirect, getRedirectResult, signOut,
+#                        onAuthStateChanged
+# firebase/firestore   → initializeFirestore, persistentLocalCache,
+#                        persistentMultipleTabManager, doc, getDoc, setDoc,
+#                        updateDoc, onSnapshot, collection, getFirestore
 ```
+
+---
+
+## Alternatives Considered
+
+| Recommended | Alternative | When to Use Alternative |
+|-------------|-------------|-------------------------|
+| Cloud Firestore | Realtime Database (already used for leaderboards) | RTDB is fine for simple key/value leaderboards (always-online). Firestore is better here because its web offline persistence (IndexedDB, multi-tab) is more mature; RTDB web offline support is less robust and less documented for complex data structures. |
+| No new npm packages | `next-firebase-auth` | Use `next-firebase-auth` when you need SSR session cookies (e.g., protecting server-rendered pages behind auth). Lepdy is fully client-rendered; no SSR auth requirements. Adds session cookie complexity with no benefit. |
+| No new npm packages | `firebase-admin` SDK | Use Admin SDK only in server-side routes (API routes, server actions) for privileged operations. Lepdy has no server-side auth requirements — all sync is client-side. |
+| `signInWithPopup` + `signInWithRedirect` split | `signInWithPopup` only | Use popup-only if you control hosting headers (e.g., Firebase Hosting) and only target desktop. Lepdy is on Vercel and must support mobile tablets (primary device for kids). |
+| `initializeFirestore` with `persistentLocalCache` | `enableIndexedDbPersistence()` (deprecated) | Deprecated since Firebase 10; will be removed. Do not use. |
+| Lazy dynamic imports (`firebase/auth`, `firebase/firestore`) | Top-level imports | Top-level imports break Next.js SSR (server components access browser APIs, crash). Lazy pattern already proven by `lib/firebase.ts` and `lib/firebaseApp.ts`. |
+| Client-side auth only | `FirebaseServerApp` + server sessions | `FirebaseServerApp` (introduced Firebase 10.10.0) enables SSR auth for protected server-rendered pages. Not needed here — Lepdy is fully client-rendered and no pages require server-side auth. |
+
+---
+
+## What NOT to Use
+
+| Avoid | Why | Use Instead |
+|-------|-----|-------------|
+| `enableIndexedDbPersistence()` | Deprecated since Firebase 10; will be removed | `initializeFirestore(app, { localCache: persistentLocalCache() })` |
+| `enableMultiTabIndexedDbPersistence()` | Deprecated since Firebase 10 | `persistentLocalCache({ tabManager: persistentMultipleTabManager() })` |
+| `getFirestore()` without `initializeFirestore` first | Returns memory-only instance; offline persistence cannot be added after init | `initializeFirestore()` with `localCache` option (call once, before any reads/writes) |
+| `signInWithPopup` on mobile without fallback | Fails on iOS Safari; triggers Vercel COOP errors breaking the auth flow | Detect mobile and use `signInWithRedirect` |
+| `firebase-admin` | Server-only; crashes in browser bundle | Client SDK (`firebase/auth`, `firebase/firestore`) |
+| `next-firebase-auth` npm package | Adds session cookie complexity; Lepdy has no SSR auth requirements | Direct `firebase/auth` + client-side `onAuthStateChanged` |
+| `setDoc(ref, data)` without `{ merge: true }` | Overwrites entire document; risks clobbering concurrent writes from another device | `setDoc(ref, data, { merge: true })` or `updateDoc` for partial updates |
+| Top-level `import` of `firebase/auth` or `firebase/firestore` | Accesses browser APIs; breaks Next.js SSR and server component rendering | Lazy `await import('firebase/auth')` inside async functions (pattern in `lib/firebase.ts`) |
+
+---
+
+## Stack Patterns by Variant
+
+**If user is NOT logged in:**
+- Pure localStorage, zero behavior change from today
+- No Firestore reads or writes occur
+- Auth context exposes `user: null`
+- Progress hooks are unchanged
+
+**If user logs in for the first time (has existing localStorage data):**
+1. Read all `lepdy_*` localStorage keys
+2. Read matching Firestore documents
+3. Merge: `heardItemIds` → union; `totalClicks` → max
+4. Write merged result to Firestore (`setDoc` with `{ merge: true }`)
+5. Update localStorage with merged result
+6. Progress hooks continue reading from localStorage as before
+
+**If user logs in on a new device (empty localStorage):**
+1. Auth resolves → `onAuthStateChanged` fires
+2. Read Firestore documents for user
+3. Hydrate localStorage from cloud data
+4. Progress hooks read from localStorage as normal — zero change to hook code
+
+**If device goes offline after login:**
+- Firestore `persistentLocalCache` serves reads from IndexedDB
+- Writes queue locally, flush automatically on reconnect
+- localStorage remains the immediate, synchronous UI source throughout
 
 ---
 
 ## Version Compatibility
 
-| Package | Version | React 19 Compatible | Notes |
-|---------|---------|---------------------|-------|
-| chess.js | 1.4.0 | Yes (no React dependency) | `inCheck()` and `isCheckmate()` confirmed working via direct runtime test |
-| react-confetti | 6.4.0 | Yes (confirmed working) | Already in production use in chess game with React 19.2.3 |
-| @mui/material | 7.3.7 | Yes (official support) | MUI v7 officially targets React 18+/19 |
-| @emotion/react | 11.14.0 | Yes (confirmed working) | MUI's CSS engine; no issues |
-| next-intl | 4.7.0 | Yes (confirmed working) | No changes needed |
+| Package | Installed | Latest | Notes |
+|---------|-----------|--------|-------|
+| `firebase` | 12.8.0 | 12.11.0 | 12.8.0 supports all required Auth + Firestore APIs including `persistentLocalCache`. Upgrade to 12.11.0 optional. No breaking changes in Auth or Firestore between 12.8 and 12.11. |
+
+---
+
+## Firestore Security Rules Needed
+
+Before going live, configure Firestore security rules to allow only the authenticated user to read/write their own data:
+
+```
+// firestore.rules
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+```
+
+This is a Firebase Console configuration step, not a code change.
 
 ---
 
 ## Sources
 
-- chess.js official API docs (https://jhlywa.github.io/chess.js/) — `inCheck()`, `isCheckmate()`, `moves()` method signatures (HIGH confidence)
-- chess.js runtime test — `inCheck()` and `isCheckmate()` tested directly against installed 1.4.0 in `/Users/emil/code/lepdy/node_modules/chess.js` (HIGH confidence)
-- MUI v7 transitions docs (https://mui.com/material-ui/transitions/) — Fade, Grow, Zoom, Slide, Collapse availability confirmed (HIGH confidence)
-- MUI v7 progress docs (https://mui.com/material-ui/react-progress/) — LinearProgress, CircularProgress confirmed (HIGH confidence)
-- Codebase inspection — react-confetti usage in `MovementPuzzle.tsx`, `CapturePuzzle.tsx`, `SessionCompleteScreen.tsx` confirms React 19.2.3 compatibility in production (HIGH confidence)
-- Codebase inspection — `usePuzzleProgress.ts`, `usePuzzleSession.ts`, `puzzleGenerator.ts` show extension points for practice mode (HIGH confidence)
+- [Firebase JS SDK Release Notes](https://firebase.google.com/support/release-notes/js) — Confirmed 12.11.0 latest; 12.8.0 contains all required APIs (HIGH confidence, official)
+- [Firebase Auth Google Sign-In Web docs](https://firebase.google.com/docs/auth/web/google-signin) — `signInWithPopup` / `signInWithRedirect` import patterns confirmed (HIGH confidence, official)
+- [Firebase Redirect Best Practices](https://firebase.google.com/docs/auth/web/redirect-best-practices) — Mobile redirect recommendation (HIGH confidence, official)
+- [Firestore Offline Persistence](https://firebase.google.com/docs/firestore/manage-data/enable-offline) — `persistentLocalCache` modern API, deprecation of `enableIndexedDbPersistence`, IndexedDB, browser support (HIGH confidence, official)
+- [Firestore vs Realtime Database](https://firebase.google.com/docs/firestore/rtdb-vs-firestore) — Firestore recommended for new features; better web offline support (HIGH confidence, official)
+- [Vercel/Next.js COOP + signInWithPopup issue discussion](https://github.com/vercel/next.js/discussions/51135) — COOP header blocking popup flow on Vercel (MEDIUM confidence, GitHub community discussion)
+- [Firebase SDK Issue #8541](https://github.com/firebase/firebase-js-sdk/issues/8541) — COOP/popup issue confirmed in Firebase SDK (MEDIUM confidence, GitHub issue)
+- [Firebase Modular JS SDK docs](https://modularfirebase.web.app/reference/firestore_.enableindexeddbpersistence) — Deprecation of `enableIndexedDbPersistence` confirmed (HIGH confidence)
 
 ---
 
-*Stack research for: Lepdy Chess v1.4 Complete Puzzle Experience*
+*Stack research for: Lepdy v1.5 Cloud Sync (Firebase Auth + Firestore)*
 *Researched: 2026-03-23*
