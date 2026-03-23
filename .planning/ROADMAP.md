@@ -240,6 +240,6 @@ Plans:
 | 18. Daily Featured Puzzle | v1.3 | 2/2 | Complete | 2026-03-22 |
 | 19. Menu Redesign + Sound & Celebrations | v1.4 | 2/2 | Complete    | 2026-03-23 |
 | 20. Practice Mode | v1.4 | 2/2 | Complete    | 2026-03-23 |
-| 21. Checkmate Puzzle Data + Renderers | v1.4 | 2/2 | Complete   | 2026-03-23 |
+| 21. Checkmate Puzzle Data + Renderers | v1.4 | 2/2 | Complete    | 2026-03-23 |
 | 22. Wire Checkmate Into Sessions | v1.4 | 0/TBD | Not started | - |
 | 23. Progress & Engagement Layer | v1.4 | 0/TBD | Not started | - |
