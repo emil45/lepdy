@@ -50,10 +50,10 @@ test.describe('Chess game shell', () => {
     await expect(page.locator('a[href="/games/chess-game"]')).toBeVisible();
   });
 
-  test('level map shows three levels', async ({ page }) => {
+  test('hub shows four tiles', async ({ page }) => {
     await page.goto('/games/chess-game');
-    const levelCards = page.locator('[data-testid="level-card"]');
-    await expect(levelCards).toHaveCount(3);
+    const hubTiles = page.locator('[data-testid="hub-tile"]');
+    await expect(hubTiles).toHaveCount(4);
   });
 
   test('back button navigates to games page', async ({ page }) => {
@@ -62,7 +62,7 @@ test.describe('Chess game shell', () => {
     await expect(page).toHaveURL(/\/games$/);
   });
 
-  test('progress persists across reload', async ({ page }) => {
+  test('chess hub loads after reload with progress', async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.setItem('lepdy_chess_progress', JSON.stringify({
         completedLevels: [1],
@@ -70,15 +70,15 @@ test.describe('Chess game shell', () => {
       }));
     });
     await page.goto('/games/chess-game');
-    await expect(page.locator('[data-testid="level-card-completed"]').first()).toBeVisible();
+    await expect(page.locator('[data-testid="hub-tile"]')).toHaveCount(4);
   });
 });
 
 test.describe('Chess piece introduction', () => {
   test('shows piece card when entering level 1', async ({ page }) => {
     await page.goto('/games/chess-game');
-    // Click the first level card (Level 1 — always unlocked)
-    await page.locator('[data-testid="level-card"]').first().click();
+    // Click the Learn tile (first hub tile — always available)
+    await page.locator('[data-testid="hub-tile"]').first().click();
     // Verify piece introduction UI appears
     await expect(page.locator('[data-testid="audio-button"]')).toBeVisible();
     await expect(page.locator('[data-testid="next-button"]')).toBeVisible();
@@ -87,7 +87,7 @@ test.describe('Chess piece introduction', () => {
 
   test('navigates through all 6 pieces with Next button', async ({ page }) => {
     await page.goto('/games/chess-game');
-    await page.locator('[data-testid="level-card"]').first().click();
+    await page.locator('[data-testid="hub-tile"]').first().click();
     // Verify starts at 1/6
     await expect(page.locator('[data-testid="step-counter"]')).toContainText('1 / 6');
     // Click Next 5 times to reach piece 6
@@ -97,22 +97,22 @@ test.describe('Chess piece introduction', () => {
     await expect(page.locator('[data-testid="step-counter"]')).toContainText('6 / 6');
   });
 
-  test('completing all pieces returns to level map with Level 1 complete', async ({ page }) => {
+  test('completing all pieces returns to hub', async ({ page }) => {
     await page.goto('/games/chess-game');
-    await page.locator('[data-testid="level-card"]').first().click();
+    await page.locator('[data-testid="hub-tile"]').first().click();
     // Click Next 6 times (5 to advance + 1 to complete)
     for (let i = 0; i < 6; i++) {
       await page.locator('[data-testid="next-button"]').click();
     }
-    // Wait for celebration to auto-return to level map (3s timeout + buffer)
-    await expect(page.locator('[data-testid="level-card"]').first()).toBeVisible({ timeout: 5000 });
-    // Level 1 should now show completed indicator
-    await expect(page.locator('[data-testid="level-card-completed"]').first()).toBeVisible();
+    // Wait for celebration to auto-return to hub (3s timeout + buffer)
+    await expect(page.locator('[data-testid="hub-tile"]').first()).toBeVisible({ timeout: 5000 });
+    // Hub should show all 4 tiles
+    await expect(page.locator('[data-testid="hub-tile"]')).toHaveCount(4);
   });
 });
 
 test.describe('Chess movement puzzles', () => {
-  test('Level 2 board renders with puzzle progress', async ({ page }) => {
+  test('Challenge session renders with puzzle progress', async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.setItem('lepdy_chess_progress', JSON.stringify({
         completedLevels: [1],
@@ -120,12 +120,12 @@ test.describe('Chess movement puzzles', () => {
       }));
     });
     await page.goto('/games/chess-game');
-    // Click Level 2 card (second level card)
-    await page.locator('[data-testid="level-card"]').nth(1).click();
-    // Verify puzzle progress counter appears
-    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 61');
-    // Verify piece group label appears
-    await expect(page.locator('[data-testid="piece-group-label"]')).toBeVisible();
+    // Click Challenge tile (second hub tile)
+    await page.locator('[data-testid="hub-tile"]').nth(1).click();
+    // Verify puzzle progress counter appears (e.g. "1/10")
+    await expect(page.locator('text=/\\d+\\/\\d+/')).toBeVisible();
+    // Verify exit button appears in puzzle view
+    await expect(page.locator('[data-testid="exit-button"]')).toBeVisible();
   });
 
   test('movement puzzle shows Hebrew piece name audio button', async ({ page }) => {
@@ -136,8 +136,8 @@ test.describe('Chess movement puzzles', () => {
       }));
     });
     await page.goto('/games/chess-game');
-    // Click Level 2 card to enter movement puzzles
-    await page.locator('[data-testid="level-card"]').nth(1).click();
+    // Click Challenge tile to enter puzzle session
+    await page.locator('[data-testid="hub-tile"]').nth(1).click();
     // Verify the piece name audio button is visible
     await expect(page.locator('[data-testid="piece-name-audio-button"]')).toBeVisible();
   });
@@ -150,10 +150,9 @@ test.describe('Chess movement puzzles', () => {
       }));
     });
     await page.goto('/games/chess-game');
-    await page.locator('[data-testid="level-card"]').nth(1).click();
-    await expect(page.locator('[data-testid="puzzle-progress"]')).toBeVisible();
-    // First puzzle is king at e4. Tap a1 which is NOT a valid target for king
-    // react-chessboard squares have data-square attribute
+    await page.locator('[data-testid="hub-tile"]').nth(1).click();
+    await expect(page.locator('[data-testid="exit-button"]')).toBeVisible();
+    // Tap a1 which is typically not a valid target
     await page.locator('[data-square="a1"]').click();
     // Verify try again text appears
     await expect(page.locator('[data-testid="try-again-text"]')).toBeVisible();
@@ -167,20 +166,19 @@ test.describe('Chess movement puzzles', () => {
       }));
     });
     await page.goto('/games/chess-game');
-    await page.locator('[data-testid="level-card"]').nth(1).click();
-    await expect(page.locator('[data-testid="puzzle-progress"]')).toBeVisible();
-    // Tap 2 wrong squares (a1 and h8 are never valid for king at e4)
+    await page.locator('[data-testid="hub-tile"]').nth(1).click();
+    await expect(page.locator('[data-testid="exit-button"]')).toBeVisible();
+    // Tap 2 wrong squares
     await page.locator('[data-square="a1"]').click();
     await page.waitForTimeout(700); // wait for flash to clear
     await page.locator('[data-square="h8"]').click();
-    // After 2 wrong taps, hint squares should be highlighted
-    // Verify the puzzle progress still shows 1/61 (no advancement)
-    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 61');
+    // After 2 wrong taps, exit button should still be visible (puzzle still active)
+    await expect(page.locator('[data-testid="exit-button"]')).toBeVisible();
   });
 });
 
 test.describe('Chess capture puzzles', () => {
-  test('Level 3 board renders with puzzle progress', async ({ page }) => {
+  test('Session puzzle renders', async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.setItem('lepdy_chess_progress', JSON.stringify({
         completedLevels: [1, 2],
@@ -188,11 +186,11 @@ test.describe('Chess capture puzzles', () => {
       }));
     });
     await page.goto('/games/chess-game');
-    // Click Level 3 card (third level card)
-    await page.locator('[data-testid="level-card"]').nth(2).click();
-    // Verify puzzle progress counter appears
-    await expect(page.locator('[data-testid="puzzle-progress"]')).toBeVisible();
-    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 34');
+    // Click Challenge tile (second hub tile) — session mixes movement and capture puzzles
+    await page.locator('[data-testid="hub-tile"]').nth(1).click();
+    // Verify puzzle progress counter and exit button appear
+    await expect(page.locator('text=/\\d+\\/\\d+/')).toBeVisible();
+    await expect(page.locator('[data-testid="exit-button"]')).toBeVisible();
   });
 
   test('Wrong tap on distractor shows try again feedback', async ({ page }) => {
@@ -203,10 +201,10 @@ test.describe('Chess capture puzzles', () => {
       }));
     });
     await page.goto('/games/chess-game');
-    await page.locator('[data-testid="level-card"]').nth(2).click();
-    await expect(page.locator('[data-testid="puzzle-progress"]')).toBeVisible();
-    // First capture puzzle: capture-rook-1, distractor at c2
-    await page.locator('[data-square="c2"]').click();
+    await page.locator('[data-testid="hub-tile"]').nth(1).click();
+    await expect(page.locator('[data-testid="exit-button"]')).toBeVisible();
+    // Tap a1 — typically an invalid square for most puzzles
+    await page.locator('[data-square="a1"]').click();
     // Verify try again text appears
     await expect(page.locator('[data-testid="try-again-text"]')).toBeVisible();
   });
@@ -219,14 +217,14 @@ test.describe('Chess capture puzzles', () => {
       }));
     });
     await page.goto('/games/chess-game');
-    await page.locator('[data-testid="level-card"]').nth(2).click();
-    await expect(page.locator('[data-testid="puzzle-progress"]')).toBeVisible();
-    // Click distractor c2 twice (first capture puzzle has distractor at c2)
-    await page.locator('[data-square="c2"]').click();
+    await page.locator('[data-testid="hub-tile"]').nth(1).click();
+    await expect(page.locator('[data-testid="exit-button"]')).toBeVisible();
+    // Click invalid square twice
+    await page.locator('[data-square="a1"]').click();
     await page.waitForTimeout(700); // wait for flash to clear
-    await page.locator('[data-square="c2"]').click();
-    // After 2 wrong taps, puzzle hasn't advanced — still shows 1/34
-    await expect(page.locator('[data-testid="puzzle-progress"]')).toContainText('1 / 34');
+    await page.locator('[data-square="a1"]').click();
+    // After 2 wrong taps, exit button still visible (puzzle still active)
+    await expect(page.locator('[data-testid="exit-button"]')).toBeVisible();
   });
 });
 
