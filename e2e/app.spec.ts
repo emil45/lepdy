@@ -74,6 +74,30 @@ test.describe('Chess game shell', () => {
   });
 });
 
+test.describe('Chess practice mode', () => {
+  test('practice picker shows 6 piece cards', async ({ page }) => {
+    await page.goto('/games/chess-game');
+    // Click the Practice hub tile (3rd tile, index 2)
+    await page.locator('[data-testid="hub-tile"]').nth(2).click();
+    // Wait for practice picker to render
+    await expect(page.getByTestId('practice-piece-card').first()).toBeVisible();
+    // Verify 6 cards (one per chess piece)
+    const cards = page.getByTestId('practice-piece-card');
+    await expect(cards).toHaveCount(6);
+  });
+
+  test('practice piece selection starts puzzle', async ({ page }) => {
+    await page.goto('/games/chess-game');
+    // Click the Practice hub tile (3rd tile, index 2)
+    await page.locator('[data-testid="hub-tile"]').nth(2).click();
+    await expect(page.getByTestId('practice-piece-card').first()).toBeVisible();
+    // Click first piece card
+    await page.getByTestId('practice-piece-card').first().click();
+    // Should see the exit button (puzzle view loaded)
+    await expect(page.locator('[data-testid="exit-button"]')).toBeVisible({ timeout: 5000 });
+  });
+});
+
 test.describe('Chess piece introduction', () => {
   test('shows piece card when entering level 1', async ({ page }) => {
     await page.goto('/games/chess-game');
