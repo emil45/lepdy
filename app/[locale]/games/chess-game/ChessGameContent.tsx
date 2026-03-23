@@ -14,6 +14,8 @@ import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
 import { usePuzzleSession } from '@/hooks/usePuzzleSession';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
 import { playSound, playRandomCelebration, AudioSounds } from '@/utils/audio';
+import { logEvent } from '@/utils/amplitude';
+import { AmplitudeEventsEnum } from '@/models/amplitudeEvents';
 import Confetti from 'react-confetti';
 import ChessSettingsDrawer from './ChessSettingsDrawer';
 import ChessHubMenu from './ChessHubMenu';
@@ -45,8 +47,45 @@ export default function ChessGameContent() {
 
   const handleAnswer = useCallback((correct: boolean) => {
     playSound(correct ? AudioSounds.SUCCESS : AudioSounds.WRONG_ANSWER);
+
+    if (currentPuzzle) {
+      const pieceId =
+        currentPuzzle.type === 'movement'
+          ? currentPuzzle.puzzle.pieceId
+          : currentPuzzle.type === 'capture'
+          ? currentPuzzle.puzzle.correctPieceId
+          : currentPuzzle.puzzle.matingPieceId;
+      logEvent(AmplitudeEventsEnum.CHESS_PUZZLE_ANSWERED, {
+        puzzle_type: currentPuzzle.type,
+        correct,
+        piece_id: pieceId,
+        difficulty: currentPuzzle.puzzle.difficulty,
+        session_index: sessionIndex,
+      });
+    }
+
     onAnswer(correct);
-  }, [onAnswer]);
+  }, [onAnswer, currentPuzzle, sessionIndex]);
+
+  const handleCheckmateAnswer = useCallback((correct: boolean) => {
+    // CheckmatePuzzle plays WRONG_ANSWER internally on wrong taps and playRandomCelebration on correct.
+    // Only play SUCCESS here on correct to complement the celebration — avoid double WRONG_ANSWER.
+    if (correct) {
+      playSound(AudioSounds.SUCCESS);
+    }
+
+    if (currentPuzzle && currentPuzzle.type === 'checkmate') {
+      logEvent(AmplitudeEventsEnum.CHESS_PUZZLE_ANSWERED, {
+        puzzle_type: 'checkmate',
+        correct,
+        piece_id: currentPuzzle.puzzle.matingPieceId,
+        difficulty: currentPuzzle.puzzle.difficulty,
+        session_index: sessionIndex,
+      });
+    }
+
+    onAnswer(correct);
+  }, [onAnswer, currentPuzzle, sessionIndex]);
 
   const handlePracticeAnswer = useCallback((correct: boolean) => {
     playSound(correct ? AudioSounds.SUCCESS : AudioSounds.WRONG_ANSWER);
@@ -163,7 +202,7 @@ export default function ChessGameContent() {
             </Box>
             <CheckmatePuzzle
               puzzle={currentPuzzle.puzzle}
-              onAnswer={handleAnswer}
+              onAnswer={handleCheckmateAnswer}
               onExit={() => setCurrentView('hub')}
             />
           </div>
