@@ -192,7 +192,7 @@ Plans:
 - [x] 21-01-PLAN.md — CheckmatePuzzle interface, 20 puzzle data entries, validation script extension, i18n keys
 - [x] 21-02-PLAN.md — CheckmatePuzzle.tsx renderer component with two-tap interaction, E2E smoke test
 Plans:
-- [ ] 23-01-PLAN.md — Shared mastery helpers, hub menu mastery row + summary chip
+- [x] 23-01-PLAN.md — Shared mastery helpers, hub menu mastery row + summary chip
 - [ ] 23-02-PLAN.md — Per-piece answer breakdown on session complete screen
 **UI hint**: yes
 
@@ -251,4 +251,4 @@ Plans:
 | 20. Practice Mode | v1.4 | 2/2 | Complete    | 2026-03-23 |
 | 21. Checkmate Puzzle Data + Renderers | v1.4 | 2/2 | Complete    | 2026-03-23 |
 | 22. Wire Checkmate Into Sessions | v1.4 | 2/2 | Complete    | 2026-03-23 |
-| 23. Progress & Engagement Layer | v1.4 | 0/2 | Not started | - |
+| 23. Progress & Engagement Layer | v1.4 | 1/2 | In Progress|  |

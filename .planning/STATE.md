@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Complete Puzzle Experience
-status: Ready to plan
-stopped_at: Completed 22-02-PLAN.md
-last_updated: "2026-03-23T09:01:04.636Z"
+status: Ready to execute
+stopped_at: Completed 23-01-PLAN.md
+last_updated: "2026-03-23T09:17:22.570Z"
 progress:
   total_phases: 10
   completed_phases: 4
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 10
+  completed_plans: 9
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 22 — Wire Checkmate Into Sessions
+**Current focus:** Phase 23 — Progress & Engagement Layer
 
 ## Current Position
 
-Phase: 23
-Plan: Not started
+Phase: 23 (Progress & Engagement Layer) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -50,6 +50,7 @@ Plan: Not started
 | Phase 21 P02 | 3 | 2 tasks | 2 files |
 | Phase 22-wire-checkmate-into-sessions P01 | 6 | 2 tasks | 6 files |
 | Phase 22-wire-checkmate-into-sessions P02 | 5 | 2 tasks | 2 files |
+| Phase 23-progress-engagement-layer P01 | 3 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,8 @@ Recent decisions affecting current work:
 - [Phase 22-wire-checkmate-into-sessions]: chessCheckmateEnabled defaults to false for safe rollout; checkmate injected at slot 9 with fixed tier 1; practice sessions remain capture/movement only
 - [Phase 22-02]: handleCheckmateAnswer only plays SUCCESS on correct — avoids double WRONG_ANSWER since CheckmatePuzzle plays it internally
 - [Phase 22-02]: Amplitude CHESS_PUZZLE_ANSWERED fires in parent handlers, not inside puzzle components — keeps analytics centralized
+- [Phase 23]: Render mastery summary chip on all 4 hub tiles per CONTEXT.md locked decision
+- [Phase 23]: Reuse ui.masteryExpert inline for summary chip label — no new i18n key needed
 
 ### Pending Todos
 
@@ -90,6 +93,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T08:53:16.815Z
-Stopped at: Completed 22-02-PLAN.md
+Last session: 2026-03-23T09:17:22.568Z
+Stopped at: Completed 23-01-PLAN.md
 Resume file: None

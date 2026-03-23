@@ -11,7 +11,7 @@ Requirements for Complete Puzzle Experience milestone. Each maps to roadmap phas
 
 - [x] **MENU-01**: User sees a clear hub menu with large icon+label tiles replacing the broken 1/2/3/daily structure
 - [x] **MENU-02**: User can navigate to Learn, Practice, Challenge, and Daily Puzzle from the hub menu
-- [ ] **MENU-03**: User sees their per-piece mastery bands displayed on the hub menu
+- [x] **MENU-03**: User sees their per-piece mastery bands displayed on the hub menu
 
 ### Practice Mode
 
@@ -33,7 +33,7 @@ Requirements for Complete Puzzle Experience milestone. Each maps to roadmap phas
 
 ### Progress & Engagement
 
-- [ ] **PROG-01**: User sees a mastery map showing all 6 pieces with current mastery band on the menu
+- [x] **PROG-01**: User sees a mastery map showing all 6 pieces with current mastery band on the menu
 - [ ] **PROG-02**: User sees a per-piece breakdown on the session complete screen (which pieces practiced, how many correct)
 
 ## v1.3 Requirements (Complete)
@@ -99,7 +99,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | MENU-01 | Phase 19 | Complete |
 | MENU-02 | Phase 19 | Complete |
-| MENU-03 | Phase 23 | Pending |
+| MENU-03 | Phase 23 | Complete |
 | PRAC-01 | Phase 20 | Complete |
 | PRAC-02 | Phase 20 | Complete |
 | PRAC-03 | Phase 20 | Complete |
@@ -109,7 +109,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SFX-01 | Phase 19 | Complete |
 | SFX-02 | Phase 19 | Complete |
 | SFX-03 | Phase 19 | Complete |
-| PROG-01 | Phase 23 | Pending |
+| PROG-01 | Phase 23 | Complete |
 | PROG-02 | Phase 23 | Pending |
 | PGEN-01 | Phase 14 | Complete |
 | PGEN-02 | Phase 14 | Complete |
