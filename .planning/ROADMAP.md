@@ -68,7 +68,7 @@
 
 **Milestone Goal:** Transform the chess game from a working prototype into a polished, engaging kids puzzle app that a child wants to revisit daily and a parent would proudly recommend.
 
-- [ ] **Phase 19: Menu Redesign + Sound & Celebrations** - New hub menu replacing broken 1/2/3/daily structure, correct/wrong sound effects, and streak milestone celebrations
+- [x] **Phase 19: Menu Redesign + Sound & Celebrations** - New hub menu replacing broken 1/2/3/daily structure, correct/wrong sound effects, and streak milestone celebrations (completed 2026-03-23)
 - [ ] **Phase 20: Practice Mode** - Per-piece drill mode with piece selector screen and infinite adaptive puzzles
 - [ ] **Phase 21: Checkmate Puzzle Data + Renderers** - 20+ curated mate-in-1 positions with dedicated renderer component
 - [ ] **Phase 22: Wire Checkmate Into Sessions** - Checkmate puzzles integrated into Challenge sessions via feature flag
@@ -161,7 +161,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 19-01-PLAN.md — Hub menu component, ChessView routing update, translations, E2E test updates
-- [ ] 19-02-PLAN.md — Answer sound effects wiring, streak milestone confetti celebrations
+- [x] 19-02-PLAN.md — Answer sound effects wiring, streak milestone confetti celebrations
 
 ### Phase 20: Practice Mode
 **Goal**: Kids can pick any single chess piece and drill unlimited adaptive puzzles for just that piece, building confidence in the pieces they find hardest
@@ -233,7 +233,7 @@ Plans:
 | 16. Session Hook + Puzzle Refactor | v1.3 | 1/2 | Complete | 2026-03-22 |
 | 17. Session Complete + Progression UI | v1.3 | 2/2 | Complete | 2026-03-22 |
 | 18. Daily Featured Puzzle | v1.3 | 2/2 | Complete | 2026-03-22 |
-| 19. Menu Redesign + Sound & Celebrations | v1.4 | 1/2 | In Progress|  |
+| 19. Menu Redesign + Sound & Celebrations | v1.4 | 2/2 | Complete   | 2026-03-23 |
 | 20. Practice Mode | v1.4 | 0/TBD | Not started | - |
 | 21. Checkmate Puzzle Data + Renderers | v1.4 | 0/TBD | Not started | - |
 | 22. Wire Checkmate Into Sessions | v1.4 | 0/TBD | Not started | - |

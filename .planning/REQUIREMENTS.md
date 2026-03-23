@@ -27,9 +27,9 @@ Requirements for Complete Puzzle Experience milestone. Each maps to roadmap phas
 
 ### Sound & Celebrations
 
-- [ ] **SFX-01**: User hears a positive sound effect on correct puzzle answers
-- [ ] **SFX-02**: User hears a gentle sound effect on wrong puzzle answers
-- [ ] **SFX-03**: User sees mini-celebration (confetti/animation) at 3, 5, and 10 correct streak during sessions
+- [x] **SFX-01**: User hears a positive sound effect on correct puzzle answers
+- [x] **SFX-02**: User hears a gentle sound effect on wrong puzzle answers
+- [x] **SFX-03**: User sees mini-celebration (confetti/animation) at 3, 5, and 10 correct streak during sessions
 
 ### Progress & Engagement
 
@@ -106,9 +106,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MATE-01 | Phase 21 | Pending |
 | MATE-02 | Phase 21 | Pending |
 | MATE-03 | Phase 22 | Pending |
-| SFX-01 | Phase 19 | Pending |
-| SFX-02 | Phase 19 | Pending |
-| SFX-03 | Phase 19 | Pending |
+| SFX-01 | Phase 19 | Complete |
+| SFX-02 | Phase 19 | Complete |
+| SFX-03 | Phase 19 | Complete |
 | PROG-01 | Phase 23 | Pending |
 | PROG-02 | Phase 23 | Pending |
 | PGEN-01 | Phase 14 | Complete |
