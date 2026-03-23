@@ -62,10 +62,9 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 
 - ✓ Redesigned hub menu with 2x2 tile grid (Learn, Challenge, Practice, Daily) replacing numbered levels — v1.4 Phase 19
 - ✓ Sound effects on every puzzle answer (correct/wrong) and streak milestone celebrations — v1.4 Phase 19
+- ✓ Practice mode — pick any piece from 2x3 grid, drill unlimited adaptive puzzles — v1.4 Phase 20
 
 ### Active
-
-- [ ] Practice mode — pick a specific piece and drill puzzles for it
 - [ ] New puzzle types — check puzzles, checkmate-in-1, find the best move
 - [ ] Progress & engagement — visible mastery tracking that makes kids want to come back
 
@@ -168,4 +167,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-23 after Phase 19 (Menu Redesign + Sound & Celebrations) complete*
+*Last updated: 2026-03-23 after Phase 20 (Practice Mode) complete*
