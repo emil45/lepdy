@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: Complete Puzzle Experience
-status: Ready to execute
-stopped_at: Completed 21-01-PLAN.md
-last_updated: "2026-03-23T08:20:53.885Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 21-02-PLAN.md
+last_updated: "2026-03-23T08:26:07.291Z"
 progress:
   total_phases: 10
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -47,6 +47,7 @@ Plan: 2 of 2
 | Phase 20-practice-mode P01 | 2 | 2 tasks | 2 files |
 | Phase 20 P02 | 5 | 2 tasks | 3 files |
 | Phase 21-checkmate-puzzle-data-renderers P01 | 5 | 2 tasks | 5 files |
+| Phase 21 P02 | 3 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -69,6 +70,8 @@ Recent decisions affecting current work:
 - [Phase 20]: Shared showMilestoneConfetti state for both challenge session and practice — mutually exclusive views
 - [Phase 21-01]: Full 6-field FEN used for all CheckmatePuzzle entries (chess.js requires it for isCheckmate)
 - [Phase 21-01]: validateCheckmatePuzzle checks isCheck() first, exactly 1 mating move, then isCheckmate() after applying the move
+- [Phase 21]: Use puzzle.fen.split(' ')[0] to extract piece-placement FEN for Chessboard component
+- [Phase 21]: CheckmatePuzzle.tsx has no chess.js runtime dependency — component trusts pre-validated puzzle data
 
 ### Pending Todos
 
@@ -82,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-23T08:20:53.883Z
-Stopped at: Completed 21-01-PLAN.md
+Last session: 2026-03-23T08:26:07.289Z
+Stopped at: Completed 21-02-PLAN.md
 Resume file: None

@@ -70,7 +70,7 @@
 
 - [x] **Phase 19: Menu Redesign + Sound & Celebrations** - New hub menu replacing broken 1/2/3/daily structure, correct/wrong sound effects, and streak milestone celebrations (completed 2026-03-23)
 - [x] **Phase 20: Practice Mode** - Per-piece drill mode with piece selector screen and infinite adaptive puzzles (completed 2026-03-23)
-- [ ] **Phase 21: Checkmate Puzzle Data + Renderers** - 20+ curated mate-in-1 positions with dedicated renderer component
+- [x] **Phase 21: Checkmate Puzzle Data + Renderers** - 20+ curated mate-in-1 positions with dedicated renderer component (completed 2026-03-23)
 - [ ] **Phase 22: Wire Checkmate Into Sessions** - Checkmate puzzles integrated into Challenge sessions via feature flag
 - [ ] **Phase 23: Progress & Engagement Layer** - Mastery map on hub menu and per-piece breakdown on session complete screen
 
@@ -190,7 +190,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 21-01-PLAN.md — CheckmatePuzzle interface, 20 puzzle data entries, validation script extension, i18n keys
-- [ ] 21-02-PLAN.md — CheckmatePuzzle.tsx renderer component with two-tap interaction, E2E smoke test
+- [x] 21-02-PLAN.md — CheckmatePuzzle.tsx renderer component with two-tap interaction, E2E smoke test
 **UI hint**: yes
 
 ### Phase 22: Wire Checkmate Into Sessions
@@ -240,6 +240,6 @@ Plans:
 | 18. Daily Featured Puzzle | v1.3 | 2/2 | Complete | 2026-03-22 |
 | 19. Menu Redesign + Sound & Celebrations | v1.4 | 2/2 | Complete    | 2026-03-23 |
 | 20. Practice Mode | v1.4 | 2/2 | Complete    | 2026-03-23 |
-| 21. Checkmate Puzzle Data + Renderers | v1.4 | 1/2 | In Progress|  |
+| 21. Checkmate Puzzle Data + Renderers | v1.4 | 2/2 | Complete   | 2026-03-23 |
 | 22. Wire Checkmate Into Sessions | v1.4 | 0/TBD | Not started | - |
 | 23. Progress & Engagement Layer | v1.4 | 0/TBD | Not started | - |
