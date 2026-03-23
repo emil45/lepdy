@@ -49,7 +49,7 @@ export default function CheckmatePuzzle({ puzzle, onAnswer, onExit }: CheckmateP
     if (!containerRef.current) return;
     const observer = new ResizeObserver((entries) => {
       const w = entries[0].contentRect.width;
-      setBoardWidth(Math.min(Math.max(w, 320), 480));
+      setBoardWidth(Math.max(w, 280));
     });
     observer.observe(containerRef.current);
     return () => observer.disconnect();
@@ -151,7 +151,7 @@ export default function CheckmatePuzzle({ puzzle, onAnswer, onExit }: CheckmateP
     <Box
       sx={{
         py: 2,
-        px: 1,
+        px: { xs: 0.5, sm: 1 },
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -159,7 +159,7 @@ export default function CheckmatePuzzle({ puzzle, onAnswer, onExit }: CheckmateP
       }}
     >
       {/* Exit button row */}
-      <Box sx={{ width: '100%', maxWidth: 480, display: 'flex', justifyContent: 'flex-end' }}>
+      <Box sx={{ width: '100%', maxWidth: { xs: '100%', sm: 600, lg: 480 }, display: 'flex', justifyContent: 'flex-end' }}>
         <IconButton
           onClick={onExit}
           aria-label="exit"
@@ -175,9 +175,9 @@ export default function CheckmatePuzzle({ puzzle, onAnswer, onExit }: CheckmateP
         bgcolor: '#f5ede1',
         borderRadius: 3,
         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        p: 2,
+        p: { xs: 1, sm: 2 },
         width: '100%',
-        maxWidth: 480,
+        maxWidth: { xs: '100%', sm: 600, lg: 480 },
       }}>
         {/* Instruction text */}
         <Typography variant="h6" sx={{ fontWeight: 'bold', textAlign: 'center', mb: 2, px: 1 }}>
@@ -185,7 +185,7 @@ export default function CheckmatePuzzle({ puzzle, onAnswer, onExit }: CheckmateP
         </Typography>
 
         {/* Board — always LTR regardless of locale */}
-        <Box ref={containerRef} sx={{ direction: 'ltr', width: '100%', maxWidth: 480, margin: '0 auto' }}>
+        <Box ref={containerRef} sx={{ direction: 'ltr', width: '100%', maxWidth: { xs: '100%', sm: 600, lg: 480 }, margin: '0 auto' }}>
           <Chessboard
             options={{
               position: displayFen,
@@ -194,7 +194,7 @@ export default function CheckmatePuzzle({ puzzle, onAnswer, onExit }: CheckmateP
               squareStyles,
               boardOrientation: 'white' as const,
               animationDurationInMs: 200,
-              boardStyle: { width: `${boardWidth}px`, maxWidth: '480px' },
+              boardStyle: { width: `${boardWidth}px` },
               lightSquareStyle: { backgroundColor: '#f5ede1' },
               darkSquareStyle: { backgroundColor: '#dbc3e2' },
               darkSquareNotationStyle: { color: 'rgba(67, 66, 67, 0.5)' },
