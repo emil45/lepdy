@@ -187,7 +187,10 @@ Plans:
   2. At least 20 mate-in-1 positions are available covering multiple piece types (queen, rook, bishop, knight combinations)
   3. Every checkmate position is verified by chess.js isCheckmate() before being committed to the data file
   4. User sees clear Hebrew instruction text explaining the goal ("put the king in checkmate in one move")
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 21-01-PLAN.md — CheckmatePuzzle interface, 20 puzzle data entries, validation script extension, i18n keys
+- [ ] 21-02-PLAN.md — CheckmatePuzzle.tsx renderer component with two-tap interaction, E2E smoke test
 **UI hint**: yes
 
 ### Phase 22: Wire Checkmate Into Sessions
@@ -237,6 +240,6 @@ Plans:
 | 18. Daily Featured Puzzle | v1.3 | 2/2 | Complete | 2026-03-22 |
 | 19. Menu Redesign + Sound & Celebrations | v1.4 | 2/2 | Complete    | 2026-03-23 |
 | 20. Practice Mode | v1.4 | 2/2 | Complete    | 2026-03-23 |
-| 21. Checkmate Puzzle Data + Renderers | v1.4 | 0/TBD | Not started | - |
+| 21. Checkmate Puzzle Data + Renderers | v1.4 | 0/2 | Not started | - |
 | 22. Wire Checkmate Into Sessions | v1.4 | 0/TBD | Not started | - |
 | 23. Progress & Engagement Layer | v1.4 | 0/TBD | Not started | - |
