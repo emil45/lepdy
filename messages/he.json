@@ -171,6 +171,12 @@
       "label": "פאזל יומי",
       "comeBackTomorrow": "!תחזור מחר",
       "completed": "!סיימת"
+    },
+    "hub": {
+      "learn": "למד",
+      "challenge": "אתגר",
+      "practice": "תרגול",
+      "daily": "יומי"
     }
   },
   "soundMatching": {

@@ -171,6 +171,12 @@
       "label": "Daily Puzzle",
       "comeBackTomorrow": "Come back tomorrow!",
       "completed": "Done!"
+    },
+    "hub": {
+      "learn": "Learn",
+      "challenge": "Challenge",
+      "practice": "Practice",
+      "daily": "Daily"
     }
   },
   "soundMatching": {

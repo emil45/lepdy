@@ -171,6 +171,12 @@
       "label": "Ежедневная задача",
       "comeBackTomorrow": "Вернись завтра!",
       "completed": "Готово!"
+    },
+    "hub": {
+      "learn": "Учить",
+      "challenge": "Испытание",
+      "practice": "Практика",
+      "daily": "Ежедневное"
     }
   },
   "soundMatching": {
