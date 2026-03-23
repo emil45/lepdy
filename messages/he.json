@@ -158,7 +158,8 @@
       "gettingHarder": "!הולך ונהיה קשה",
       "startNewSession": "התחל מחדש",
       "chessmate": "!שח מט",
-      "tapToCheckmate": "שימו את המלך בשח מט במהלך אחד"
+      "tapToCheckmate": "שימו את המלך בשח מט במהלך אחד",
+      "pieceAnswerCount": "{correct}/{total}"
     },
     "settings": {
       "pieceTheme": "סגנון כלים",

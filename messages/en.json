@@ -158,7 +158,8 @@
       "gettingHarder": "Getting harder!",
       "startNewSession": "Start New Session",
       "chessmate": "Checkmate!",
-      "tapToCheckmate": "Put the king in checkmate in one move"
+      "tapToCheckmate": "Put the king in checkmate in one move",
+      "pieceAnswerCount": "{correct}/{total}"
     },
     "settings": {
       "pieceTheme": "Piece Theme",

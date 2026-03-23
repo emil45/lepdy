@@ -41,7 +41,7 @@ export default function ChessGameContent() {
   const t = useTranslations('chessGame');
   const { completeLevel } = useChessProgress();
   const { theme, selectTheme } = useChessPieceTheme();
-  const { currentPuzzle, sessionIndex, consecutiveCorrect, firstTryCount, isSessionComplete, onAnswer, startNewSession, sessionTiers, currentTiersByPiece } = usePuzzleSession();
+  const { currentPuzzle, sessionIndex, consecutiveCorrect, firstTryCount, isSessionComplete, onAnswer, startNewSession, sessionTiers, currentTiersByPiece, pieceAnswerCounts } = usePuzzleSession();
   const { dailyPuzzle, isCompleted: isDailyCompleted, markCompleted: markDailyCompleted } = useDailyPuzzle();
   const { currentPuzzle: practicePuzzle, consecutiveCorrect: practiceStreak, onAnswer: practiceOnAnswer, startPractice, currentTiersByPiece: practiceTiersByPiece } = usePracticeSession();
 
@@ -139,6 +139,7 @@ export default function ChessGameContent() {
           firstTryCount={firstTryCount}
           sessionTiers={sessionTiers}
           currentTiersByPiece={currentTiersByPiece}
+          pieceAnswerCounts={pieceAnswerCounts}
           onStartNew={startNewSession}
           onBackToMap={() => { startNewSession(); setCurrentView('hub'); }}
         />

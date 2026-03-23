@@ -26,6 +26,7 @@ export interface UsePuzzleSessionReturn {
   firstTryCount: number;
   sessionTiers: MutableRefObject<Record<string, 1 | 2 | 3>>;
   currentTiersByPiece: Record<string, PiecePuzzleProgress>;
+  pieceAnswerCounts: Record<string, { correct: number; total: number }>;
 }
 
 interface PersistedSession {
@@ -127,6 +128,7 @@ export function usePuzzleSession(): UsePuzzleSessionReturn {
   const [consecutiveCorrect, setConsecutiveCorrect] = useState(0);
   const [isInitialized, setIsInitialized] = useState(false);
   const [firstTryCount, setFirstTryCount] = useState(0);
+  const [pieceAnswerCounts, setPieceAnswerCounts] = useState<Record<string, { correct: number; total: number }>>({});
 
   // Initialize session from sessionStorage or fresh build
   useEffect(() => {
@@ -197,6 +199,18 @@ export function usePuzzleSession(): UsePuzzleSessionReturn {
           ? current.puzzle.correctPieceId
           : current.puzzle.matingPieceId;
 
+      // Record per-piece answer counts for session complete breakdown
+      setPieceAnswerCounts((prev) => {
+        const existing = prev[pieceId] ?? { correct: 0, total: 0 };
+        return {
+          ...prev,
+          [pieceId]: {
+            correct: existing.correct + (correct ? 1 : 0),
+            total: existing.total + 1,
+          },
+        };
+      });
+
       // Record to progress tracking
       if (correct) {
         recordCorrect(pieceId);
@@ -232,6 +246,7 @@ export function usePuzzleSession(): UsePuzzleSessionReturn {
     setHeadIndex(0);
     setConsecutiveCorrect(0);
     setFirstTryCount(0);
+    setPieceAnswerCounts({});
   }, [getSessionTier, checkmateEnabled]);
 
   const currentPuzzle = isInitialized && headIndex < SESSION_SIZE ? (queue[headIndex] ?? null) : null;
@@ -247,5 +262,6 @@ export function usePuzzleSession(): UsePuzzleSessionReturn {
     firstTryCount,
     sessionTiers,
     currentTiersByPiece: data.pieces,
+    pieceAnswerCounts,
   };
 }

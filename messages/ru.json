@@ -158,7 +158,8 @@
       "gettingHarder": "Становится сложнее!",
       "startNewSession": "Начать заново",
       "chessmate": "Мат!",
-      "tapToCheckmate": "Поставьте королю мат за один ход"
+      "tapToCheckmate": "Поставьте королю мат за один ход",
+      "pieceAnswerCount": "{correct}/{total}"
     },
     "settings": {
       "pieceTheme": "Стиль фигур",

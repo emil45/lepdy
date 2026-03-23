@@ -20,6 +20,7 @@ interface SessionCompleteScreenProps {
   firstTryCount: number;
   sessionTiers: MutableRefObject<Record<string, 1 | 2 | 3>>;
   currentTiersByPiece: Record<string, PiecePuzzleProgress>;
+  pieceAnswerCounts: Record<string, { correct: number; total: number }>;
   onStartNew: () => void;
   onBackToMap: () => void;
 }
@@ -28,6 +29,7 @@ export default function SessionCompleteScreen({
   firstTryCount,
   sessionTiers,
   currentTiersByPiece,
+  pieceAnswerCounts,
   onStartNew,
   onBackToMap,
 }: SessionCompleteScreenProps) {
@@ -91,6 +93,44 @@ export default function SessionCompleteScreen({
           <Typography variant="h6" sx={{ color: 'text.secondary' }}>
             {t('ui.score', { count: firstTryCount })}
           </Typography>
+
+          {/* Per-piece breakdown section */}
+          {(() => {
+            const sessionPieces = chessPieces.filter((p) => pieceAnswerCounts[p.id]);
+            return sessionPieces.length > 0 ? (
+              <Box
+                data-testid="piece-breakdown-section"
+                sx={{ mt: 2, width: '100%', maxWidth: 400, display: 'flex', flexDirection: 'column', gap: 1 }}
+              >
+                {sessionPieces.map((piece) => {
+                  const counts = pieceAnswerCounts[piece.id];
+                  return (
+                    <Box
+                      key={piece.id}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        bgcolor: piece.color,
+                        borderRadius: 2,
+                        px: 2,
+                        py: 1,
+                        opacity: 0.85,
+                      }}
+                    >
+                      <Typography sx={{ fontSize: 28, lineHeight: 1 }}>{piece.emoji}</Typography>
+                      <Typography sx={{ fontWeight: 'bold', flex: 1 }}>
+                        {t(piece.translationKey as Parameters<typeof t>[0])}
+                      </Typography>
+                      <Typography sx={{ fontWeight: 'bold' }}>
+                        {t('ui.pieceAnswerCount' as Parameters<typeof t>[0], { correct: counts.correct, total: counts.total })}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+              </Box>
+            ) : null;
+          })()}
 
           {/* Mastery section */}
           <Box
