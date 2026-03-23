@@ -69,7 +69,24 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 
 ### Active
 
-(No active requirements — v1.4 milestone complete)
+- [ ] Optional Google sign-in via Firebase Auth
+- [ ] Login option in homepage settings sidebar
+- [ ] All localStorage progress syncs to Firebase when logged in
+- [ ] First login merges (union) existing localStorage into cloud
+- [ ] Offline-first: localStorage cache, syncs back when online
+- [ ] Not logged in = pure localStorage (zero behavior change)
+
+## Current Milestone: v1.5 Cloud Sync
+
+**Goal:** Optional Google login with Firebase Auth that syncs all user progress across devices, with offline-first localStorage caching.
+
+**Target features:**
+- Firebase Auth with Google sign-in (optional, never forced)
+- Login option in homepage settings sidebar
+- All localStorage data syncs to Firebase (category progress, chess progress, stickers, word collection, streak, settings/preferences)
+- First login merges (union) existing localStorage progress into cloud
+- Offline-first: localStorage as cache, syncs back when connectivity returns
+- Not logged in = pure localStorage, zero behavior change from today
 
 ## Shipped Milestones
 
@@ -170,4 +187,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-23 after v1.4 Complete Puzzle Experience milestone*
+*Last updated: 2026-03-23 after v1.5 Cloud Sync milestone started*
