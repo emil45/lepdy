@@ -25,7 +25,7 @@ See: .planning/PROJECT.md (updated 2026-03-23)
 Phase: Not started (defining requirements)
 Plan: —
 Status: Defining requirements
-Last activity: 2026-03-23 — Milestone v1.5 started
+Last activity: 2026-03-23 - Completed quick task 260323-vhl: Add board color theme selector to chess game settings - 4 fun color options
 
 ## Performance Metrics
 
@@ -53,6 +53,12 @@ None yet.
 ### Blockers/Concerns
 
 - [Phase 1 carry-over]: Hebrew chess piece names sourced from forum, not Israeli Chess Federation. Must verify before recording audio.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260323-vhl | Add board color theme selector to chess game settings - 4 fun color options | 2026-03-23 | 34ea254 | [260323-vhl-add-board-color-theme-selector-to-chess-](./quick/260323-vhl-add-board-color-theme-selector-to-chess-/) |
 
 ## Session Continuity
 
