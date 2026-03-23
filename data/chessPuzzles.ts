@@ -20,6 +20,16 @@ export interface CapturePuzzle {
   difficulty: 1 | 2 | 3;
 }
 
+export interface CheckmatePuzzle {
+  id: string;
+  fen: string;               // Full 6-field FEN (required for chess.js)
+  correctMove: string;       // SAN without '#', e.g. "Qe8"
+  matingPieceId: ChessPieceId;
+  matingPieceSquare: string; // Starting square of mating piece
+  targetSquare: string;      // Destination square
+  difficulty: 1 | 2 | 3;
+}
+
 // ============================================================
 // Movement Puzzles — 10 per piece type, 60 total
 // Each puzzle has the piece on an otherwise empty or same-color-blocked board.
@@ -1096,6 +1106,209 @@ export const capturePuzzles: CapturePuzzle[] = [
     correctPieceId: 'pawn',
     targetPieceId: 'pawn',
     distractorSquares: ['d4', 'b3', 'd2'],
+    difficulty: 3,
+  },
+];
+
+// ============================================================
+// Checkmate Puzzles — mate-in-1, 5 per mating piece type, 20 total
+// Full 6-field FEN required for chess.js isCheckmate() validation
+// Tier 1 (easy): obvious mate, minimal defenders
+// Tier 2 (medium): one defender to navigate
+// Tier 3 (hard): multiple defenders, longer piece travel
+// ============================================================
+
+export const checkmatePuzzles: CheckmatePuzzle[] = [
+  // -------------------------------------------------------
+  // Queen puzzles (5)
+  // -------------------------------------------------------
+  {
+    id: 'mate-queen-1',
+    fen: '6k1/5ppp/8/8/8/8/8/4Q1K1 w - - 0 1',
+    correctMove: 'Qe8',
+    matingPieceId: 'queen',
+    matingPieceSquare: 'e1',
+    targetSquare: 'e8',
+    difficulty: 1,
+  },
+  {
+    id: 'mate-queen-2',
+    fen: '6k1/6p1/6Kp/8/8/8/8/7Q w - - 0 1',
+    correctMove: 'Qa8',
+    matingPieceId: 'queen',
+    matingPieceSquare: 'h1',
+    targetSquare: 'a8',
+    difficulty: 1,
+  },
+  {
+    id: 'mate-queen-3',
+    fen: '1k6/8/K1Q5/8/8/8/8/8 w - - 0 1',
+    correctMove: 'Qb7',
+    matingPieceId: 'queen',
+    matingPieceSquare: 'c6',
+    targetSquare: 'b7',
+    difficulty: 2,
+  },
+  {
+    id: 'mate-queen-4',
+    fen: '3r2k1/4Qppp/8/8/8/8/8/6K1 w - - 0 1',
+    correctMove: 'Qxd8',
+    matingPieceId: 'queen',
+    matingPieceSquare: 'e7',
+    targetSquare: 'd8',
+    difficulty: 2,
+  },
+  {
+    id: 'mate-queen-5',
+    fen: '6k1/6pp/6Qp/8/8/8/8/6K1 w - - 0 1',
+    correctMove: 'Qe8',
+    matingPieceId: 'queen',
+    matingPieceSquare: 'g6',
+    targetSquare: 'e8',
+    difficulty: 3,
+  },
+  // -------------------------------------------------------
+  // Rook puzzles (5)
+  // -------------------------------------------------------
+  {
+    id: 'mate-rook-1',
+    fen: '6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1',
+    correctMove: 'Ra8',
+    matingPieceId: 'rook',
+    matingPieceSquare: 'a1',
+    targetSquare: 'a8',
+    difficulty: 1,
+  },
+  {
+    id: 'mate-rook-2',
+    fen: 'r5k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1',
+    correctMove: 'Rxa8',
+    matingPieceId: 'rook',
+    matingPieceSquare: 'a1',
+    targetSquare: 'a8',
+    difficulty: 1,
+  },
+  {
+    id: 'mate-rook-3',
+    fen: '5k2/7R/5K2/8/8/8/8/8 w - - 0 1',
+    correctMove: 'Rh8',
+    matingPieceId: 'rook',
+    matingPieceSquare: 'h7',
+    targetSquare: 'h8',
+    difficulty: 2,
+  },
+  {
+    id: 'mate-rook-4',
+    fen: '5k2/4pppp/8/8/8/8/8/3R3K w - - 0 1',
+    correctMove: 'Rd8',
+    matingPieceId: 'rook',
+    matingPieceSquare: 'd1',
+    targetSquare: 'd8',
+    difficulty: 2,
+  },
+  {
+    id: 'mate-rook-5',
+    fen: 'k7/2R5/K7/8/8/8/8/8 w - - 0 1',
+    correctMove: 'Rc8',
+    matingPieceId: 'rook',
+    matingPieceSquare: 'c7',
+    targetSquare: 'c8',
+    difficulty: 3,
+  },
+  // -------------------------------------------------------
+  // Bishop puzzles (5)
+  // -------------------------------------------------------
+  {
+    id: 'mate-bishop-1',
+    fen: 'k7/8/KR6/1B6/8/8/8/8 w - - 0 1',
+    correctMove: 'Bc6',
+    matingPieceId: 'bishop',
+    matingPieceSquare: 'b5',
+    targetSquare: 'c6',
+    difficulty: 1,
+  },
+  {
+    id: 'mate-bishop-2',
+    fen: '7k/8/6RK/6B1/8/8/8/8 w - - 0 1',
+    correctMove: 'Bf6',
+    matingPieceId: 'bishop',
+    matingPieceSquare: 'g5',
+    targetSquare: 'f6',
+    difficulty: 1,
+  },
+  {
+    id: 'mate-bishop-3',
+    fen: 'k7/8/KR6/8/2B5/8/8/8 w - - 0 1',
+    correctMove: 'Bd5',
+    matingPieceId: 'bishop',
+    matingPieceSquare: 'c4',
+    targetSquare: 'd5',
+    difficulty: 2,
+  },
+  {
+    id: 'mate-bishop-4',
+    fen: '7k/8/6RK/8/5B2/8/8/8 w - - 0 1',
+    correctMove: 'Be5',
+    matingPieceId: 'bishop',
+    matingPieceSquare: 'f4',
+    targetSquare: 'e5',
+    difficulty: 2,
+  },
+  {
+    id: 'mate-bishop-5',
+    fen: '7k/8/6RK/8/8/4B3/8/8 w - - 0 1',
+    correctMove: 'Bd4',
+    matingPieceId: 'bishop',
+    matingPieceSquare: 'e3',
+    targetSquare: 'd4',
+    difficulty: 3,
+  },
+  // -------------------------------------------------------
+  // Knight puzzles (5)
+  // -------------------------------------------------------
+  {
+    id: 'mate-knight-1',
+    fen: '6rk/5ppp/7N/8/8/8/8/6K1 w - - 0 1',
+    correctMove: 'Nxf7',
+    matingPieceId: 'knight',
+    matingPieceSquare: 'h6',
+    targetSquare: 'f7',
+    difficulty: 1,
+  },
+  {
+    id: 'mate-knight-2',
+    fen: '5brk/6pp/6pN/8/8/8/8/6K1 w - - 0 1',
+    correctMove: 'Nf7',
+    matingPieceId: 'knight',
+    matingPieceSquare: 'h6',
+    targetSquare: 'f7',
+    difficulty: 2,
+  },
+  {
+    id: 'mate-knight-3',
+    fen: '5rkr/5ppp/6N1/8/8/8/8/6K1 w - - 0 1',
+    correctMove: 'Ne7',
+    matingPieceId: 'knight',
+    matingPieceSquare: 'g6',
+    targetSquare: 'e7',
+    difficulty: 1,
+  },
+  {
+    id: 'mate-knight-4',
+    fen: '6nk/5ppp/7N/8/8/8/8/6K1 w - - 0 1',
+    correctMove: 'Nxf7',
+    matingPieceId: 'knight',
+    matingPieceSquare: 'h6',
+    targetSquare: 'f7',
+    difficulty: 2,
+  },
+  {
+    id: 'mate-knight-5',
+    fen: '5rkr/4pppp/8/5N2/8/8/8/6K1 w - - 0 1',
+    correctMove: 'Nxe7',
+    matingPieceId: 'knight',
+    matingPieceSquare: 'f5',
+    targetSquare: 'e7',
     difficulty: 3,
   },
 ];
