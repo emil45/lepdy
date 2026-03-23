@@ -259,6 +259,22 @@ test.describe('Chess checkmate puzzles', () => {
     // The hub menu should still render (no crash from new component/data)
     await expect(page.locator('text=אתגר')).toBeVisible();
   });
+
+  test('challenge session loads without crash after checkmate wiring', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('lepdy_chess_progress', JSON.stringify({
+        completedLevels: [1, 2, 3],
+      }));
+    });
+    await page.goto('/games/chess-game');
+    // Click Challenge tile (second hub tile)
+    const challengeTile = page.locator('[data-testid="hub-tile"]').nth(1);
+    await challengeTile.click();
+    // Session should render with progress indicator
+    await expect(page.locator('text=/\\d+\\/\\d+/')).toBeVisible({ timeout: 5000 });
+    // Verify exit button is present (session is interactive)
+    await expect(page.locator('[data-testid="exit-button"]')).toBeVisible();
+  });
 });
 
 test.describe('Info pages load', () => {
