@@ -156,7 +156,9 @@
       "masteryIntermediate": "בינוני",
       "masteryExpert": "מומחה",
       "gettingHarder": "!הולך ונהיה קשה",
-      "startNewSession": "התחל מחדש"
+      "startNewSession": "התחל מחדש",
+      "chessmate": "!שח מט",
+      "tapToCheckmate": "שימו את המלך בשח מט במהלך אחד"
     },
     "settings": {
       "pieceTheme": "סגנון כלים",

@@ -156,7 +156,9 @@
       "masteryIntermediate": "Intermediate",
       "masteryExpert": "Expert",
       "gettingHarder": "Getting harder!",
-      "startNewSession": "Start New Session"
+      "startNewSession": "Start New Session",
+      "chessmate": "Checkmate!",
+      "tapToCheckmate": "Put the king in checkmate in one move"
     },
     "settings": {
       "pieceTheme": "Piece Theme",

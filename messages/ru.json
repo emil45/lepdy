@@ -156,7 +156,9 @@
       "masteryIntermediate": "Средний",
       "masteryExpert": "Эксперт",
       "gettingHarder": "Становится сложнее!",
-      "startNewSession": "Начать заново"
+      "startNewSession": "Начать заново",
+      "chessmate": "Мат!",
+      "tapToCheckmate": "Поставьте королю мат за один ход"
     },
     "settings": {
       "pieceTheme": "Стиль фигур",

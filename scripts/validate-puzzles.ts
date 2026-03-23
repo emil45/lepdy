@@ -9,7 +9,7 @@
  */
 
 import { Chess, Square } from 'chess.js';
-import { movementPuzzles, capturePuzzles, MovementPuzzle, CapturePuzzle } from '../data/chessPuzzles';
+import { movementPuzzles, capturePuzzles, checkmatePuzzles, MovementPuzzle, CapturePuzzle, CheckmatePuzzle } from '../data/chessPuzzles';
 
 // ============================================================
 // Core: chess.js validation with dummy kings
@@ -313,6 +313,46 @@ function validateCapturePuzzle(puzzle: CapturePuzzle): string[] {
 }
 
 // ============================================================
+// Checkmate puzzle validation
+// ============================================================
+
+function validateCheckmatePuzzle(puzzle: CheckmatePuzzle): string[] {
+  const errors: string[] = [];
+  if (!puzzle.id || typeof puzzle.id !== 'string') {
+    errors.push('Missing or invalid id');
+  }
+  if (![1, 2, 3].includes(puzzle.difficulty)) {
+    errors.push(`Invalid difficulty: ${puzzle.difficulty}`);
+  }
+  try {
+    const chess = new Chess(puzzle.fen);
+    // Starting position must not already be in check
+    if (chess.isCheck()) {
+      errors.push('Starting position is already in check');
+      return errors;
+    }
+    // Must have exactly one mating move
+    const mates = chess.moves({ verbose: true }).filter(m => m.san.includes('#'));
+    if (mates.length !== 1) {
+      errors.push(`Expected exactly 1 mating move, found ${mates.length}`);
+      return errors;
+    }
+    // The mating move must match puzzle.matingPieceSquare -> puzzle.targetSquare
+    const move = chess.move({ from: puzzle.matingPieceSquare as Square, to: puzzle.targetSquare as Square });
+    if (!move) {
+      errors.push(`Move from ${puzzle.matingPieceSquare} to ${puzzle.targetSquare} is not legal`);
+      return errors;
+    }
+    if (!chess.isCheckmate()) {
+      errors.push(`Move does not result in checkmate`);
+    }
+  } catch (err) {
+    errors.push(`chess.js error: ${err}`);
+  }
+  return errors;
+}
+
+// ============================================================
 // Pool count checks
 // ============================================================
 
@@ -364,6 +404,20 @@ function checkPoolCounts(): CountWarning[] {
     }
   }
 
+  // Checkmate puzzle counts
+  const totalCheckmate = checkmatePuzzles.length;
+  if (totalCheckmate < 20) {
+    warnings.push({ message: `Checkmate puzzle total: ${totalCheckmate}/20` });
+  }
+
+  const matePieces = ['queen', 'rook', 'bishop', 'knight'] as const;
+  for (const piece of matePieces) {
+    const count = checkmatePuzzles.filter(p => p.matingPieceId === piece).length;
+    if (count < 5) {
+      warnings.push({ message: `Checkmate puzzles with ${piece} as mating piece: ${count}/5` });
+    }
+  }
+
   return warnings;
 }
 
@@ -384,6 +438,25 @@ function checkDuplicateIds(): string[] {
   const captureDuplicates = captureIds.filter((id, idx) => captureIds.indexOf(id) !== idx);
   for (const dup of [...new Set(captureDuplicates)]) {
     errors.push(`Duplicate capture puzzle ID: "${dup}"`);
+  }
+
+  const checkmateIds = checkmatePuzzles.map(p => p.id);
+  const checkmateDuplicates = checkmateIds.filter((id, idx) => checkmateIds.indexOf(id) !== idx);
+  for (const dup of [...new Set(checkmateDuplicates)]) {
+    errors.push(`Duplicate checkmate puzzle ID: "${dup}"`);
+  }
+
+  // Cross-type collision check
+  const allIds = [...movementIds, ...captureIds, ...checkmateIds];
+  const allDuplicates = allIds.filter((id, idx) => allIds.indexOf(id) !== idx);
+  for (const dup of [...new Set(allDuplicates)]) {
+    // Only report if not already caught as a same-type duplicate
+    const isMoveDup = movementDuplicates.includes(dup);
+    const isCaptureDup = captureDuplicates.includes(dup);
+    const isCheckmateDup = checkmateDuplicates.includes(dup);
+    if (!isMoveDup && !isCaptureDup && !isCheckmateDup) {
+      errors.push(`Cross-type duplicate puzzle ID: "${dup}"`);
+    }
   }
 
   return errors;
@@ -429,6 +502,24 @@ function main(): void {
       for (const err of errors) {
         console.log(`         - ${err}`);
         allErrors.push(`[capture] ${puzzle.id}: ${err}`);
+      }
+    }
+  }
+
+  console.log('');
+
+  // --- Checkmate Puzzles ---
+  console.log(`Checkmate Puzzles (${checkmatePuzzles.length}):`);
+  for (const puzzle of checkmatePuzzles) {
+    totalChecked++;
+    const errors = validateCheckmatePuzzle(puzzle);
+    if (errors.length === 0) {
+      console.log(`  PASS  ${puzzle.id}`);
+    } else {
+      console.log(`  FAIL  ${puzzle.id}`);
+      for (const err of errors) {
+        console.log(`         - ${err}`);
+        allErrors.push(`[checkmate] ${puzzle.id}: ${err}`);
       }
     }
   }
