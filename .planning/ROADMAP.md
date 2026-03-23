@@ -173,8 +173,10 @@ Plans:
   3. User can play unlimited puzzles for the selected piece with no session limit (no 10-puzzle cap)
   4. User's per-piece adaptive difficulty tier advances or de-escalates based on practice answers, same as in Challenge sessions
   5. User can exit practice back to the piece picker (not straight to the hub menu)
-**Plans**: TBD
-**UI hint**: yes
+**Plans**: 2 plans
+Plans:
+- [ ] 20-01-PLAN.md — usePracticeSession hook and PracticePicker component
+- [ ] 20-02-PLAN.md — Wire practice views into ChessGameContent, update hub menu, E2E tests
 
 ### Phase 21: Checkmate Puzzle Data + Renderers
 **Goal**: The game has a validated set of mate-in-1 positions and a dedicated puzzle component that teaches kids the concept of checkmate with clear instruction
@@ -234,7 +236,7 @@ Plans:
 | 17. Session Complete + Progression UI | v1.3 | 2/2 | Complete | 2026-03-22 |
 | 18. Daily Featured Puzzle | v1.3 | 2/2 | Complete | 2026-03-22 |
 | 19. Menu Redesign + Sound & Celebrations | v1.4 | 2/2 | Complete    | 2026-03-23 |
-| 20. Practice Mode | v1.4 | 0/TBD | Not started | - |
+| 20. Practice Mode | v1.4 | 0/2 | Not started | - |
 | 21. Checkmate Puzzle Data + Renderers | v1.4 | 0/TBD | Not started | - |
 | 22. Wire Checkmate Into Sessions | v1.4 | 0/TBD | Not started | - |
 | 23. Progress & Engagement Layer | v1.4 | 0/TBD | Not started | - |
