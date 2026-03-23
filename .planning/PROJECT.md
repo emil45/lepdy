@@ -60,12 +60,13 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 - ✓ Daily featured puzzle with deterministic date-seeded selection — v1.3
 - ✓ Firebase Remote Config for difficulty and star thresholds — v1.3
 
+- ✓ Redesigned hub menu with 2x2 tile grid (Learn, Challenge, Practice, Daily) replacing numbered levels — v1.4 Phase 19
+- ✓ Sound effects on every puzzle answer (correct/wrong) and streak milestone celebrations — v1.4 Phase 19
+
 ### Active
 
-- [ ] Redesigned game menu replacing broken 1/2/3/daily structure with intuitive layout
 - [ ] Practice mode — pick a specific piece and drill puzzles for it
 - [ ] New puzzle types — check puzzles, checkmate-in-1, find the best move
-- [ ] Visual polish — animations, sound effects, celebrations, micro-rewards
 - [ ] Progress & engagement — visible mastery tracking that makes kids want to come back
 
 ## Current Milestone: v1.4 Complete Puzzle Experience
@@ -167,4 +168,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-23 after v1.4 Complete Puzzle Experience milestone start*
+*Last updated: 2026-03-23 after Phase 19 (Menu Redesign + Sound & Celebrations) complete*
