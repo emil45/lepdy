@@ -129,6 +129,7 @@ Chess learning game with 3 progressive levels, Hebrew vocabulary, and kid-friend
 - 48 stickers total across 6 pages (3 chess stickers added in v1.1)
 - 115 chess puzzles validated by chess.js (61 movement + 34 capture + 20 checkmate), 7 Firebase Remote Config flags
 - Checkmate puzzles gated by `chessCheckmateEnabled` feature flag — must be enabled in Firebase console
+- Firebase Auth foundation complete (Phase 24): `useAuthContext()` hook, `cloudSyncEnabled` feature flag, Google sign-in with iOS Safari redirect support, COPPA-framed copy in all 3 locales — 8 Firebase Remote Config flags total
 
 ## Constraints
 
@@ -187,4 +188,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-23 after v1.5 Cloud Sync milestone started*
+*Last updated: 2026-03-24 after Phase 24 (Firebase Auth Foundation) complete*
