@@ -168,7 +168,12 @@
       "anarcandy": "Candy",
       "pixel": "Pixel",
       "shapes": "Shapes",
-      "xkcd": "Doodle"
+      "xkcd": "Doodle",
+      "boardTheme": "Board Colors",
+      "board_classic": "Classic",
+      "board_ocean": "Ocean",
+      "board_candy": "Candy",
+      "board_forest": "Forest"
     },
     "daily": {
       "label": "Daily Puzzle",

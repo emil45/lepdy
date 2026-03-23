@@ -168,7 +168,12 @@
       "anarcandy": "סוכריה",
       "pixel": "פיקסל",
       "shapes": "צורות",
-      "xkcd": "שרבוט"
+      "xkcd": "שרבוט",
+      "boardTheme": "צבעי לוח",
+      "board_classic": "קלאסי",
+      "board_ocean": "אוקיינוס",
+      "board_candy": "סוכריה",
+      "board_forest": "יער"
     },
     "daily": {
       "label": "פאזל יומי",

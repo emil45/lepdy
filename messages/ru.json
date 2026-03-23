@@ -168,7 +168,12 @@
       "anarcandy": "Конфетный",
       "pixel": "Пиксель",
       "shapes": "Фигуры",
-      "xkcd": "Каракули"
+      "xkcd": "Каракули",
+      "boardTheme": "Цвета доски",
+      "board_classic": "Классика",
+      "board_ocean": "Океан",
+      "board_candy": "Конфетный",
+      "board_forest": "Лес"
     },
     "daily": {
       "label": "Ежедневная задача",

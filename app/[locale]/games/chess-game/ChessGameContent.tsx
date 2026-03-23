@@ -11,6 +11,7 @@ import BackButton from '@/components/BackButton';
 import RoundFunButton from '@/components/RoundFunButton';
 import { useChessProgress } from '@/hooks/useChessProgress';
 import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
+import { useChessBoardTheme } from '@/hooks/useChessBoardTheme';
 import { usePuzzleSession } from '@/hooks/usePuzzleSession';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
 import { playSound, playRandomCelebration, AudioSounds } from '@/utils/audio';
@@ -41,6 +42,7 @@ export default function ChessGameContent() {
   const t = useTranslations('chessGame');
   const { completeLevel } = useChessProgress();
   const { theme, selectTheme } = useChessPieceTheme();
+  const { boardTheme, selectBoardTheme } = useChessBoardTheme();
   const { currentPuzzle, sessionIndex, consecutiveCorrect, firstTryCount, isSessionComplete, onAnswer, startNewSession, sessionTiers, currentTiersByPiece, pieceAnswerCounts } = usePuzzleSession();
   const { dailyPuzzle, isCompleted: isDailyCompleted, markCompleted: markDailyCompleted } = useDailyPuzzle();
   const { currentPuzzle: practicePuzzle, consecutiveCorrect: practiceStreak, onAnswer: practiceOnAnswer, startPractice, currentTiersByPiece: practiceTiersByPiece } = usePracticeSession();
@@ -373,6 +375,8 @@ export default function ChessGameContent() {
             onClose={() => setSettingsOpen(false)}
             currentTheme={theme}
             onSelectTheme={selectTheme}
+            currentBoardTheme={boardTheme}
+            onSelectBoardTheme={selectBoardTheme}
           />
         </Box>
       </Fade>
