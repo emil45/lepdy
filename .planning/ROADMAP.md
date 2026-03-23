@@ -160,7 +160,7 @@ Plans:
   5. User sees a mini-celebration (confetti burst or animation) at 3, 5, and 10 consecutive correct answers in a session
 **Plans**: 2 plans
 Plans:
-- [ ] 19-01-PLAN.md — Hub menu component, ChessView routing update, translations, E2E test updates
+- [x] 19-01-PLAN.md — Hub menu component, ChessView routing update, translations, E2E test updates
 - [ ] 19-02-PLAN.md — Answer sound effects wiring, streak milestone confetti celebrations
 
 ### Phase 20: Practice Mode
@@ -233,7 +233,7 @@ Plans:
 | 16. Session Hook + Puzzle Refactor | v1.3 | 1/2 | Complete | 2026-03-22 |
 | 17. Session Complete + Progression UI | v1.3 | 2/2 | Complete | 2026-03-22 |
 | 18. Daily Featured Puzzle | v1.3 | 2/2 | Complete | 2026-03-22 |
-| 19. Menu Redesign + Sound & Celebrations | v1.4 | 0/2 | Not started | - |
+| 19. Menu Redesign + Sound & Celebrations | v1.4 | 1/2 | In Progress|  |
 | 20. Practice Mode | v1.4 | 0/TBD | Not started | - |
 | 21. Checkmate Puzzle Data + Renderers | v1.4 | 0/TBD | Not started | - |
 | 22. Wire Checkmate Into Sessions | v1.4 | 0/TBD | Not started | - |

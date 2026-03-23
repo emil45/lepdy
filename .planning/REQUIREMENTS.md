@@ -9,8 +9,8 @@ Requirements for Complete Puzzle Experience milestone. Each maps to roadmap phas
 
 ### Menu & Navigation
 
-- [ ] **MENU-01**: User sees a clear hub menu with large icon+label tiles replacing the broken 1/2/3/daily structure
-- [ ] **MENU-02**: User can navigate to Learn, Practice, Challenge, and Daily Puzzle from the hub menu
+- [x] **MENU-01**: User sees a clear hub menu with large icon+label tiles replacing the broken 1/2/3/daily structure
+- [x] **MENU-02**: User can navigate to Learn, Practice, Challenge, and Daily Puzzle from the hub menu
 - [ ] **MENU-03**: User sees their per-piece mastery bands displayed on the hub menu
 
 ### Practice Mode
@@ -97,8 +97,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MENU-01 | Phase 19 | Pending |
-| MENU-02 | Phase 19 | Pending |
+| MENU-01 | Phase 19 | Complete |
+| MENU-02 | Phase 19 | Complete |
 | MENU-03 | Phase 23 | Pending |
 | PRAC-01 | Phase 20 | Pending |
 | PRAC-02 | Phase 20 | Pending |
