@@ -15,14 +15,14 @@ Requirements for Complete Puzzle Experience milestone. Each maps to roadmap phas
 
 ### Practice Mode
 
-- [ ] **PRAC-01**: User can select a specific chess piece from a 6-piece grid showing SVG, Hebrew name, and mastery band
-- [ ] **PRAC-02**: User plays infinite adaptive drills for the selected piece with no session limit
-- [ ] **PRAC-03**: User hears Hebrew piece name audio on the practice piece picker screen
+- [x] **PRAC-01**: User can select a specific chess piece from a 6-piece grid showing SVG, Hebrew name, and mastery band
+- [x] **PRAC-02**: User plays infinite adaptive drills for the selected piece with no session limit
+- [x] **PRAC-03**: User hears Hebrew piece name audio on the practice piece picker screen
 
 ### Checkmate Puzzles
 
 - [ ] **MATE-01**: User can solve checkmate-in-1 puzzles ("find the move that checkmates")
-- [ ] **MATE-02**: At least 20 curated mate-in-1 positions validated by chess.js across multiple piece types
+- [x] **MATE-02**: At least 20 curated mate-in-1 positions validated by chess.js across multiple piece types
 - [ ] **MATE-03**: Checkmate puzzles appear in Challenge sessions alongside movement and capture puzzles
 
 ### Sound & Celebrations
@@ -100,11 +100,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MENU-01 | Phase 19 | Complete |
 | MENU-02 | Phase 19 | Complete |
 | MENU-03 | Phase 23 | Pending |
-| PRAC-01 | Phase 20 | Pending |
-| PRAC-02 | Phase 20 | Pending |
-| PRAC-03 | Phase 20 | Pending |
+| PRAC-01 | Phase 20 | Complete |
+| PRAC-02 | Phase 20 | Complete |
+| PRAC-03 | Phase 20 | Complete |
 | MATE-01 | Phase 21 | Pending |
-| MATE-02 | Phase 21 | Pending |
+| MATE-02 | Phase 21 | Complete |
 | MATE-03 | Phase 22 | Pending |
 | SFX-01 | Phase 19 | Complete |
 | SFX-02 | Phase 19 | Complete |
