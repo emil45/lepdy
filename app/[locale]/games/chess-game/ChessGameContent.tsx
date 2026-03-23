@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Fade from '@mui/material/Fade';
@@ -13,7 +13,8 @@ import { useChessProgress } from '@/hooks/useChessProgress';
 import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
 import { usePuzzleSession } from '@/hooks/usePuzzleSession';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
-import { playRandomCelebration } from '@/utils/audio';
+import { playSound, playRandomCelebration, AudioSounds } from '@/utils/audio';
+import Confetti from 'react-confetti';
 import ChessSettingsDrawer from './ChessSettingsDrawer';
 import ChessHubMenu from './ChessHubMenu';
 import PieceIntroduction from './PieceIntroduction';
@@ -37,6 +38,23 @@ export default function ChessGameContent() {
   const { theme, selectTheme } = useChessPieceTheme();
   const { currentPuzzle, sessionIndex, consecutiveCorrect, firstTryCount, isSessionComplete, onAnswer, startNewSession, sessionTiers, currentTiersByPiece } = usePuzzleSession();
   const { dailyPuzzle, isCompleted: isDailyCompleted, markCompleted: markDailyCompleted } = useDailyPuzzle();
+
+  const handleAnswer = useCallback((correct: boolean) => {
+    playSound(correct ? AudioSounds.SUCCESS : AudioSounds.WRONG_ANSWER);
+    onAnswer(correct);
+  }, [onAnswer]);
+
+  const STREAK_MILESTONES = new Set([3, 5, 10]);
+  const [showMilestoneConfetti, setShowMilestoneConfetti] = useState(false);
+
+  useEffect(() => {
+    if (!STREAK_MILESTONES.has(consecutiveCorrect)) return;
+    setShowMilestoneConfetti(true);
+    playRandomCelebration();
+    const timer = setTimeout(() => setShowMilestoneConfetti(false), 2500);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [consecutiveCorrect]);
 
   // Call completeLevel for both puzzle levels when session completes
   useEffect(() => {
@@ -79,6 +97,14 @@ export default function ChessGameContent() {
       return (
         <Fade in={true} timeout={300}>
           <div>
+            {showMilestoneConfetti && (
+              <Confetti
+                recycle={false}
+                numberOfPieces={150}
+                gravity={0.3}
+                style={{ position: 'fixed', top: 0, left: 0, zIndex: 1300 }}
+              />
+            )}
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1, mt: 1 }}>
               <StreakBadge count={consecutiveCorrect} />
             </Box>
@@ -89,7 +115,7 @@ export default function ChessGameContent() {
             </Box>
             <MovementPuzzle
               puzzle={currentPuzzle.puzzle}
-              onAnswer={onAnswer}
+              onAnswer={handleAnswer}
               onExit={() => setCurrentView('hub')}
             />
           </div>
@@ -101,6 +127,14 @@ export default function ChessGameContent() {
     return (
       <Fade in={true} timeout={300}>
         <div>
+          {showMilestoneConfetti && (
+            <Confetti
+              recycle={false}
+              numberOfPieces={150}
+              gravity={0.3}
+              style={{ position: 'fixed', top: 0, left: 0, zIndex: 1300 }}
+            />
+          )}
           <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1, mt: 1 }}>
             <StreakBadge count={consecutiveCorrect} />
           </Box>
@@ -111,7 +145,7 @@ export default function ChessGameContent() {
           </Box>
           <CapturePuzzle
             puzzle={currentPuzzle.puzzle}
-            onAnswer={onAnswer}
+            onAnswer={handleAnswer}
             onExit={() => setCurrentView('hub')}
           />
         </div>
@@ -126,6 +160,8 @@ export default function ChessGameContent() {
         playRandomCelebration();
         // Return to hub after puzzle animation settles
         setTimeout(() => setCurrentView('hub'), 800);
+      } else {
+        playSound(AudioSounds.WRONG_ANSWER);
       }
     };
 
