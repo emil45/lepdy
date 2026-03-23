@@ -252,6 +252,15 @@ test.describe('Chess capture puzzles', () => {
   });
 });
 
+test.describe('Chess checkmate puzzles', () => {
+  test('checkmate puzzle data is loadable', async ({ page }) => {
+    // Navigate to chess game page to verify no import errors from CheckmatePuzzle
+    await page.goto('/games/chess-game');
+    // The hub menu should still render (no crash from new component/data)
+    await expect(page.locator('text=אתגר')).toBeVisible();
+  });
+});
+
 test.describe('Info pages load', () => {
   const pages = ['learn', 'about', 'safety', 'contact'];
   for (const p of pages) {
