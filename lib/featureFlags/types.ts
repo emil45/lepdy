@@ -22,6 +22,8 @@ export interface FeatureFlags {
   chessStarThreshold3: number;
   /** First-try correct count threshold for 2 stars on session complete screen (default 5 out of 10). */
   chessStarThreshold2: number;
+  /** Enable checkmate-in-1 puzzles in Challenge sessions. */
+  chessCheckmateEnabled: boolean;
 }
 
 /**
@@ -39,6 +41,7 @@ export const DEFAULT_FLAGS: FeatureFlags = {
   chessDemoTierThreshold: 3,
   chessStarThreshold3: 8,
   chessStarThreshold2: 5,
+  chessCheckmateEnabled: false,
 };
 
 /**

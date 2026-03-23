@@ -21,6 +21,9 @@ export enum AmplitudeEventsEnum {
   PAGE_VIEW = 'page_view',
   CATEGORY_VIEWED = 'category_viewed',
 
+  // Chess Game Events
+  CHESS_PUZZLE_ANSWERED = 'chess_puzzle_answered',
+
   // Legacy events (keeping for backwards compatibility)
   BUTTON_CLICK = 'button_click',
 }
@@ -114,6 +117,14 @@ export interface ButtonClickProperties {
   page?: string;
 }
 
+export interface ChessPuzzleAnsweredProperties {
+  puzzle_type: 'movement' | 'capture' | 'checkmate';
+  correct: boolean;
+  piece_id: string;
+  difficulty: 1 | 2 | 3;
+  session_index: number;
+}
+
 // Union type for all event properties
 export type AmplitudeEventProperties =
   | SessionStartProperties
@@ -125,7 +136,8 @@ export type AmplitudeEventProperties =
   | StickerEarnedProperties
   | PageViewProperties
   | CategoryViewedProperties
-  | ButtonClickProperties;
+  | ButtonClickProperties
+  | ChessPuzzleAnsweredProperties;
 
 // Type-safe event logging helper types
 export interface EventMap {
@@ -139,4 +151,5 @@ export interface EventMap {
   [AmplitudeEventsEnum.PAGE_VIEW]: PageViewProperties;
   [AmplitudeEventsEnum.CATEGORY_VIEWED]: CategoryViewedProperties;
   [AmplitudeEventsEnum.BUTTON_CLICK]: ButtonClickProperties;
+  [AmplitudeEventsEnum.CHESS_PUZZLE_ANSWERED]: ChessPuzzleAnsweredProperties;
 }
