@@ -1,5 +1,24 @@
 # Milestones
 
+## v1.4 Complete Puzzle Experience (Shipped: 2026-03-23)
+
+**Phases completed:** 5 phases, 10 plans, 15 tasks
+
+**Key accomplishments:**
+
+- Replaced chess level map (3 numbered cards + daily card) with a 2x2 hub grid of 4 labeled tiles (Learn/Challenge/Practice/Daily) using MUI Grid and pastel colors
+- Wired SUCCESS/WRONG_ANSWER sounds to every puzzle answer callback, fixed daily puzzle wrong-answer silence, and added full-screen confetti + random celebration sound at streak milestones 3, 5, and 10
+- usePracticeSession hook filters puzzle pools to a single piece and loops infinitely, paired with PracticePicker 2x3 grid showing SVG pieces, Hebrew names, mastery bands, and one-tap audio+select
+- ChessGameContent wired with two new views (practice-picker, practice) connecting usePracticeSession + PracticePicker into a fully functional infinite practice drill accessible from the hub menu
+- One-liner:
+- One-liner:
+- chessCheckmateEnabled feature flag, CHESS_PUZZLE_ANSWERED Amplitude event, and checkmate-aware session queue building with hydration — all type-safe and gated by remote config
+- Amplitude CHESS_PUZZLE_ANSWERED events wired for all puzzle types and double-sound fixed with checkmate-specific handler — 44 E2E tests green
+- One-liner:
+- One-liner:
+
+---
+
 ## v1.3 Infinite Replayability (Shipped: 2026-03-22)
 
 **Phases completed:** 5 phases, 10 plans, 19 tasks

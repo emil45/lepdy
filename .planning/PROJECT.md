@@ -71,18 +71,11 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 
 (No active requirements — v1.4 milestone complete)
 
-## Current Milestone: v1.4 Complete Puzzle Experience
-
-**Goal:** Transform the chess game from a working prototype into a polished, engaging kids puzzle app that a child wants to revisit daily and a parent would proudly recommend.
-
-**Target features:**
-- Redesigned game menu with clear, intuitive structure
-- Practice mode for per-piece drilling
-- New puzzle types (check, checkmate-in-1, find the best move)
-- Visual polish (animations, sounds, celebrations)
-- Progress & engagement (visible mastery, rewarding feedback)
-
 ## Shipped Milestones
+
+### v1.4 Complete Puzzle Experience (shipped 2026-03-23)
+Transformed the chess game from a working prototype into a polished, engaging kids puzzle app with hub menu redesign, sound effects, practice mode, checkmate puzzles, and visible progress tracking.
+
 
 ### v1.3 Infinite Replayability (shipped 2026-03-22)
 Transformed the chess game from a finite 3-level experience into an endlessly replayable learning game with 95 validated puzzles, infinite random generation, adaptive difficulty, 10-puzzle sessions with stars and mastery bands, and a daily featured puzzle.
@@ -112,12 +105,13 @@ Chess learning game with 3 progressive levels, Hebrew vocabulary, and kid-friend
 ## Context
 
 - Lepdy is a live Hebrew learning app at lepdy.com for kids
-- Chess game shipped through v1.3 with infinite replayable puzzles, adaptive difficulty, daily challenge, and session reward system
+- Chess game shipped through v1.4 with hub menu, practice mode, checkmate puzzles, sound effects, and progress tracking
 - Existing games: guess-game, memory-match, simon-game, speed-challenge, word-builder, counting-game, letter-rain, **chess-game**
-- 40+ E2E tests pass (Playwright)
-- Audio files not yet recorded — game works without them (INTRO-03)
+- 44+ E2E tests pass (Playwright)
+- Audio files for chess pieces not yet recorded — game works without them (INTRO-03)
 - 48 stickers total across 6 pages (3 chess stickers added in v1.1)
-- 95 chess puzzles validated by chess.js, 6 Firebase Remote Config flags for difficulty/star tuning
+- 115 chess puzzles validated by chess.js (61 movement + 34 capture + 20 checkmate), 7 Firebase Remote Config flags
+- Checkmate puzzles gated by `chessCheckmateEnabled` feature flag — must be enabled in Firebase console
 
 ## Constraints
 
@@ -150,6 +144,12 @@ Chess learning game with 3 progressive levels, Hebrew vocabulary, and kid-friend
 | Factory pattern for piece theme registry | One loop generates all 12 piece render functions per theme — adding a theme = 1 line | ✓ Good — PIECE-04 proven by horsey |
 | SVGs from lichess (CC BY-NC-SA 4.0) | Self-hosted, no CDN dependency, kid-friendly designs | ✓ Good — attribution in CREDITS.md |
 | useChessPieceTheme as standalone hook (no context) | Each component reads localStorage independently — works because settings and puzzles are mutually exclusive React subtrees | ✓ Good — simple, correct |
+| Hub menu 2x2 grid replacing numbered levels | Clear navigation tiles (Learn/Challenge/Practice/Daily) are more intuitive for kids than "Level 1/2/3" | ✓ Good — kid-tested mental model |
+| Dedicated usePracticeSession hook (not extending usePuzzleSession) | Avoids session storage corruption risk — practice and challenge are independent play modes | ✓ Good — zero regressions |
+| Separate CheckmatePuzzle component (not extending CapturePuzzle) | Two-tap interaction model matches capture UX but checkmate confirmation + chess.js validation justify standalone component | ✓ Good — clean separation |
+| Checkmate behind feature flag (default off) | Safe rollout — enables via Firebase without code deploy after content validation | ✓ Good — zero-risk launch |
+| No numeric counters in mastery display | Named bands (Beginner/Intermediate/Expert) only — prevents rapid-tapping incentive for young learners | ✓ Good — age-appropriate |
+| Shared utils/chessMastery.ts for mastery helpers | Eliminated 3rd copy of getBandKey/getTierColor across hub, practice picker, session complete | ✓ Good — DRY |
 
 ---
 ## Evolution
@@ -170,4 +170,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-23 after Phase 23 (Progress & Engagement Layer) complete — v1.4 milestone finished*
+*Last updated: 2026-03-23 after v1.4 Complete Puzzle Experience milestone*
