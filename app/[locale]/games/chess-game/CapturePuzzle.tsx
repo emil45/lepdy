@@ -13,6 +13,7 @@ import { CapturePuzzle as CapturePuzzleData } from '@/data/chessPuzzles';
 import { playAudio, playRandomCelebration } from '@/utils/audio';
 import { moveFenPiece } from '@/utils/chessFen';
 import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
+import { useChessBoardTheme } from '@/hooks/useChessBoardTheme';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 
 interface CapturePuzzleProps {
@@ -24,6 +25,7 @@ interface CapturePuzzleProps {
 export default function CapturePuzzle({ puzzle, onAnswer, onExit }: CapturePuzzleProps) {
   const t = useTranslations('chessGame');
   const { pieces } = useChessPieceTheme();
+  const { boardColors } = useChessBoardTheme();
 
   const [, setWrongTapCount] = useState(0);
   const [showHints, setShowHints] = useState(false);
@@ -195,8 +197,8 @@ export default function CapturePuzzle({ puzzle, onAnswer, onExit }: CapturePuzzl
               boardOrientation: 'white' as const,
               animationDurationInMs: 200,
               boardStyle: { width: `${boardWidth}px` },
-              lightSquareStyle: { backgroundColor: '#f5ede1' },
-              darkSquareStyle: { backgroundColor: '#dbc3e2' },
+              lightSquareStyle: { backgroundColor: boardColors.light },
+              darkSquareStyle: { backgroundColor: boardColors.dark },
               darkSquareNotationStyle: { color: 'rgba(67, 66, 67, 0.5)' },
               lightSquareNotationStyle: { color: 'rgba(67, 66, 67, 0.5)' },
               pieces,

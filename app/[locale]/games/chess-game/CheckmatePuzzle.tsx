@@ -14,6 +14,7 @@ import { CheckmatePuzzle as CheckmatePuzzleData } from '@/data/chessPuzzles';
 import { playAudio, playRandomCelebration, playSound, AudioSounds } from '@/utils/audio';
 import { moveFenPiece } from '@/utils/chessFen';
 import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
+import { useChessBoardTheme } from '@/hooks/useChessBoardTheme';
 
 interface CheckmatePuzzleProps {
   puzzle: CheckmatePuzzleData;
@@ -24,6 +25,7 @@ interface CheckmatePuzzleProps {
 export default function CheckmatePuzzle({ puzzle, onAnswer, onExit }: CheckmatePuzzleProps) {
   const t = useTranslations('chessGame');
   const { pieces } = useChessPieceTheme();
+  const { boardColors } = useChessBoardTheme();
 
   const [selectedPieceSquare, setSelectedPieceSquare] = useState<string | null>(null);
   const [flashSquare, setFlashSquare] = useState<string | null>(null);
@@ -195,8 +197,8 @@ export default function CheckmatePuzzle({ puzzle, onAnswer, onExit }: CheckmateP
               boardOrientation: 'white' as const,
               animationDurationInMs: 200,
               boardStyle: { width: `${boardWidth}px` },
-              lightSquareStyle: { backgroundColor: '#f5ede1' },
-              darkSquareStyle: { backgroundColor: '#dbc3e2' },
+              lightSquareStyle: { backgroundColor: boardColors.light },
+              darkSquareStyle: { backgroundColor: boardColors.dark },
               darkSquareNotationStyle: { color: 'rgba(67, 66, 67, 0.5)' },
               lightSquareNotationStyle: { color: 'rgba(67, 66, 67, 0.5)' },
               pieces,
