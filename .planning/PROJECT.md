@@ -65,9 +65,11 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 - ✓ Practice mode — pick any piece from 2x3 grid, drill unlimited adaptive puzzles — v1.4 Phase 20
 - ✓ Checkmate puzzles — 20 validated mate-in-1 positions with dedicated two-tap renderer — v1.4 Phase 21
 - ✓ Checkmate puzzles wired into Challenge sessions with feature flag and Amplitude tracking — v1.4 Phase 22
+- ✓ Progress & engagement — per-piece mastery on hub menu + session breakdown — v1.4 Phase 23
 
 ### Active
-- [ ] Progress & engagement — visible mastery tracking that makes kids want to come back
+
+(No active requirements — v1.4 milestone complete)
 
 ## Current Milestone: v1.4 Complete Puzzle Experience
 
@@ -168,4 +170,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-23 after Phase 22 (Wire Checkmate Into Sessions) complete*
+*Last updated: 2026-03-23 after Phase 23 (Progress & Engagement Layer) complete — v1.4 milestone finished*
