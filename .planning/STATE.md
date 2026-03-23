@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Cloud Sync
 status: Phase complete — ready for verification
-stopped_at: Completed 24-02-PLAN.md
-last_updated: "2026-03-23T22:26:21.499Z"
+stopped_at: Completed 25-01-PLAN.md
+last_updated: "2026-03-23T22:44:57.503Z"
 progress:
   total_phases: 5
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  completed_phases: 2
+  total_plans: 3
+  completed_plans: 3
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 24 — firebase-auth-foundation
+**Current focus:** Phase 25 — sign-in-ui
 
 ## Current Position
 
-Phase: 24 (firebase-auth-foundation) — EXECUTING
-Plan: 2 of 2
+Phase: 25 (sign-in-ui) — EXECUTING
+Plan: 1 of 1
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Recent decisions affecting current work:
 - [Phase 24-firebase-auth-foundation]: cloudSyncEnabled defaults to false — Firebase Auth never initializes until flag is enabled in Firebase console
 - [Phase 24]: AuthProvider placed inside FeatureFlagProvider, outside StreakProvider — ensures flag is readable before auth init runs
 - [Phase 24]: cloudSyncEnabled=false causes immediate setLoading(false) — zero Firebase network requests for non-opted-in users
+- [Phase 25-sign-in-ui]: Sign-out button uses variant=text (less prominent) per pre-locked UI decision; avatar 32px for single-row signed-in layout
 
 ### Pending Todos
 
@@ -67,9 +68,10 @@ None yet.
 | 260323-vhl | Add board color theme selector to chess game settings - 4 fun color options | 2026-03-23 | 34ea254 | [260323-vhl-add-board-color-theme-selector-to-chess-](./quick/260323-vhl-add-board-color-theme-selector-to-chess-/) |
 | Phase 24-firebase-auth-foundation P01 | 1 | 2 tasks | 4 files |
 | Phase 24 P02 | 2 | 2 tasks | 6 files |
+| Phase 25-sign-in-ui P01 | 5 | 2 tasks | 1 files |
 
 ## Session Continuity
 
-Last session: 2026-03-23T22:26:21.497Z
-Stopped at: Completed 24-02-PLAN.md
+Last session: 2026-03-23T22:44:57.501Z
+Stopped at: Completed 25-01-PLAN.md
 Resume file: None

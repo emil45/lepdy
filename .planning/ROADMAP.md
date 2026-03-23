@@ -84,7 +84,7 @@
 **Milestone Goal:** Optional Google login with Firebase Auth that syncs all user progress across devices, with offline-first localStorage caching.
 
 - [x] **Phase 24: Firebase Auth Foundation** - Auth context, lazy Firebase Auth init, Google sign-in/sign-out functions, iOS redirect fallback, feature flag gate (completed 2026-03-23)
-- [ ] **Phase 25: Sign-In UI** - Google sign-in button and user account chip in settings drawer, COPPA-compliant copy, i18n
+- [x] **Phase 25: Sign-In UI** - Google sign-in button and user account chip in settings drawer, COPPA-compliant copy, i18n (completed 2026-03-23)
 - [ ] **Phase 26: Cloud Write Path** - Sync service, debounced writes to Firebase, offline queue, security rules
 - [ ] **Phase 27: Cloud Read and Merge** - First-login union merge, cross-device sync on subsequent sign-in
 - [ ] **Phase 28: Polish** - Sync status indicator, offline detection note, tab-focus re-fetch
@@ -117,11 +117,11 @@ Plans:
   3. When signed in, parent sees their Google avatar and display name in the settings drawer
   4. Auth section in settings drawer has Hebrew, English, and Russian translations
   5. Settings drawer renders a neutral placeholder (no flash) while auth state is still loading
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 **UI hint**: yes
 
 Plans:
-- [ ] 25-01-PLAN.md — Auth section in settings drawer (sign-in button, avatar+name display, sign-out, loading skeleton)
+- [x] 25-01-PLAN.md — Auth section in settings drawer (sign-in button, avatar+name display, sign-out, loading skeleton)
 
 ### Phase 26: Cloud Write Path
 **Goal**: Authenticated users' progress is continuously mirrored to Firebase so it is never lost
@@ -167,7 +167,7 @@ Plans:
 | 14-18 | v1.3 | 10/10 | Complete | 2026-03-22 |
 | 19-23 | v1.4 | 10/10 | Complete | 2026-03-23 |
 | 24. Firebase Auth Foundation | v1.5 | 2/2 | Complete    | 2026-03-23 |
-| 25. Sign-In UI | v1.5 | 0/1 | Planned | - |
+| 25. Sign-In UI | v1.5 | 1/1 | Complete   | 2026-03-23 |
 | 26. Cloud Write Path | v1.5 | 0/? | Not started | - |
 | 27. Cloud Read and Merge | v1.5 | 0/? | Not started | - |
 | 28. Polish | v1.5 | 0/? | Not started | - |
