@@ -98,8 +98,13 @@ export function usePracticeSession(): UsePracticeSessionReturn {
       if (!current || !activePieceId) return;
 
       // Extract pieceId from current puzzle
+      // Practice sessions only contain movement and capture puzzles (no checkmate)
       const pieceId: ChessPieceId =
-        current.type === 'movement' ? current.puzzle.pieceId : current.puzzle.correctPieceId;
+        current.type === 'movement'
+          ? current.puzzle.pieceId
+          : current.type === 'capture'
+          ? current.puzzle.correctPieceId
+          : activePieceId; // checkmate unreachable in practice, fallback to activePieceId
 
       // Record to progress tracking
       if (correct) {

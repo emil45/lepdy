@@ -25,6 +25,7 @@ import { usePracticeSession } from '@/hooks/usePracticeSession';
 
 const MovementPuzzle = dynamic(() => import('./MovementPuzzle'), { ssr: false });
 const CapturePuzzle = dynamic(() => import('./CapturePuzzle'), { ssr: false });
+const CheckmatePuzzle = dynamic(() => import('./CheckmatePuzzle'), { ssr: false });
 
 type ChessView = 'hub' | 'level-1' | 'session' | 'daily' | 'practice-picker' | 'practice';
 
@@ -131,6 +132,36 @@ export default function ChessGameContent() {
               </Typography>
             </Box>
             <MovementPuzzle
+              puzzle={currentPuzzle.puzzle}
+              onAnswer={handleAnswer}
+              onExit={() => setCurrentView('hub')}
+            />
+          </div>
+        </Fade>
+      );
+    }
+
+    if (currentPuzzle.type === 'checkmate') {
+      return (
+        <Fade in={true} timeout={300}>
+          <div>
+            {showMilestoneConfetti && (
+              <Confetti
+                recycle={false}
+                numberOfPieces={150}
+                gravity={0.3}
+                style={{ position: 'fixed', top: 0, left: 0, zIndex: 1300 }}
+              />
+            )}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1, mt: 1 }}>
+              <StreakBadge count={consecutiveCorrect} />
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 0.5 }}>
+              <Typography variant="body2" color="text.secondary">
+                {progressText}
+              </Typography>
+            </Box>
+            <CheckmatePuzzle
               puzzle={currentPuzzle.puzzle}
               onAnswer={handleAnswer}
               onExit={() => setCurrentView('hub')}
@@ -254,7 +285,9 @@ export default function ChessGameContent() {
       );
     }
 
-    // Capture puzzle
+    // Capture puzzle (practice sessions do not include checkmate puzzles)
+    if (practicePuzzle.type !== 'capture') return null;
+
     return (
       <Fade in={true} timeout={300}>
         <div>

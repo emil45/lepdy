@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback, MutableRefObject } from 'react';
-import { movementPuzzles, capturePuzzles, MovementPuzzle, CapturePuzzle } from '@/data/chessPuzzles';
+import { movementPuzzles, capturePuzzles, checkmatePuzzles, MovementPuzzle, CapturePuzzle, CheckmatePuzzle } from '@/data/chessPuzzles';
+import { useFeatureFlagContext } from '@/contexts/FeatureFlagContext';
 import { chessPieces, ChessPieceId } from '@/data/chessPieces';
 import { defaultGeneratorState, selectNextPuzzle, GeneratorState } from '@/utils/puzzleGenerator';
 import { usePuzzleProgress, PiecePuzzleProgress } from '@/hooks/usePuzzleProgress';
@@ -11,7 +12,8 @@ const SESSION_SIZE = 10;
 
 export type SessionPuzzle =
   | { type: 'movement'; puzzle: MovementPuzzle }
-  | { type: 'capture'; puzzle: CapturePuzzle };
+  | { type: 'capture'; puzzle: CapturePuzzle }
+  | { type: 'checkmate'; puzzle: CheckmatePuzzle };
 
 export interface UsePuzzleSessionReturn {
   currentPuzzle: SessionPuzzle | null;
@@ -27,7 +29,7 @@ export interface UsePuzzleSessionReturn {
 }
 
 interface PersistedSession {
-  queue: Array<{ type: 'movement' | 'capture'; id: string }>;
+  queue: Array<{ type: 'movement' | 'capture' | 'checkmate'; id: string }>;
   headIndex: number;
   consecutiveCorrect: number;
 }
@@ -39,7 +41,8 @@ interface PersistedSession {
  * Capture slots pick a random piece for each slot.
  */
 function buildSessionQueue(
-  getSessionTier: (pieceId: ChessPieceId) => 1 | 2 | 3
+  getSessionTier: (pieceId: ChessPieceId) => 1 | 2 | 3,
+  checkmateEnabled: boolean
 ): SessionPuzzle[] {
   const queue: SessionPuzzle[] = [];
   let genState: GeneratorState = defaultGeneratorState();
@@ -55,12 +58,20 @@ function buildSessionQueue(
     genState = afterMov;
     queue.push({ type: 'movement', puzzle: movPuzzle });
 
-    // Capture slot — random piece from all chessPieces
-    const capPiece = chessPieces[Math.floor(Math.random() * chessPieces.length)];
-    const capTier = getSessionTier(capPiece.id);
-    const { puzzle: capPuzzle, nextState: afterCap } = selectNextPuzzle(capturePuzzles, capTier, genState);
-    genState = afterCap;
-    queue.push({ type: 'capture', puzzle: capPuzzle });
+    if (checkmateEnabled && i === 4) {
+      // Last slot: inject one checkmate puzzle at difficulty tier 1
+      // Checkmate puzzles span multiple piece types, so tier is fixed (not per-piece)
+      const { puzzle: matePuzzle, nextState: afterMate } = selectNextPuzzle(checkmatePuzzles, 1, genState);
+      genState = afterMate;
+      queue.push({ type: 'checkmate', puzzle: matePuzzle });
+    } else {
+      // Capture slot — random piece from all chessPieces
+      const capPiece = chessPieces[Math.floor(Math.random() * chessPieces.length)];
+      const capTier = getSessionTier(capPiece.id);
+      const { puzzle: capPuzzle, nextState: afterCap } = selectNextPuzzle(capturePuzzles, capTier, genState);
+      genState = afterCap;
+      queue.push({ type: 'capture', puzzle: capPuzzle });
+    }
   }
 
   return queue;
@@ -91,6 +102,10 @@ function hydrateSession(raw: string): SessionPuzzle[] | null {
         const puzzle = capturePuzzles.find((p) => p.id === entry.id);
         if (!puzzle) return null; // ID lookup failed — discard session
         queue.push({ type: 'capture', puzzle });
+      } else if (entry.type === 'checkmate') {
+        const puzzle = checkmatePuzzles.find((p) => p.id === entry.id);
+        if (!puzzle) return null; // ID lookup failed — discard session
+        queue.push({ type: 'checkmate', puzzle });
       } else {
         return null;
       }
@@ -104,6 +119,8 @@ function hydrateSession(raw: string): SessionPuzzle[] | null {
 
 export function usePuzzleSession(): UsePuzzleSessionReturn {
   const { getSessionTier, recordCorrect, recordWrong, sessionTiers, data } = usePuzzleProgress();
+  const { getFlag } = useFeatureFlagContext();
+  const checkmateEnabled = getFlag('chessCheckmateEnabled');
 
   const [queue, setQueue] = useState<SessionPuzzle[]>([]);
   const [headIndex, setHeadIndex] = useState(0);
@@ -139,7 +156,7 @@ export function usePuzzleSession(): UsePuzzleSessionReturn {
       setHeadIndex(restoredHead);
       setConsecutiveCorrect(restoredStreak);
     } else {
-      const freshQueue = buildSessionQueue(getSessionTier);
+      const freshQueue = buildSessionQueue(getSessionTier, checkmateEnabled);
       setQueue(freshQueue);
       setHeadIndex(0);
       setConsecutiveCorrect(0);
@@ -147,7 +164,7 @@ export function usePuzzleSession(): UsePuzzleSessionReturn {
 
     setIsInitialized(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run once on mount — getSessionTier intentionally excluded (session-frozen)
+  }, []); // Run once on mount — getSessionTier and checkmateEnabled intentionally excluded (session-frozen)
 
   // Persist to sessionStorage whenever headIndex or consecutiveCorrect changes (after init)
   useEffect(() => {
@@ -174,7 +191,11 @@ export function usePuzzleSession(): UsePuzzleSessionReturn {
 
       // Extract pieceId from current puzzle
       const pieceId: ChessPieceId =
-        current.type === 'movement' ? current.puzzle.pieceId : current.puzzle.correctPieceId;
+        current.type === 'movement'
+          ? current.puzzle.pieceId
+          : current.type === 'capture'
+          ? current.puzzle.correctPieceId
+          : current.puzzle.matingPieceId;
 
       // Record to progress tracking
       if (correct) {
@@ -206,12 +227,12 @@ export function usePuzzleSession(): UsePuzzleSessionReturn {
     }
 
     // Build fresh session
-    const freshQueue = buildSessionQueue(getSessionTier);
+    const freshQueue = buildSessionQueue(getSessionTier, checkmateEnabled);
     setQueue(freshQueue);
     setHeadIndex(0);
     setConsecutiveCorrect(0);
     setFirstTryCount(0);
-  }, [getSessionTier]);
+  }, [getSessionTier, checkmateEnabled]);
 
   const currentPuzzle = isInitialized && headIndex < SESSION_SIZE ? (queue[headIndex] ?? null) : null;
   const isSessionComplete = isInitialized && headIndex >= SESSION_SIZE;
