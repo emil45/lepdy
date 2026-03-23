@@ -13,23 +13,12 @@ import { chessPieces, ChessPieceId } from '@/data/chessPieces';
 import { useChessPieceTheme } from '@/hooks/useChessPieceTheme';
 import { playAudio } from '@/utils/audio';
 import { PiecePuzzleProgress } from '@/hooks/usePuzzleProgress';
+import { getBandKey, getTierColor } from '@/utils/chessMastery';
 
 interface PracticePickerProps {
   currentTiersByPiece: Record<string, PiecePuzzleProgress>;
   onSelectPiece: (pieceId: ChessPieceId) => void;
   onBack: () => void;
-}
-
-function getBandKey(tier: 1 | 2 | 3): string {
-  if (tier === 3) return 'ui.masteryExpert';
-  if (tier === 2) return 'ui.masteryIntermediate';
-  return 'ui.masteryBeginner';
-}
-
-function getTierColor(tier: 1 | 2 | 3): string {
-  if (tier === 3) return '#ffcd36'; // gold
-  if (tier === 2) return '#dbc3e2'; // purple
-  return '#9ed6ea'; // blue
 }
 
 export default function PracticePicker({

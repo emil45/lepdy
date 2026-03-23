@@ -14,6 +14,7 @@ import { useTranslations } from 'next-intl';
 import { useFeatureFlagContext } from '@/contexts/FeatureFlagContext';
 import { chessPieces } from '@/data/chessPieces';
 import { PiecePuzzleProgress } from '@/hooks/usePuzzleProgress';
+import { getBandKey, getTierColor } from '@/utils/chessMastery';
 
 interface SessionCompleteScreenProps {
   firstTryCount: number;
@@ -21,18 +22,6 @@ interface SessionCompleteScreenProps {
   currentTiersByPiece: Record<string, PiecePuzzleProgress>;
   onStartNew: () => void;
   onBackToMap: () => void;
-}
-
-function getBandKey(tier: 1 | 2 | 3): string {
-  if (tier === 3) return 'ui.masteryExpert';
-  if (tier === 2) return 'ui.masteryIntermediate';
-  return 'ui.masteryBeginner';
-}
-
-function getTierColor(tier: 1 | 2 | 3): string {
-  if (tier === 3) return '#ffcd36'; // gold
-  if (tier === 2) return '#dbc3e2'; // purple
-  return '#9ed6ea'; // blue
 }
 
 export default function SessionCompleteScreen({
