@@ -12,8 +12,8 @@ Requirements for cloud sync milestone. Each maps to roadmap phases.
 - [ ] **AUTH-01**: Parent can sign in with Google account from settings sidebar
 - [ ] **AUTH-02**: Parent can sign out from settings sidebar
 - [ ] **AUTH-03**: User can see their Google avatar and name in settings when signed in
-- [ ] **AUTH-04**: Auth UI is gated behind `cloudSyncEnabled` Firebase Remote Config flag
-- [ ] **AUTH-05**: Sign-in uses redirect fallback when popup is blocked (iOS Safari)
+- [x] **AUTH-04**: Auth UI is gated behind `cloudSyncEnabled` Firebase Remote Config flag
+- [x] **AUTH-05**: Sign-in uses redirect fallback when popup is blocked (iOS Safari)
 - [ ] **AUTH-06**: Sign-in UI is framed as a parent action for COPPA compliance
 
 ### Cloud Sync
@@ -69,8 +69,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-01 | Phase 25 | Pending |
 | AUTH-02 | Phase 25 | Pending |
 | AUTH-03 | Phase 25 | Pending |
-| AUTH-04 | Phase 24 | Pending |
-| AUTH-05 | Phase 24 | Pending |
+| AUTH-04 | Phase 24 | Complete |
+| AUTH-05 | Phase 24 | Complete |
 | AUTH-06 | Phase 24 | Pending |
 | SYNC-01 | Phase 26 | Pending |
 | SYNC-02 | Phase 27 | Pending |

@@ -2,13 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Cloud Sync
-status: Ready to plan
-last_updated: "2026-03-24"
+status: Ready to execute
+stopped_at: Completed 24-01-PLAN.md
+last_updated: "2026-03-23T22:22:20.025Z"
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 1
 ---
 
 # Project State
@@ -18,20 +19,17 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 24 — Firebase Auth Foundation
+**Current focus:** Phase 24 — firebase-auth-foundation
 
 ## Current Position
 
-Phase: 24 of 28 (Firebase Auth Foundation)
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-03-24 — Roadmap created for v1.5 Cloud Sync (Phases 24-28)
-
-Progress: [░░░░░░░░░░] 0% (v1.5)
+Phase: 24 (firebase-auth-foundation) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 40 (v1.0 through v1.4)
 - Average duration: ~3 min
 
@@ -47,6 +45,8 @@ Recent decisions affecting current work:
 - Offline-first: localStorage as cache, writes flush on reconnect
 - Login is optional, lives in settings drawer — zero behavior change when signed out
 - Open decision: Firestore vs RTDB for cloud storage (resolve before Phase 26 begins)
+- [Phase 24-firebase-auth-foundation]: Dynamic import of firebase/auth inside getFirebaseAuth() prevents SSR errors — no top-level firebase/auth import
+- [Phase 24-firebase-auth-foundation]: cloudSyncEnabled defaults to false — Firebase Auth never initializes until flag is enabled in Firebase console
 
 ### Pending Todos
 
@@ -63,9 +63,10 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260323-vhl | Add board color theme selector to chess game settings - 4 fun color options | 2026-03-23 | 34ea254 | [260323-vhl-add-board-color-theme-selector-to-chess-](./quick/260323-vhl-add-board-color-theme-selector-to-chess-/) |
+| Phase 24-firebase-auth-foundation P01 | 1 | 2 tasks | 4 files |
 
 ## Session Continuity
 
-Last session: 2026-03-24
-Stopped at: Roadmap created for v1.5 — ready to plan Phase 24
+Last session: 2026-03-23T22:22:20.023Z
+Stopped at: Completed 24-01-PLAN.md
 Resume file: None
