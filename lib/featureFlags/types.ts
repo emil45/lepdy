@@ -24,6 +24,8 @@ export interface FeatureFlags {
   chessStarThreshold2: number;
   /** Enable checkmate-in-1 puzzles in Challenge sessions. */
   chessCheckmateEnabled: boolean;
+  /** Gate all cloud sync UI. When false, auth is completely invisible and Firebase Auth never initializes. */
+  cloudSyncEnabled: boolean;
 }
 
 /**
@@ -42,6 +44,7 @@ export const DEFAULT_FLAGS: FeatureFlags = {
   chessStarThreshold3: 8,
   chessStarThreshold2: 5,
   chessCheckmateEnabled: false,
+  cloudSyncEnabled: false,
 };
 
 /**

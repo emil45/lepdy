@@ -110,6 +110,7 @@ export class FirebaseRemoteConfigProvider implements FeatureFlagProvider {
         chessStarThreshold3: this.getNumberFlag('chessStarThreshold3', getValue),
         chessStarThreshold2: this.getNumberFlag('chessStarThreshold2', getValue),
         chessCheckmateEnabled: this.getBooleanFlag('chessCheckmateEnabled', getValue),
+        cloudSyncEnabled: this.getBooleanFlag('cloudSyncEnabled', getValue),
       };
 
       this.flags = newFlags;
