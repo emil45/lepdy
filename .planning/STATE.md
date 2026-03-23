@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Cloud Sync
-status: Ready to execute
-stopped_at: Completed 24-01-PLAN.md
-last_updated: "2026-03-23T22:22:20.025Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 24-02-PLAN.md
+last_updated: "2026-03-23T22:26:21.499Z"
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -47,6 +47,8 @@ Recent decisions affecting current work:
 - Open decision: Firestore vs RTDB for cloud storage (resolve before Phase 26 begins)
 - [Phase 24-firebase-auth-foundation]: Dynamic import of firebase/auth inside getFirebaseAuth() prevents SSR errors — no top-level firebase/auth import
 - [Phase 24-firebase-auth-foundation]: cloudSyncEnabled defaults to false — Firebase Auth never initializes until flag is enabled in Firebase console
+- [Phase 24]: AuthProvider placed inside FeatureFlagProvider, outside StreakProvider — ensures flag is readable before auth init runs
+- [Phase 24]: cloudSyncEnabled=false causes immediate setLoading(false) — zero Firebase network requests for non-opted-in users
 
 ### Pending Todos
 
@@ -64,9 +66,10 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 260323-vhl | Add board color theme selector to chess game settings - 4 fun color options | 2026-03-23 | 34ea254 | [260323-vhl-add-board-color-theme-selector-to-chess-](./quick/260323-vhl-add-board-color-theme-selector-to-chess-/) |
 | Phase 24-firebase-auth-foundation P01 | 1 | 2 tasks | 4 files |
+| Phase 24 P02 | 2 | 2 tasks | 6 files |
 
 ## Session Continuity
 
-Last session: 2026-03-23T22:22:20.023Z
-Stopped at: Completed 24-01-PLAN.md
+Last session: 2026-03-23T22:26:21.497Z
+Stopped at: Completed 24-02-PLAN.md
 Resume file: None

@@ -83,7 +83,7 @@
 
 **Milestone Goal:** Optional Google login with Firebase Auth that syncs all user progress across devices, with offline-first localStorage caching.
 
-- [ ] **Phase 24: Firebase Auth Foundation** - Auth context, lazy Firebase Auth init, Google sign-in/sign-out functions, iOS redirect fallback, feature flag gate
+- [x] **Phase 24: Firebase Auth Foundation** - Auth context, lazy Firebase Auth init, Google sign-in/sign-out functions, iOS redirect fallback, feature flag gate (completed 2026-03-23)
 - [ ] **Phase 25: Sign-In UI** - Google sign-in button and user account chip in settings drawer, COPPA-compliant copy, i18n
 - [ ] **Phase 26: Cloud Write Path** - Sync service, debounced writes to Firebase, offline queue, security rules
 - [ ] **Phase 27: Cloud Read and Merge** - First-login union merge, cross-device sync on subsequent sign-in
@@ -101,11 +101,11 @@
   3. Auth UI only appears when `cloudSyncEnabled` Firebase Remote Config flag is on — the entire feature is invisible when the flag is off
   4. No `window is not defined` build error — Firebase Auth is lazy-loaded and never imported by server components
   5. Sign-in UI copy explicitly frames the action as a parent task (COPPA framing established before any component renders it)
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 24-01-PLAN.md — Firebase Auth singleton, cloudSyncEnabled flag, Safari proxy rewrite
-- [ ] 24-02-PLAN.md — useAuth hook, AuthContext provider, provider wiring, COPPA translations
+- [x] 24-02-PLAN.md — useAuth hook, AuthContext provider, provider wiring, COPPA translations
 
 ### Phase 25: Sign-In UI
 **Goal**: Parents can sign in and sign out from the settings drawer and see their account state
@@ -163,7 +163,7 @@ Plans:
 | 11-13 | v1.2 | 4/4 | Complete | 2026-03-22 |
 | 14-18 | v1.3 | 10/10 | Complete | 2026-03-22 |
 | 19-23 | v1.4 | 10/10 | Complete | 2026-03-23 |
-| 24. Firebase Auth Foundation | v1.5 | 1/2 | In Progress|  |
+| 24. Firebase Auth Foundation | v1.5 | 2/2 | Complete   | 2026-03-23 |
 | 25. Sign-In UI | v1.5 | 0/? | Not started | - |
 | 26. Cloud Write Path | v1.5 | 0/? | Not started | - |
 | 27. Cloud Read and Merge | v1.5 | 0/? | Not started | - |
