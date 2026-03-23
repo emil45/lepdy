@@ -1,13 +1,16 @@
 'use client';
 
-import { Box, Button, Divider, Drawer, IconButton, Typography } from '@mui/material';
+import { Avatar, Box, Button, Divider, Drawer, IconButton, Skeleton, Typography } from '@mui/material';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
 import CloseIcon from '@mui/icons-material/Close';
+import GoogleIcon from '@mui/icons-material/Google';
 import React, { useState, useEffect } from 'react';
 import { useDirection } from '@/hooks/useDirection';
 import { getDirection } from '@/i18n/config';
 import { useStreakContext } from '@/contexts/StreakContext';
+import { useAuthContext } from '@/contexts/AuthContext';
+import { useFeatureFlagContext } from '@/contexts/FeatureFlagContext';
 
 interface SettingsDrawerProps {
   open: boolean;
@@ -24,6 +27,10 @@ const SettingsDrawer: React.FC<SettingsDrawerProps> = ({ open, toggleDrawer }) =
   const [drawerDirection, setDrawerDirection] = useState(direction);
   const { streakData } = useStreakContext();
   const tStreak = useTranslations('streakIndicator');
+  const { getFlag } = useFeatureFlagContext();
+  const cloudSyncEnabled = getFlag('cloudSyncEnabled');
+  const { user, loading, signInWithGoogle, signOut } = useAuthContext();
+  const [signInError, setSignInError] = useState(false);
 
   // Update drawer direction when drawer opens (but not during language changes)
   useEffect(() => {
@@ -70,6 +77,15 @@ const SettingsDrawer: React.FC<SettingsDrawerProps> = ({ open, toggleDrawer }) =
 
   const handleClose = () => {
     toggleDrawer(false);
+  };
+
+  const handleSignIn = async () => {
+    setSignInError(false);
+    try {
+      await signInWithGoogle();
+    } catch {
+      setSignInError(true);
+    }
   };
 
   return (
@@ -177,6 +193,69 @@ const SettingsDrawer: React.FC<SettingsDrawerProps> = ({ open, toggleDrawer }) =
                   <Typography sx={{ fontSize: '1rem', fontWeight: 'bold', color: '#8d6e63' }}>
                     {streakData.longestStreak}
                   </Typography>
+                </Box>
+              )}
+            </Box>
+          </>
+        )}
+
+        {cloudSyncEnabled && (
+          <>
+            <Divider sx={{ my: 2 }} />
+            <Box sx={{ width: '100%' }}>
+              {loading ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Skeleton variant="circular" width={32} height={32} />
+                  <Skeleton variant="text" width={120} height={24} />
+                </Box>
+              ) : user ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, width: '100%' }}>
+                  <Avatar
+                    src={user.photoURL ?? undefined}
+                    sx={{ width: 32, height: 32 }}
+                  >
+                    {user.displayName?.[0] ?? '?'}
+                  </Avatar>
+                  <Typography
+                    variant="body2"
+                    color="secondary.main"
+                    sx={{ flex: 1, textAlign: direction === 'rtl' ? 'right' : 'left' }}
+                  >
+                    {user.displayName}
+                  </Typography>
+                  <Button
+                    variant="text"
+                    size="small"
+                    onClick={signOut}
+                    sx={{ color: 'secondary.main' }}
+                  >
+                    {t('home.cloudSync.signOutButton')}
+                  </Button>
+                </Box>
+              ) : (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: direction === 'rtl' ? 'flex-end' : 'flex-start',
+                    gap: 1,
+                    width: '100%',
+                  }}
+                >
+                  <Button
+                    variant="outlined"
+                    size="medium"
+                    startIcon={<GoogleIcon />}
+                    onClick={handleSignIn}
+                    sx={{ textTransform: 'none' }}
+                  >
+                    {t('home.cloudSync.signInButton')}
+                  </Button>
+                  {signInError && (
+                    <Typography variant="caption" color="error">
+                      {t('home.cloudSync.signInTitle')}
+                    </Typography>
+                  )}
                 </Box>
               )}
             </Box>
