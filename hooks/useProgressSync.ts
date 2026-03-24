@@ -51,6 +51,5 @@ export function useProgressSync(uid: string | null, path: string, data: unknown)
         timerRef.current = null;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uid, path, serialized]);
 }
