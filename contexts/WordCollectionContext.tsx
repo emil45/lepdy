@@ -1,7 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, useMemo, ReactNode } from 'react';
 import { useWordCollectionProgress, UseWordCollectionReturn } from '@/hooks/useWordCollectionProgress';
+import { useProgressSync } from '@/hooks/useProgressSync';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 const WordCollectionContext = createContext<UseWordCollectionReturn | null>(null);
 
@@ -11,6 +13,14 @@ interface WordCollectionProviderProps {
 
 export function WordCollectionProvider({ children }: WordCollectionProviderProps) {
   const wordCollectionValue = useWordCollectionProgress();
+  const { user } = useAuthContext();
+
+  const syncData = useMemo(() => ({
+    collectedWords: wordCollectionValue.collectedWords,
+    totalWordsBuilt: wordCollectionValue.totalWordsBuilt,
+  }), [wordCollectionValue.collectedWords, wordCollectionValue.totalWordsBuilt]);
+
+  useProgressSync(user?.uid ?? null, 'progress/words', syncData);
 
   return (
     <WordCollectionContext.Provider value={wordCollectionValue}>

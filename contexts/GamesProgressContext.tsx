@@ -1,7 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, useMemo, ReactNode } from 'react';
 import { useGamesProgress, UseGamesProgressReturn } from '@/hooks/useGamesProgress';
+import { useProgressSync } from '@/hooks/useProgressSync';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 const GamesProgressContext = createContext<UseGamesProgressReturn | null>(null);
 
@@ -11,6 +13,29 @@ interface GamesProgressProviderProps {
 
 export function GamesProgressProvider({ children }: GamesProgressProviderProps) {
   const gamesProgressValue = useGamesProgress();
+  const { user } = useAuthContext();
+
+  const syncData = useMemo(() => ({
+    completedGameTypes: Array.from(gamesProgressValue.completedGameTypes),
+    memoryWins: gamesProgressValue.memoryWins,
+    simonHighScore: gamesProgressValue.simonHighScore,
+    speedChallengeHighScores: gamesProgressValue.speedChallengeHighScores,
+    wordBuilderCompletions: gamesProgressValue.wordBuilderCompletions,
+    soundMatchingPerfect: gamesProgressValue.soundMatchingPerfect,
+    countingGameCompletions: gamesProgressValue.countingGameCompletions,
+    totalGamesCompleted: gamesProgressValue.totalGamesCompleted,
+  }), [
+    gamesProgressValue.completedGameTypes,
+    gamesProgressValue.memoryWins,
+    gamesProgressValue.simonHighScore,
+    gamesProgressValue.speedChallengeHighScores,
+    gamesProgressValue.wordBuilderCompletions,
+    gamesProgressValue.soundMatchingPerfect,
+    gamesProgressValue.countingGameCompletions,
+    gamesProgressValue.totalGamesCompleted,
+  ]);
+
+  useProgressSync(user?.uid ?? null, 'progress/games', syncData);
 
   return (
     <GamesProgressContext.Provider value={gamesProgressValue}>
