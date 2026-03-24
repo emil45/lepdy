@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Cloud Sync
-status: Ready to plan
-stopped_at: Completed 26-02-PLAN.md
-last_updated: "2026-03-24T22:49:38.785Z"
+status: Ready to execute
+stopped_at: Completed 27-01-PLAN.md
+last_updated: "2026-03-24T23:03:35.657Z"
 progress:
   total_phases: 5
   completed_phases: 3
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 7
+  completed_plans: 6
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 26 — cloud-write-path
+**Current focus:** Phase 27 — cloud-read-and-merge
 
 ## Current Position
 
-Phase: 27
-Plan: Not started
+Phase: 27 (cloud-read-and-merge) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -54,6 +54,7 @@ Recent decisions affecting current work:
 - [Phase 26-cloud-write-path]: Dynamic firebase/database import inside setTimeout callback prevents SSR errors — matches existing lib/firebase.ts pattern
 - [Phase 26-cloud-write-path]: Category-specific Set field names (heardLetterIds etc.) must be used — generic heardItemIds is internal to useCategoryProgress
 - [Phase 26-cloud-write-path]: Streak syncs to path 'streak' not 'progress/streak' — keeps streak conceptually separate for cleaner Phase 27 merge logic
+- [Phase 27]: Vitest installed for unit testing pure merge functions; WordCollectionData re-declared in mergeProgress.ts since it is not exported from its hook; mergeStreak uses more-recent lastActivityDate side as base for freeze fields
 
 ### Pending Todos
 
@@ -75,9 +76,10 @@ None yet.
 | Phase 25-sign-in-ui P01 | 5 | 2 tasks | 1 files |
 | Phase 26-cloud-write-path P01 | 8 | 2 tasks | 3 files |
 | Phase 26-cloud-write-path P02 | 5 | 2 tasks | 6 files |
+| Phase 27 P01 | 147s | 2 tasks | 3 files |
 
 ## Session Continuity
 
-Last session: 2026-03-24T22:44:12.682Z
-Stopped at: Completed 26-02-PLAN.md
+Last session: 2026-03-24T23:03:35.654Z
+Stopped at: Completed 27-01-PLAN.md
 Resume file: None

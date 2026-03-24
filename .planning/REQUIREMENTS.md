@@ -19,8 +19,8 @@ Requirements for cloud sync milestone. Each maps to roadmap phases.
 ### Cloud Sync
 
 - [x] **SYNC-01**: All progress data writes to Firebase when user is authenticated (debounced)
-- [ ] **SYNC-02**: On first sign-in, localStorage progress merges into cloud using union strategy (no progress lost)
-- [ ] **SYNC-03**: On subsequent sign-in, cloud data merges into localStorage for cross-device sync
+- [x] **SYNC-02**: On first sign-in, localStorage progress merges into cloud using union strategy (no progress lost)
+- [x] **SYNC-03**: On subsequent sign-in, cloud data merges into localStorage for cross-device sync
 - [x] **SYNC-04**: Sync works offline — localStorage as cache, syncs back when connectivity returns
 - [x] **SYNC-05**: Firebase security rules restrict users to read/write only their own data
 
@@ -73,8 +73,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-05 | Phase 24 | Complete |
 | AUTH-06 | Phase 24 | Complete |
 | SYNC-01 | Phase 26 | Complete |
-| SYNC-02 | Phase 27 | Pending |
-| SYNC-03 | Phase 27 | Pending |
+| SYNC-02 | Phase 27 | Complete |
+| SYNC-03 | Phase 27 | Complete |
 | SYNC-04 | Phase 26 | Complete |
 | SYNC-05 | Phase 26 | Complete |
 | POLSH-01 | Phase 28 | Pending |

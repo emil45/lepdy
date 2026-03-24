@@ -147,10 +147,10 @@ Plans:
   2. A parent who signs in on a second device sees the same progress they earned on their first device
   3. When two devices have independent progress for the same item, the union (most progress) wins — no item is ever un-heard or un-unlocked
   4. Merge runs only once per sign-in transition (not on every page load or token refresh)
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 27-01-PLAN.md — Pure merge functions (union strategy) with unit tests (TDD)
+- [x] 27-01-PLAN.md — Pure merge functions (union strategy) with unit tests (TDD)
 - [ ] 27-02-PLAN.md — useMergeOnSignIn hook + wire into AuthProvider
 
 ### Phase 28: Polish
@@ -181,5 +181,5 @@ Plans:
 | 24. Firebase Auth Foundation | v1.5 | 2/2 | Complete    | 2026-03-23 |
 | 25. Sign-In UI | v1.5 | 1/1 | Complete    | 2026-03-24 |
 | 26. Cloud Write Path | v1.5 | 2/2 | Complete    | 2026-03-24 |
-| 27. Cloud Read and Merge | v1.5 | 0/2 | Not started | - |
+| 27. Cloud Read and Merge | v1.5 | 1/2 | In Progress|  |
 | 28. Polish | v1.5 | 0/? | Not started | - |
