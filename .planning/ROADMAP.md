@@ -85,7 +85,7 @@
 
 - [x] **Phase 24: Firebase Auth Foundation** - Auth context, lazy Firebase Auth init, Google sign-in/sign-out functions, iOS redirect fallback, feature flag gate (completed 2026-03-23)
 - [x] **Phase 25: Sign-In UI** - Google sign-in button and user account chip in settings drawer, COPPA-compliant copy, i18n (completed 2026-03-23)
-- [ ] **Phase 26: Cloud Write Path** - Sync service, debounced writes to Firebase, offline queue, security rules
+- [x] **Phase 26: Cloud Write Path** - Sync service, debounced writes to Firebase, offline queue, security rules (completed 2026-03-24)
 - [ ] **Phase 27: Cloud Read and Merge** - First-login union merge, cross-device sync on subsequent sign-in
 - [ ] **Phase 28: Polish** - Sync status indicator, offline detection note, tab-focus re-fetch
 
@@ -132,11 +132,11 @@ Plans:
   2. The app continues to work fully with no errors when the device is offline — writes are queued and flush when connectivity returns
   3. A signed-out user experiences zero behavior change — no new code paths execute, no errors fire, localStorage works identically to before
   4. Firebase security rules prevent any user from reading or writing another user's progress data
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 26-01-PLAN.md — useProgressSync hook, getFirebaseDatabase export, Firebase security rules
-- [ ] 26-02-PLAN.md — Wire sync into all 6 context providers (Letters, Numbers, Animals, Games, Words, Streak)
+- [x] 26-02-PLAN.md — Wire sync into all 6 context providers (Letters, Numbers, Animals, Games, Words, Streak)
 
 ### Phase 27: Cloud Read and Merge
 **Goal**: Signing in on a new device loads existing progress, and first-time sign-in never loses locally-earned progress
@@ -172,6 +172,6 @@ Plans:
 | 19-23 | v1.4 | 10/10 | Complete | 2026-03-23 |
 | 24. Firebase Auth Foundation | v1.5 | 2/2 | Complete    | 2026-03-23 |
 | 25. Sign-In UI | v1.5 | 1/1 | Complete    | 2026-03-24 |
-| 26. Cloud Write Path | v1.5 | 1/2 | In Progress|  |
+| 26. Cloud Write Path | v1.5 | 2/2 | Complete   | 2026-03-24 |
 | 27. Cloud Read and Merge | v1.5 | 0/? | Not started | - |
 | 28. Polish | v1.5 | 0/? | Not started | - |

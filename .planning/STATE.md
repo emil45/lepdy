@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Cloud Sync
-status: Ready to execute
-stopped_at: Completed 26-01-PLAN.md
-last_updated: "2026-03-24T22:39:11.687Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 26-02-PLAN.md
+last_updated: "2026-03-24T22:44:12.683Z"
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 5
-  completed_plans: 4
+  completed_plans: 5
 ---
 
 # Project State
@@ -52,6 +52,8 @@ Recent decisions affecting current work:
 - [Phase 25-sign-in-ui]: Sign-out button uses variant=text (less prominent) per pre-locked UI decision; avatar 32px for single-row signed-in layout
 - [Phase 26-cloud-write-path]: 30s debounce with JSON.stringify dep key and dataRef.current pattern for stable, latest-value RTDB writes
 - [Phase 26-cloud-write-path]: Dynamic firebase/database import inside setTimeout callback prevents SSR errors — matches existing lib/firebase.ts pattern
+- [Phase 26-cloud-write-path]: Category-specific Set field names (heardLetterIds etc.) must be used — generic heardItemIds is internal to useCategoryProgress
+- [Phase 26-cloud-write-path]: Streak syncs to path 'streak' not 'progress/streak' — keeps streak conceptually separate for cleaner Phase 27 merge logic
 
 ### Pending Todos
 
@@ -72,9 +74,10 @@ None yet.
 | Phase 24 P02 | 2 | 2 tasks | 6 files |
 | Phase 25-sign-in-ui P01 | 5 | 2 tasks | 1 files |
 | Phase 26-cloud-write-path P01 | 8 | 2 tasks | 3 files |
+| Phase 26-cloud-write-path P02 | 5 | 2 tasks | 6 files |
 
 ## Session Continuity
 
-Last session: 2026-03-24T22:39:11.685Z
-Stopped at: Completed 26-01-PLAN.md
+Last session: 2026-03-24T22:44:12.682Z
+Stopped at: Completed 26-02-PLAN.md
 Resume file: None
