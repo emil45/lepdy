@@ -147,7 +147,11 @@ Plans:
   2. A parent who signs in on a second device sees the same progress they earned on their first device
   3. When two devices have independent progress for the same item, the union (most progress) wins — no item is ever un-heard or un-unlocked
   4. Merge runs only once per sign-in transition (not on every page load or token refresh)
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 27-01-PLAN.md — Pure merge functions (union strategy) with unit tests (TDD)
+- [ ] 27-02-PLAN.md — useMergeOnSignIn hook + wire into AuthProvider
 
 ### Phase 28: Polish
 **Goal**: Parents get clear, unobtrusive feedback about sync status and can trust their child's progress is safe
@@ -157,7 +161,11 @@ Plans:
   1. After a successful cloud write, a subtle "saved" indicator appears in the settings drawer for 2 seconds then disappears
   2. When the device is offline, a "progress saved locally" note is visible in the settings drawer
   3. When the user returns to the app tab after it was in the background, the app re-fetches cloud state so any progress made on another device is reflected
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 27-01-PLAN.md — Pure merge functions (union strategy) with unit tests (TDD)
+- [ ] 27-02-PLAN.md — useMergeOnSignIn hook + wire into AuthProvider
 
 ## Progress
 
@@ -173,5 +181,5 @@ Plans:
 | 24. Firebase Auth Foundation | v1.5 | 2/2 | Complete    | 2026-03-23 |
 | 25. Sign-In UI | v1.5 | 1/1 | Complete    | 2026-03-24 |
 | 26. Cloud Write Path | v1.5 | 2/2 | Complete    | 2026-03-24 |
-| 27. Cloud Read and Merge | v1.5 | 0/? | Not started | - |
+| 27. Cloud Read and Merge | v1.5 | 0/2 | Not started | - |
 | 28. Polish | v1.5 | 0/? | Not started | - |
