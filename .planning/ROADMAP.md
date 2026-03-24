@@ -172,6 +172,6 @@ Plans:
 | 19-23 | v1.4 | 10/10 | Complete | 2026-03-23 |
 | 24. Firebase Auth Foundation | v1.5 | 2/2 | Complete    | 2026-03-23 |
 | 25. Sign-In UI | v1.5 | 1/1 | Complete    | 2026-03-24 |
-| 26. Cloud Write Path | v1.5 | 2/2 | Complete   | 2026-03-24 |
+| 26. Cloud Write Path | v1.5 | 2/2 | Complete    | 2026-03-24 |
 | 27. Cloud Read and Merge | v1.5 | 0/? | Not started | - |
 | 28. Polish | v1.5 | 0/? | Not started | - |
