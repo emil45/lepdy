@@ -4,7 +4,7 @@ import { getFirebaseApp } from './firebaseApp';
 let database: Database | null = null;
 
 // Lazy initialization - only loads Firebase when first needed
-async function getFirebaseDatabase(): Promise<Database> {
+export async function getFirebaseDatabase(): Promise<Database> {
   if (!database) {
     const app = await getFirebaseApp();
     const { getDatabase } = await import('firebase/database');
