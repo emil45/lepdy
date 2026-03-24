@@ -1,7 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, useMemo, ReactNode } from 'react';
 import { useNumbersProgress, UseNumbersProgressReturn } from '@/hooks/useNumbersProgress';
+import { useProgressSync } from '@/hooks/useProgressSync';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 const NumbersProgressContext = createContext<UseNumbersProgressReturn | null>(null);
 
@@ -11,6 +13,14 @@ interface NumbersProgressProviderProps {
 
 export function NumbersProgressProvider({ children }: NumbersProgressProviderProps) {
   const numbersProgressValue = useNumbersProgress();
+  const { user } = useAuthContext();
+
+  const syncData = useMemo(() => ({
+    heardItemIds: Array.from(numbersProgressValue.heardNumberIds),
+    totalClicks: numbersProgressValue.totalClicks,
+  }), [numbersProgressValue.heardNumberIds, numbersProgressValue.totalClicks]);
+
+  useProgressSync(user?.uid ?? null, 'progress/numbers', syncData);
 
   return (
     <NumbersProgressContext.Provider value={numbersProgressValue}>

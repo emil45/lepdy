@@ -1,7 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, useMemo, ReactNode } from 'react';
 import { useLettersProgress, UseLettersProgressReturn } from '@/hooks/useLettersProgress';
+import { useProgressSync } from '@/hooks/useProgressSync';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 const LettersProgressContext = createContext<UseLettersProgressReturn | null>(null);
 
@@ -11,6 +13,14 @@ interface LettersProgressProviderProps {
 
 export function LettersProgressProvider({ children }: LettersProgressProviderProps) {
   const lettersProgressValue = useLettersProgress();
+  const { user } = useAuthContext();
+
+  const syncData = useMemo(() => ({
+    heardItemIds: Array.from(lettersProgressValue.heardLetterIds),
+    totalClicks: lettersProgressValue.totalClicks,
+  }), [lettersProgressValue.heardLetterIds, lettersProgressValue.totalClicks]);
+
+  useProgressSync(user?.uid ?? null, 'progress/letters', syncData);
 
   return (
     <LettersProgressContext.Provider value={lettersProgressValue}>

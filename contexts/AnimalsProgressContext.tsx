@@ -1,7 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, useMemo, ReactNode } from 'react';
 import { useAnimalsProgress, UseAnimalsProgressReturn } from '@/hooks/useAnimalsProgress';
+import { useProgressSync } from '@/hooks/useProgressSync';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 const AnimalsProgressContext = createContext<UseAnimalsProgressReturn | null>(null);
 
@@ -11,6 +13,14 @@ interface AnimalsProgressProviderProps {
 
 export function AnimalsProgressProvider({ children }: AnimalsProgressProviderProps) {
   const animalsProgressValue = useAnimalsProgress();
+  const { user } = useAuthContext();
+
+  const syncData = useMemo(() => ({
+    heardItemIds: Array.from(animalsProgressValue.heardAnimalIds),
+    totalClicks: animalsProgressValue.totalClicks,
+  }), [animalsProgressValue.heardAnimalIds, animalsProgressValue.totalClicks]);
+
+  useProgressSync(user?.uid ?? null, 'progress/animals', syncData);
 
   return (
     <AnimalsProgressContext.Provider value={animalsProgressValue}>
