@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Cloud Sync
-status: Ready to execute
-stopped_at: Completed 27-01-PLAN.md
-last_updated: "2026-03-24T23:03:35.657Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 27-02-PLAN.md
+last_updated: "2026-03-24T23:12:02.183Z"
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 7
-  completed_plans: 6
+  completed_plans: 7
 ---
 
 # Project State
@@ -55,6 +55,9 @@ Recent decisions affecting current work:
 - [Phase 26-cloud-write-path]: Category-specific Set field names (heardLetterIds etc.) must be used — generic heardItemIds is internal to useCategoryProgress
 - [Phase 26-cloud-write-path]: Streak syncs to path 'streak' not 'progress/streak' — keeps streak conceptually separate for cleaner Phase 27 merge logic
 - [Phase 27]: Vitest installed for unit testing pure merge functions; WordCollectionData re-declared in mergeProgress.ts since it is not exported from its hook; mergeStreak uses more-recent lastActivityDate side as base for freeze fields
+- [Phase 27]: page reload (window.location.reload) after merge — simpler than context invalidation, guarantees all 6 providers re-read localStorage
+- [Phase 27]: sessionStorage guard for merge idempotency per uid — re-merges after tab close to catch new cloud data from other devices
+- [Phase 27]: all-or-nothing RTDB fetch in useMergeOnSignIn — exits early on fetch failure to prevent partial merge
 
 ### Pending Todos
 
@@ -77,9 +80,10 @@ None yet.
 | Phase 26-cloud-write-path P01 | 8 | 2 tasks | 3 files |
 | Phase 26-cloud-write-path P02 | 5 | 2 tasks | 6 files |
 | Phase 27 P01 | 147s | 2 tasks | 3 files |
+| Phase 27 P02 | 326s | 2 tasks | 2 files |
 
 ## Session Continuity
 
-Last session: 2026-03-24T23:03:35.654Z
-Stopped at: Completed 27-01-PLAN.md
+Last session: 2026-03-24T23:12:02.180Z
+Stopped at: Completed 27-02-PLAN.md
 Resume file: None

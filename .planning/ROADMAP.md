@@ -86,7 +86,7 @@
 - [x] **Phase 24: Firebase Auth Foundation** - Auth context, lazy Firebase Auth init, Google sign-in/sign-out functions, iOS redirect fallback, feature flag gate (completed 2026-03-23)
 - [x] **Phase 25: Sign-In UI** - Google sign-in button and user account chip in settings drawer, COPPA-compliant copy, i18n (completed 2026-03-23)
 - [x] **Phase 26: Cloud Write Path** - Sync service, debounced writes to Firebase, offline queue, security rules (completed 2026-03-24)
-- [ ] **Phase 27: Cloud Read and Merge** - First-login union merge, cross-device sync on subsequent sign-in
+- [x] **Phase 27: Cloud Read and Merge** - First-login union merge, cross-device sync on subsequent sign-in (completed 2026-03-24)
 - [ ] **Phase 28: Polish** - Sync status indicator, offline detection note, tab-focus re-fetch
 
 ## Phase Details
@@ -147,11 +147,11 @@ Plans:
   2. A parent who signs in on a second device sees the same progress they earned on their first device
   3. When two devices have independent progress for the same item, the union (most progress) wins — no item is ever un-heard or un-unlocked
   4. Merge runs only once per sign-in transition (not on every page load or token refresh)
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 27-01-PLAN.md — Pure merge functions (union strategy) with unit tests (TDD)
-- [ ] 27-02-PLAN.md — useMergeOnSignIn hook + wire into AuthProvider
+- [x] 27-02-PLAN.md — useMergeOnSignIn hook + wire into AuthProvider
 
 ### Phase 28: Polish
 **Goal**: Parents get clear, unobtrusive feedback about sync status and can trust their child's progress is safe
@@ -164,7 +164,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 27-01-PLAN.md — Pure merge functions (union strategy) with unit tests (TDD)
+- [x] 27-01-PLAN.md — Pure merge functions (union strategy) with unit tests (TDD)
 - [ ] 27-02-PLAN.md — useMergeOnSignIn hook + wire into AuthProvider
 
 ## Progress
@@ -181,5 +181,5 @@ Plans:
 | 24. Firebase Auth Foundation | v1.5 | 2/2 | Complete    | 2026-03-23 |
 | 25. Sign-In UI | v1.5 | 1/1 | Complete    | 2026-03-24 |
 | 26. Cloud Write Path | v1.5 | 2/2 | Complete    | 2026-03-24 |
-| 27. Cloud Read and Merge | v1.5 | 1/2 | In Progress|  |
+| 27. Cloud Read and Merge | v1.5 | 2/2 | Complete   | 2026-03-24 |
 | 28. Polish | v1.5 | 0/? | Not started | - |
