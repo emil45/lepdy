@@ -132,7 +132,11 @@ Plans:
   2. The app continues to work fully with no errors when the device is offline — writes are queued and flush when connectivity returns
   3. A signed-out user experiences zero behavior change — no new code paths execute, no errors fire, localStorage works identically to before
   4. Firebase security rules prevent any user from reading or writing another user's progress data
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 26-01-PLAN.md — useProgressSync hook, getFirebaseDatabase export, Firebase security rules
+- [ ] 26-02-PLAN.md — Wire sync into all 6 context providers (Letters, Numbers, Animals, Games, Words, Streak)
 
 ### Phase 27: Cloud Read and Merge
 **Goal**: Signing in on a new device loads existing progress, and first-time sign-in never loses locally-earned progress
@@ -168,6 +172,6 @@ Plans:
 | 19-23 | v1.4 | 10/10 | Complete | 2026-03-23 |
 | 24. Firebase Auth Foundation | v1.5 | 2/2 | Complete    | 2026-03-23 |
 | 25. Sign-In UI | v1.5 | 1/1 | Complete    | 2026-03-24 |
-| 26. Cloud Write Path | v1.5 | 0/? | Not started | - |
+| 26. Cloud Write Path | v1.5 | 0/2 | Not started | - |
 | 27. Cloud Read and Merge | v1.5 | 0/? | Not started | - |
 | 28. Polish | v1.5 | 0/? | Not started | - |
