@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, ReactNode } from 'react';
 import { useAuth, UseAuthReturn } from '@/hooks/useAuth';
+import { useMergeOnSignIn } from '@/hooks/useMergeOnSignIn';
 
 const AuthContext = createContext<UseAuthReturn | null>(null);
 
@@ -15,6 +16,7 @@ interface AuthProviderProps {
  */
 export function AuthProvider({ children }: AuthProviderProps) {
   const authValue = useAuth();
+  useMergeOnSignIn(authValue.user, authValue.loading);
   return <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>;
 }
 
