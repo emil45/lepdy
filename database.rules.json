@@ -1,8 +1,17 @@
 {
   "rules": {
+    ".read": false,
+    ".write": false,
     "leaderboard": {
       ".read": true,
-      ".write": true
+      "$game": {
+        ".write": true,
+        ".validate": "newData.hasChildren(['score', 'timestamp'])
+                     && newData.child('score').isNumber()
+                     && newData.child('score').val() >= 1
+                     && newData.child('score').val() <= 500
+                     && newData.child('timestamp').isNumber()"
+      }
     },
     "users": {
       "$uid": {
