@@ -12,17 +12,27 @@ const DEBOUNCE_MS = 30_000;
  * - Uses dynamic imports for firebase/database to prevent SSR errors.
  * - Wraps writes in try/catch to ensure sync failures never crash the app.
  *
- * @param uid   Firebase Auth user UID. If null, hook does nothing.
- * @param path  RTDB sub-path under users/{uid}/ (e.g. 'progress/letters', 'streak')
- * @param data  The data to write. JSON.stringify is used as dep-array key to avoid
- *              infinite re-renders from unstable object references.
+ * @param uid              Firebase Auth user UID. If null, hook does nothing.
+ * @param path             RTDB sub-path under users/{uid}/ (e.g. 'progress/letters', 'streak')
+ * @param data             The data to write. JSON.stringify is used as dep-array key to avoid
+ *                         infinite re-renders from unstable object references.
+ * @param onSyncComplete   Optional callback fired after a successful RTDB write. Use to trigger
+ *                         UI feedback (e.g. "saved" indicator). Not included in dep array to
+ *                         avoid resetting the 30s debounce timer on callback identity changes.
  */
-export function useProgressSync(uid: string | null, path: string, data: unknown): void {
+export function useProgressSync(
+  uid: string | null,
+  path: string,
+  data: unknown,
+  onSyncComplete?: () => void
+): void {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dataRef = useRef<unknown>(data);
+  const onSyncCompleteRef = useRef(onSyncComplete);
 
-  // Always keep dataRef current so the timer callback reads the latest value.
+  // Always keep refs current so timer callbacks read the latest values.
   dataRef.current = data;
+  onSyncCompleteRef.current = onSyncComplete;
 
   const serialized = JSON.stringify(data);
 
@@ -40,6 +50,7 @@ export function useProgressSync(uid: string | null, path: string, data: unknown)
         const { ref, set } = await import('firebase/database');
         const db = await getFirebaseDatabase();
         await set(ref(db, `users/${uid}/${path}`), dataRef.current);
+        onSyncCompleteRef.current?.();
       } catch (error) {
         console.error(`[sync:${path}] Write failed:`, error);
       }
