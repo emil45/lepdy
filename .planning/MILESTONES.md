@@ -1,5 +1,22 @@
 # Milestones
 
+## v1.5 Cloud Sync (Shipped: 2026-03-25)
+
+**Phases completed:** 5 phases, 9 plans, 16 tasks
+
+**Key accomplishments:**
+
+- useAuth hook with feature-flag-gated Firebase Auth init (popup/redirect split), AuthContext provider wired into provider tree, and COPPA-framed sign-in copy in Hebrew, English, and Russian
+- Google sign-in/sign-out auth section added to SettingsDrawer with 32px avatar, skeleton loading states, and full feature-flag gate via cloudSyncEnabled
+- 30-second debounced RTDB write hook with uid null-guard and dynamic firebase imports, plus owner-only RTDB security rules
+- useProgressSync wired into all 6 context providers — authenticated users' progress syncs to Firebase RTDB for letters, numbers, animals, games, words, and streak
+- One-liner:
+- useMergeOnSignIn hook that fetches all 6 RTDB paths in parallel on Google sign-in, merges with localStorage using union strategy, and reloads the page to activate merged state across all context providers.
+- Sync status infrastructure: onSyncComplete callback in useProgressSync, SyncStatusContext with notifySaved/showSaved/isOnline, useSyncStatus with online detection + visibility re-fetch, and fetchAndMergeToLocalStorage extracted without reload
+- Cloud sync user feedback fully wired: saved indicator after RTDB writes, offline note in SettingsDrawer, and tab-focus re-fetch — all 3 POLSH requirements complete
+
+---
+
 ## v1.4 Complete Puzzle Experience (Shipped: 2026-03-23)
 
 **Phases completed:** 5 phases, 10 plans, 15 tasks

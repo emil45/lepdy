@@ -67,28 +67,21 @@ Kids learn chess fundamentals through fun, progressive puzzles while learning He
 - ✓ Checkmate puzzles wired into Challenge sessions with feature flag and Amplitude tracking — v1.4 Phase 22
 - ✓ Progress & engagement — per-piece mastery on hub menu + session breakdown — v1.4 Phase 23
 
+- ✓ Optional Google sign-in via Firebase Auth — v1.5
+- ✓ Login option in homepage settings sidebar — v1.5
+- ✓ All localStorage progress syncs to Firebase when logged in — v1.5
+- ✓ First login merges (union) existing localStorage into cloud — v1.5
+- ✓ Offline-first: localStorage cache, syncs back when online — v1.5
+- ✓ Not logged in = pure localStorage (zero behavior change) — v1.5
+
 ### Active
 
-- [ ] Optional Google sign-in via Firebase Auth
-- [ ] Login option in homepage settings sidebar
-- [ ] All localStorage progress syncs to Firebase when logged in
-- [ ] First login merges (union) existing localStorage into cloud
-- [ ] Offline-first: localStorage cache, syncs back when online
-- [ ] Not logged in = pure localStorage (zero behavior change)
-
-## Current Milestone: v1.5 Cloud Sync
-
-**Goal:** Optional Google login with Firebase Auth that syncs all user progress across devices, with offline-first localStorage caching.
-
-**Target features:**
-- Firebase Auth with Google sign-in (optional, never forced)
-- Login option in homepage settings sidebar
-- All localStorage data syncs to Firebase (category progress, chess progress, stickers, word collection, streak, settings/preferences)
-- First login merges (union) existing localStorage progress into cloud
-- Offline-first: localStorage as cache, syncs back when connectivity returns
-- Not logged in = pure localStorage, zero behavior change from today
+(None yet — define for next milestone)
 
 ## Shipped Milestones
+
+### v1.5 Cloud Sync (shipped 2026-03-25)
+Optional Google sign-in with Firebase Auth that syncs all user progress (letters, numbers, animals, games, word collection, streak) across devices. Union merge on sign-in preserves all progress from both local and cloud. Offline-first — localStorage as cache, RTDB queues writes. Feature-flag-gated behind `cloudSyncEnabled`. Saved/offline indicators in settings drawer.
 
 ### v1.4 Complete Puzzle Experience (shipped 2026-03-23)
 Transformed the chess game from a working prototype into a polished, engaging kids puzzle app with hub menu redesign, sound effects, practice mode, checkmate puzzles, and visible progress tracking.
@@ -129,7 +122,8 @@ Chess learning game with 3 progressive levels, Hebrew vocabulary, and kid-friend
 - 48 stickers total across 6 pages (3 chess stickers added in v1.1)
 - 115 chess puzzles validated by chess.js (61 movement + 34 capture + 20 checkmate), 7 Firebase Remote Config flags
 - Checkmate puzzles gated by `chessCheckmateEnabled` feature flag — must be enabled in Firebase console
-- Firebase Auth foundation complete (Phase 24): `useAuthContext()` hook, `cloudSyncEnabled` feature flag, Google sign-in with iOS Safari redirect support, COPPA-framed copy in all 3 locales — 8 Firebase Remote Config flags total
+- Cloud sync shipped (v1.5): Firebase Auth with Google sign-in, debounced RTDB progress sync for 6 data types, union merge on sign-in, saved/offline indicators — 8 Firebase Remote Config flags total
+- Chess/puzzle progress not synced yet (no dedicated context providers — future milestone)
 
 ## Constraints
 
@@ -168,6 +162,12 @@ Chess learning game with 3 progressive levels, Hebrew vocabulary, and kid-friend
 | Checkmate behind feature flag (default off) | Safe rollout — enables via Firebase without code deploy after content validation | ✓ Good — zero-risk launch |
 | No numeric counters in mastery display | Named bands (Beginner/Intermediate/Expert) only — prevents rapid-tapping incentive for young learners | ✓ Good — age-appropriate |
 | Shared utils/chessMastery.ts for mastery helpers | Eliminated 3rd copy of getBandKey/getTierColor across hub, practice picker, session complete | ✓ Good — DRY |
+| Firebase RTDB over Firestore for cloud sync | Already wired for leaderboards, simpler API, built-in offline queue, no new dependency | ✓ Good — zero new packages |
+| Optional Google sign-in (never forced) | COPPA compliance — mandatory login = mandatory data collection = legal risk | ✓ Good — zero onboarding friction |
+| Union merge strategy on sign-in | Most-progress-wins — no item ever un-heard or un-unlocked across devices | ✓ Good — kid-friendly, no data loss |
+| useProgressSync with 30s debounce | Batches frequent interactions into single RTDB write, reduces costs | ✓ Good — low overhead |
+| sessionStorage guard for merge-once-per-session | Prevents double merge on React StrictMode, token refresh, tab switches | ✓ Good — robust |
+| cloudSyncEnabled feature flag gating all sync | Entire feature invisible when flag off — safe staged rollout | ✓ Good — zero-risk launch |
 
 ---
 ## Evolution
@@ -188,4 +188,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-24 after Phase 24 (Firebase Auth Foundation) complete*
+*Last updated: 2026-03-25 after v1.5 Cloud Sync milestone*
