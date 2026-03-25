@@ -161,10 +161,10 @@ Plans:
   1. After a successful cloud write, a subtle "saved" indicator appears in the settings drawer for 2 seconds then disappears
   2. When the device is offline, a "progress saved locally" note is visible in the settings drawer
   3. When the user returns to the app tab after it was in the background, the app re-fetches cloud state so any progress made on another device is reflected
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 28-01-PLAN.md — Sync status hooks and context infrastructure (useProgressSync callback, SyncStatusContext, useSyncStatus, fetchAndMergeToLocalStorage extraction)
+- [x] 28-01-PLAN.md — Sync status hooks and context infrastructure (useProgressSync callback, SyncStatusContext, useSyncStatus, fetchAndMergeToLocalStorage extraction)
 - [ ] 28-02-PLAN.md — Wire sync status into providers and SettingsDrawer UI with translations
 
 ## Progress
@@ -182,4 +182,4 @@ Plans:
 | 25. Sign-In UI | v1.5 | 1/1 | Complete    | 2026-03-24 |
 | 26. Cloud Write Path | v1.5 | 2/2 | Complete    | 2026-03-24 |
 | 27. Cloud Read and Merge | v1.5 | 2/2 | Complete    | 2026-03-24 |
-| 28. Polish | v1.5 | 0/2 | Not started | - |
+| 28. Polish | v1.5 | 1/2 | In Progress|  |

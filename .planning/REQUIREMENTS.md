@@ -26,9 +26,9 @@ Requirements for cloud sync milestone. Each maps to roadmap phases.
 
 ### Polish
 
-- [ ] **POLSH-01**: Subtle "saved" sync status indicator appears in settings after successful cloud write
-- [ ] **POLSH-02**: "Progress saved locally" note shown in settings when device is offline
-- [ ] **POLSH-03**: App re-fetches cloud state on tab focus (Visibility API) for cross-device pickup
+- [x] **POLSH-01**: Subtle "saved" sync status indicator appears in settings after successful cloud write
+- [x] **POLSH-02**: "Progress saved locally" note shown in settings when device is offline
+- [x] **POLSH-03**: App re-fetches cloud state on tab focus (Visibility API) for cross-device pickup
 
 ## Future Requirements
 
@@ -77,9 +77,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SYNC-03 | Phase 27 | Complete |
 | SYNC-04 | Phase 26 | Complete |
 | SYNC-05 | Phase 26 | Complete |
-| POLSH-01 | Phase 28 | Pending |
-| POLSH-02 | Phase 28 | Pending |
-| POLSH-03 | Phase 28 | Pending |
+| POLSH-01 | Phase 28 | Complete |
+| POLSH-02 | Phase 28 | Complete |
+| POLSH-03 | Phase 28 | Complete |
 
 **Coverage:**
 - v1.5 requirements: 14 total

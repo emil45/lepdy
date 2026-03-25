@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Cloud Sync
-status: Ready to plan
-stopped_at: Completed 27-02-PLAN.md
-last_updated: "2026-03-24T23:16:40.961Z"
+status: Ready to execute
+stopped_at: Completed 28-01-PLAN.md
+last_updated: "2026-03-25T13:08:25.882Z"
 progress:
   total_phases: 5
   completed_phases: 4
-  total_plans: 7
-  completed_plans: 7
+  total_plans: 9
+  completed_plans: 8
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Kids learn chess fundamentals through fun, progressive puzzles while learning Hebrew chess vocabulary
-**Current focus:** Phase 27 — cloud-read-and-merge
+**Current focus:** Phase 28 — polish
 
 ## Current Position
 
-Phase: 28
-Plan: Not started
+Phase: 28 (polish) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -58,6 +58,8 @@ Recent decisions affecting current work:
 - [Phase 27]: page reload (window.location.reload) after merge — simpler than context invalidation, guarantees all 6 providers re-read localStorage
 - [Phase 27]: sessionStorage guard for merge idempotency per uid — re-merges after tab close to catch new cloud data from other devices
 - [Phase 27]: all-or-nothing RTDB fetch in useMergeOnSignIn — exits early on fetch failure to prevent partial merge
+- [Phase 28-polish]: onSyncComplete kept out of useEffect dep array to avoid resetting 30s debounce; ref pattern used instead
+- [Phase 28-polish]: fetchAndMergeToLocalStorage extracted as named export without reload; callers decide whether to reload (runMerge reloads, visibility re-fetch does not)
 
 ### Pending Todos
 
@@ -81,9 +83,10 @@ None yet.
 | Phase 26-cloud-write-path P02 | 5 | 2 tasks | 6 files |
 | Phase 27 P01 | 147s | 2 tasks | 3 files |
 | Phase 27 P02 | 326s | 2 tasks | 2 files |
+| Phase 28-polish P01 | 300 | 2 tasks | 4 files |
 
 ## Session Continuity
 
-Last session: 2026-03-24T23:12:02.180Z
-Stopped at: Completed 27-02-PLAN.md
+Last session: 2026-03-25T13:08:25.880Z
+Stopped at: Completed 28-01-PLAN.md
 Resume file: None
