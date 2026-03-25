@@ -4,6 +4,7 @@ import React, { createContext, useContext, ReactNode } from 'react';
 import { useStreak, UseStreakReturn } from '@/hooks/useStreak';
 import { useProgressSync } from '@/hooks/useProgressSync';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { useSyncStatusContext } from '@/contexts/SyncStatusContext';
 
 const StreakContext = createContext<UseStreakReturn | null>(null);
 
@@ -14,8 +15,9 @@ interface StreakProviderProps {
 export function StreakProvider({ children }: StreakProviderProps) {
   const streakValue = useStreak();
   const { user } = useAuthContext();
+  const { notifySaved } = useSyncStatusContext();
 
-  useProgressSync(user?.uid ?? null, 'streak', streakValue.streakData);
+  useProgressSync(user?.uid ?? null, 'streak', streakValue.streakData, notifySaved);
 
   return (
     <StreakContext.Provider value={streakValue}>

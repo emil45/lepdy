@@ -4,6 +4,7 @@ import React, { createContext, useContext, useMemo, ReactNode } from 'react';
 import { useNumbersProgress, UseNumbersProgressReturn } from '@/hooks/useNumbersProgress';
 import { useProgressSync } from '@/hooks/useProgressSync';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { useSyncStatusContext } from '@/contexts/SyncStatusContext';
 
 const NumbersProgressContext = createContext<UseNumbersProgressReturn | null>(null);
 
@@ -14,13 +15,14 @@ interface NumbersProgressProviderProps {
 export function NumbersProgressProvider({ children }: NumbersProgressProviderProps) {
   const numbersProgressValue = useNumbersProgress();
   const { user } = useAuthContext();
+  const { notifySaved } = useSyncStatusContext();
 
   const syncData = useMemo(() => ({
     heardItemIds: Array.from(numbersProgressValue.heardNumberIds),
     totalClicks: numbersProgressValue.totalClicks,
   }), [numbersProgressValue.heardNumberIds, numbersProgressValue.totalClicks]);
 
-  useProgressSync(user?.uid ?? null, 'progress/numbers', syncData);
+  useProgressSync(user?.uid ?? null, 'progress/numbers', syncData, notifySaved);
 
   return (
     <NumbersProgressContext.Provider value={numbersProgressValue}>

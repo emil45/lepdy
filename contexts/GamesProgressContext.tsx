@@ -4,6 +4,7 @@ import React, { createContext, useContext, useMemo, ReactNode } from 'react';
 import { useGamesProgress, UseGamesProgressReturn } from '@/hooks/useGamesProgress';
 import { useProgressSync } from '@/hooks/useProgressSync';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { useSyncStatusContext } from '@/contexts/SyncStatusContext';
 
 const GamesProgressContext = createContext<UseGamesProgressReturn | null>(null);
 
@@ -14,6 +15,7 @@ interface GamesProgressProviderProps {
 export function GamesProgressProvider({ children }: GamesProgressProviderProps) {
   const gamesProgressValue = useGamesProgress();
   const { user } = useAuthContext();
+  const { notifySaved } = useSyncStatusContext();
 
   const syncData = useMemo(() => ({
     completedGameTypes: Array.from(gamesProgressValue.completedGameTypes),
@@ -35,7 +37,7 @@ export function GamesProgressProvider({ children }: GamesProgressProviderProps) 
     gamesProgressValue.totalGamesCompleted,
   ]);
 
-  useProgressSync(user?.uid ?? null, 'progress/games', syncData);
+  useProgressSync(user?.uid ?? null, 'progress/games', syncData, notifySaved);
 
   return (
     <GamesProgressContext.Provider value={gamesProgressValue}>

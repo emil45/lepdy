@@ -4,6 +4,7 @@ import React, { createContext, useContext, useMemo, ReactNode } from 'react';
 import { useWordCollectionProgress, UseWordCollectionReturn } from '@/hooks/useWordCollectionProgress';
 import { useProgressSync } from '@/hooks/useProgressSync';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { useSyncStatusContext } from '@/contexts/SyncStatusContext';
 
 const WordCollectionContext = createContext<UseWordCollectionReturn | null>(null);
 
@@ -14,13 +15,14 @@ interface WordCollectionProviderProps {
 export function WordCollectionProvider({ children }: WordCollectionProviderProps) {
   const wordCollectionValue = useWordCollectionProgress();
   const { user } = useAuthContext();
+  const { notifySaved } = useSyncStatusContext();
 
   const syncData = useMemo(() => ({
     collectedWords: wordCollectionValue.collectedWords,
     totalWordsBuilt: wordCollectionValue.totalWordsBuilt,
   }), [wordCollectionValue.collectedWords, wordCollectionValue.totalWordsBuilt]);
 
-  useProgressSync(user?.uid ?? null, 'progress/words', syncData);
+  useProgressSync(user?.uid ?? null, 'progress/words', syncData, notifySaved);
 
   return (
     <WordCollectionContext.Provider value={wordCollectionValue}>
