@@ -123,19 +123,21 @@ function writeLocalStorage(
 }
 
 /**
- * Fetch cloud data, merge with localStorage using union strategy, write merged data
- * back to localStorage, then reload the page so all context providers re-read
- * the merged data from scratch.
+ * Fetch cloud data, merge with localStorage using union strategy, and write merged
+ * data back to localStorage — WITHOUT reloading the page.
  *
  * Does NOT write to RTDB — the existing useProgressSync hooks in each context
  * provider will pick up the merged localStorage data after reload and sync to RTDB
  * via the debounced write path.
+ *
+ * @param uid  Firebase Auth user UID.
+ * @returns    true if merge completed successfully, false if cloud fetch failed.
  */
-async function runMerge(uid: string): Promise<void> {
+export async function fetchAndMergeToLocalStorage(uid: string): Promise<boolean> {
   const cloud = await fetchCloudData(uid);
 
   // If cloud fetch failed, exit early — we cannot safely merge without cloud data.
-  if (cloud === null) return;
+  if (cloud === null) return false;
 
   const local = readLocalStorage();
 
@@ -166,8 +168,19 @@ async function runMerge(uid: string): Promise<void> {
 
   writeLocalStorage(mergedLetters, mergedNumbers, mergedAnimals, mergedGames, mergedWords, mergedStreak);
 
-  // Force all context providers to re-initialize from merged localStorage data.
-  window.location.reload();
+  return true;
+}
+
+/**
+ * Fetch cloud data, merge with localStorage, then reload the page so all context
+ * providers re-read the merged data from scratch.
+ */
+async function runMerge(uid: string): Promise<void> {
+  const merged = await fetchAndMergeToLocalStorage(uid);
+  if (merged) {
+    // Force all context providers to re-initialize from merged localStorage data.
+    window.location.reload();
+  }
 }
 
 /**
