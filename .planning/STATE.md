@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Cloud Sync
-status: Ready to execute
-stopped_at: Completed 28-01-PLAN.md
-last_updated: "2026-03-25T13:08:25.882Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 28-02-PLAN.md
+last_updated: "2026-03-25T13:16:38.480Z"
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -60,6 +60,8 @@ Recent decisions affecting current work:
 - [Phase 27]: all-or-nothing RTDB fetch in useMergeOnSignIn — exits early on fetch failure to prevent partial merge
 - [Phase 28-polish]: onSyncComplete kept out of useEffect dep array to avoid resetting 30s debounce; ref pattern used instead
 - [Phase 28-polish]: fetchAndMergeToLocalStorage extracted as named export without reload; callers decide whether to reload (runMerge reloads, visibility re-fetch does not)
+- [Phase 28-polish]: SyncStatusProvider mounted inside AuthProvider (not providers.tsx) — keeps sync status lifecycle tied to auth and means all progress provider children can call useSyncStatusContext() without extra wrapping
+- [Phase 28-polish]: Sync status indicators placed inside user ? ternary branch in SettingsDrawer — cleanest guarantee they only show for authenticated users
 
 ### Pending Todos
 
@@ -84,9 +86,10 @@ None yet.
 | Phase 27 P01 | 147s | 2 tasks | 3 files |
 | Phase 27 P02 | 326s | 2 tasks | 2 files |
 | Phase 28-polish P01 | 300 | 2 tasks | 4 files |
+| Phase 28-polish P02 | 8 | 2 tasks | 11 files |
 
 ## Session Continuity
 
-Last session: 2026-03-25T13:08:25.880Z
-Stopped at: Completed 28-01-PLAN.md
+Last session: 2026-03-25T13:16:38.478Z
+Stopped at: Completed 28-02-PLAN.md
 Resume file: None
