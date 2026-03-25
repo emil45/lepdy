@@ -5,12 +5,15 @@ import { useTranslations, useLocale } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
 import CloseIcon from '@mui/icons-material/Close';
 import GoogleIcon from '@mui/icons-material/Google';
+import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
+import CloudOffOutlined from '@mui/icons-material/CloudOffOutlined';
 import React, { useState, useEffect } from 'react';
 import { useDirection } from '@/hooks/useDirection';
 import { getDirection } from '@/i18n/config';
 import { useStreakContext } from '@/contexts/StreakContext';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useFeatureFlagContext } from '@/contexts/FeatureFlagContext';
+import { useSyncStatusContext } from '@/contexts/SyncStatusContext';
 
 interface SettingsDrawerProps {
   open: boolean;
@@ -30,6 +33,7 @@ const SettingsDrawer: React.FC<SettingsDrawerProps> = ({ open, toggleDrawer }) =
   const { getFlag } = useFeatureFlagContext();
   const cloudSyncEnabled = getFlag('cloudSyncEnabled');
   const { user, loading, signInWithGoogle, signOut } = useAuthContext();
+  const { showSaved, isOnline } = useSyncStatusContext();
   const [signInError, setSignInError] = useState(false);
 
   // Update drawer direction when drawer opens (but not during language changes)
@@ -209,29 +213,58 @@ const SettingsDrawer: React.FC<SettingsDrawerProps> = ({ open, toggleDrawer }) =
                   <Skeleton variant="text" width={120} height={24} />
                 </Box>
               ) : user ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, width: '100%' }}>
-                  <Avatar
-                    src={user.photoURL ?? undefined}
-                    sx={{ width: 32, height: 32 }}
-                  >
-                    {user.displayName?.[0] ?? '?'}
-                  </Avatar>
-                  <Typography
-                    variant="body2"
-                    color="secondary.main"
-                    sx={{ flex: 1, textAlign: direction === 'rtl' ? 'right' : 'left' }}
-                  >
-                    {user.displayName}
-                  </Typography>
-                  <Button
-                    variant="text"
-                    size="small"
-                    onClick={signOut}
-                    sx={{ color: 'secondary.main' }}
-                  >
-                    {t('home.cloudSync.signOutButton')}
-                  </Button>
-                </Box>
+                <>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, width: '100%' }}>
+                    <Avatar
+                      src={user.photoURL ?? undefined}
+                      sx={{ width: 32, height: 32 }}
+                    >
+                      {user.displayName?.[0] ?? '?'}
+                    </Avatar>
+                    <Typography
+                      variant="body2"
+                      color="secondary.main"
+                      sx={{ flex: 1, textAlign: direction === 'rtl' ? 'right' : 'left' }}
+                    >
+                      {user.displayName}
+                    </Typography>
+                    <Button
+                      variant="text"
+                      size="small"
+                      onClick={signOut}
+                      sx={{ color: 'secondary.main' }}
+                    >
+                      {t('home.cloudSync.signOutButton')}
+                    </Button>
+                  </Box>
+                  {/* Sync status indicators — only for signed-in users */}
+                  <Box sx={{ mt: 1, minHeight: 20 }}>
+                    {showSaved && (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 0.5,
+                          opacity: 1,
+                          transition: 'opacity 0.3s',
+                        }}
+                      >
+                        <CheckCircleOutline sx={{ fontSize: 14, color: 'success.main' }} />
+                        <Typography variant="caption" color="success.main">
+                          {t('home.cloudSync.saved')}
+                        </Typography>
+                      </Box>
+                    )}
+                    {!isOnline && !showSaved && (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <CloudOffOutlined sx={{ fontSize: 14, color: 'warning.main' }} />
+                        <Typography variant="caption" color="warning.main">
+                          {t('home.cloudSync.savedLocally')}
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+                </>
               ) : (
                 <Box
                   sx={{
