@@ -128,6 +128,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         he: BASE_URL,
         en: `${BASE_URL}/en`,
         ru: `${BASE_URL}/ru`,
+        'x-default': BASE_URL,
       },
     },
     openGraph: {

@@ -358,3 +358,20 @@ test.describe('Locales', () => {
     await expect(page.locator('button:has-text("буквы")')).toBeVisible();
   });
 });
+
+test.describe('SEO', () => {
+  test('category page exposes ItemList structured data', async ({ page }) => {
+    await page.goto('/shapes');
+    // Playwright's text engine ignores <script> content, so read textContent.
+    const hasItemList = await page
+      .locator('script[type="application/ld+json"]')
+      .evaluateAll((nodes) => nodes.some((n) => (n.textContent || '').includes('"@type":"ItemList"')));
+    expect(hasItemList).toBe(true);
+  });
+
+  test('dynamic OG image route returns a PNG', async ({ request }) => {
+    const res = await request.get('/api/og?title=Test');
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toContain('image/png');
+  });
+});

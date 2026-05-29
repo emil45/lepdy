@@ -1,6 +1,7 @@
 import { setRequestLocale } from 'next-intl/server';
 import { generatePageMetadata } from '@/lib/seo';
 import CategoryPage from '@/components/CategoryPage';
+import CategorySeoSection from '@/components/CategorySeoSection';
 import numbers from '@/data/numbers';
 
 type Props = { params: Promise<{ locale: string }> };
@@ -15,14 +16,25 @@ export default async function NumbersPage({ params }: Props) {
   setRequestLocale(locale);
 
   return (
-    <CategoryPage
-      pageName="numbers"
-      items={numbers}
-      translationPrefix="numbers"
-      audioPath="numbers"
-      renderMode="text"
-      hasFullName={true}
-      category="numbers"
-    />
+    <>
+      <CategoryPage
+        pageName="numbers"
+        items={numbers}
+        translationPrefix="numbers"
+        audioPath="numbers"
+        renderMode="text"
+        hasFullName={true}
+        category="numbers"
+      />
+      <CategorySeoSection
+        locale={locale}
+        titleKey="seo.pages.numbers.listTitle"
+        path="/numbers"
+        breadcrumbKey="home.buttons.numbers"
+        translationPrefix="numbers"
+        itemIds={numbers.map((i) => i.id)}
+        mode="symbol"
+      />
+    </>
   );
 }

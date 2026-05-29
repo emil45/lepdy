@@ -6,14 +6,11 @@ import Script from 'next/script';
 
 const BASE_URL = 'https://www.lepdy.com';
 
-// Pages that should have breadcrumbs (main categories + games)
+// Pages that should have breadcrumbs here. Category pages (letters, numbers,
+// colors, shapes, animals, food) emit their own breadcrumb + ItemList schema
+// server-side via CategorySeoSection, so they are intentionally excluded to
+// avoid duplicate BreadcrumbList structured data.
 const BREADCRUMB_PAGES: Record<string, string> = {
-  letters: 'home.buttons.letters',
-  numbers: 'home.buttons.numbers',
-  colors: 'home.buttons.colors',
-  shapes: 'home.buttons.shapes',
-  animals: 'home.buttons.animals',
-  food: 'home.buttons.food',
   games: 'home.buttons.games',
   stickers: 'home.buttons.stickers',
 };

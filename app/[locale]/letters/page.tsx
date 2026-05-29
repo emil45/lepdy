@@ -1,6 +1,7 @@
 import { setRequestLocale } from 'next-intl/server';
 import { generatePageMetadata } from '@/lib/seo';
 import CategoryPage from '@/components/CategoryPage';
+import CategorySeoSection from '@/components/CategorySeoSection';
 import letters from '@/data/letters';
 import Script from 'next/script';
 
@@ -29,6 +30,15 @@ export default async function LettersPage({ params }: Props) {
         forceRTL={true}
         hasFullName={true}
         category="letters"
+      />
+      <CategorySeoSection
+        locale={locale}
+        titleKey="seo.pages.letters.listTitle"
+        path="/letters"
+        breadcrumbKey="home.buttons.letters"
+        translationPrefix="letters"
+        itemIds={letters.map((i) => i.id)}
+        mode="symbol"
       />
     </>
   );

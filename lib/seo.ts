@@ -19,6 +19,9 @@ export async function generatePageMetadata(
   const t = await getTranslations({ locale, namespace: `seo.pages.${pageName}` });
   const currentUrl = getLocaleUrl(locale, path);
 
+  // Per-page dynamic OG image (localized title) with static fallback baked in.
+  const ogImageUrl = `${BASE_URL}/api/og?title=${encodeURIComponent(t('title'))}`;
+
   return {
     title: t('title'),
     description: t('description'),
@@ -28,6 +31,7 @@ export async function generatePageMetadata(
         he: `${BASE_URL}${path}`,
         en: `${BASE_URL}/en${path}`,
         ru: `${BASE_URL}/ru${path}`,
+        'x-default': `${BASE_URL}${path}`,
       },
     },
     openGraph: {
@@ -39,7 +43,7 @@ export async function generatePageMetadata(
       type: 'website',
       images: [
         {
-          url: `${BASE_URL}/og-image.png`,
+          url: ogImageUrl,
           width: 1200,
           height: 630,
           alt: t('title'),
@@ -50,7 +54,7 @@ export async function generatePageMetadata(
       card: 'summary_large_image',
       title: t('title'),
       description: t('description'),
-      images: [`${BASE_URL}/og-image.png`],
+      images: [ogImageUrl],
     },
   };
 }

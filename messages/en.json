@@ -597,39 +597,45 @@
     "pages": {
       "letters": {
         "title": "Learn Hebrew Alphabet for Kids - Alef Bet Letters",
-        "description": "Teach your child the Hebrew alphabet! All 22 Alef Bet letters with authentic Israeli pronunciation. Interactive Hebrew letters for toddlers and preschoolers.",
+        "description": "Learn all 22 Hebrew alphabet letters - alef, bet, gimel through tav, with authentic Israeli child pronunciation. Interactive Alef Bet learning for toddlers.",
         "pageTitle": "Learn Hebrew Letters - Alef Bet",
-        "pageDescription": "Click each letter to hear the correct Hebrew pronunciation"
+        "pageDescription": "Click each letter to hear the correct Hebrew pronunciation",
+        "listTitle": "All Hebrew Alphabet Letters"
       },
       "numbers": {
         "title": "Hebrew Numbers for Kids - Learn to Count 1-10 in Hebrew",
-        "description": "Teach kids Hebrew numbers 1-10 with native pronunciation. Interactive counting games perfect for toddlers learning Hebrew.",
+        "description": "Learn numbers in Hebrew 1-10 - one, two, three up to ten, with native pronunciation. Interactive counting for toddlers and preschoolers.",
         "pageTitle": "Learn Hebrew Numbers",
-        "pageDescription": "Click each number to hear how to say it in Hebrew"
+        "pageDescription": "Click each number to hear how to say it in Hebrew",
+        "listTitle": "All Numbers from 1 to 10 in Hebrew"
       },
       "colors": {
         "title": "Learn Colors in Hebrew for Kids - Hebrew Color Names",
-        "description": "Teach your child colors in Hebrew. Click each color to hear its Hebrew name with authentic pronunciation. Fun for toddlers!",
+        "description": "Learn colors in Hebrew - red, blue, green, yellow, orange, purple and more. Tap each color to hear its name. A full list of Hebrew colors for kids.",
         "pageTitle": "Learn Colors in Hebrew",
-        "pageDescription": "Click each color to hear its Hebrew name"
+        "pageDescription": "Click each color to hear its Hebrew name",
+        "listTitle": "All Colors in Hebrew"
       },
       "shapes": {
         "title": "Learn Shapes in Hebrew for Kids - Circle, Square, Triangle",
-        "description": "Teach kids shapes in Hebrew - circle, square, triangle and more. Interactive shape learning with native Hebrew pronunciation.",
+        "description": "Learn shapes in Hebrew - circle, square, triangle, rectangle, star, heart and 15 more. Tap each shape to hear its Hebrew name. Interactive shapes for kids.",
         "pageTitle": "Learn Shapes in Hebrew",
-        "pageDescription": "Click each shape to hear its Hebrew name"
+        "pageDescription": "Click each shape to hear its Hebrew name",
+        "listTitle": "All Shapes in Hebrew"
       },
       "animals": {
         "title": "Hebrew Animal Names for Kids - Learn Animals in Hebrew",
-        "description": "Teach kids animal names in Hebrew. Dog, cat, lion and more with real animal sounds. Interactive Hebrew vocabulary for children.",
+        "description": "Learn animal names in Hebrew - dog, cat, lion, elephant, cow, horse and 20 animals with real animal sounds. Hebrew animal vocabulary for children.",
         "pageTitle": "Learn Animal Names in Hebrew",
-        "pageDescription": "Click each animal to hear its sound"
+        "pageDescription": "Click each animal to hear its sound",
+        "listTitle": "All Animal Names in Hebrew"
       },
       "food": {
         "title": "Learn Food Words in Hebrew for Kids",
-        "description": "Teach kids food names in Hebrew. Apple, banana, bread and more with native pronunciation. Build Hebrew vocabulary through play!",
+        "description": "Learn food names in Hebrew - apple, banana, orange, carrot, bread, cheese and more. Build Hebrew vocabulary for kids through playful learning.",
         "pageTitle": "Learn Food Names in Hebrew",
-        "pageDescription": "Click each food to hear its Hebrew name"
+        "pageDescription": "Click each food to hear its Hebrew name",
+        "listTitle": "All Food Names in Hebrew"
       },
       "games": {
         "title": "Hebrew Learning Games for Kids - Educational Games",
@@ -1141,5 +1147,25 @@
     "storageError": "Progress may not save",
     "noNewWords": "No new words - you've practiced them all!",
     "noWordsInCategory": "No words in this category yet"
+  },
+  "learnPage": {
+    "heading": "How to Teach Kids Hebrew at Home",
+    "intro": "Teaching Hebrew to children is far easier when it happens through play. Lepdy offers a simple, fun way to teach your child letters, numbers, colors, shapes and animals — all with authentic pronunciation by a real Israeli child. Here is a short guide to help you get started.",
+    "stepsTitle": "Where to start?",
+    "step1Title": "Start with the letters",
+    "step1Text": "Introduce your child to the 22 Alef Bet letters, one at a time, with clear pronunciation.",
+    "step2Title": "Move on to numbers",
+    "step2Text": "Learn to count from 1 to 10 in Hebrew using pictures and sounds.",
+    "step3Title": "Discover colors and shapes",
+    "step3Text": "Expand vocabulary with everyday colors and shapes children already recognize.",
+    "step4Title": "Play and learn",
+    "step4Text": "Reinforce knowledge through fun educational games made for young children.",
+    "topicsTitle": "What you can learn on Lepdy",
+    "tipsTitle": "Tips for parents",
+    "tip1": "Learn a little every day — a few consistent minutes beat one long lesson.",
+    "tip2": "Review yesterday's words before moving forward.",
+    "tip3": "Let your child tap and listen on their own — active learning sticks.",
+    "ctaTitle": "Ready to begin?",
+    "ctaButton": "Start learning now"
   }
 }
