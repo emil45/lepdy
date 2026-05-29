@@ -702,6 +702,10 @@
       "chessGame": {
         "title": "Chess - Lepdy",
         "description": "Learn chess in Hebrew"
+      },
+      "letterRain": {
+        "title": "Letter Rain Game - Hebrew Alphabet for Kids",
+        "description": "Catch the correct falling Hebrew letters before they reach the ground! A fun alphabet game for kids ages 5-7 learning the Hebrew Alef Bet."
       }
     },
     "pageTitle": "Hebrew for Kids - Learn Alef Bet, Numbers & Colors",
