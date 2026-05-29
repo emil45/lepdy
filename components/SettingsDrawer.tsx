@@ -415,6 +415,23 @@ const SettingsDrawer: React.FC<SettingsDrawerProps> = ({ open, toggleDrawer }) =
             {t('home.settings.contact')}
           </Typography>
         </Box>
+
+        {/* App version — handy for tracking which build is live */}
+        {process.env.NEXT_PUBLIC_APP_VERSION && (
+          <Typography
+            variant="caption"
+            sx={{
+              mt: 2,
+              width: '100%',
+              textAlign: 'center',
+              color: 'text.secondary',
+              opacity: 0.6,
+              direction: 'ltr',
+            }}
+          >
+            v{process.env.NEXT_PUBLIC_APP_VERSION}
+          </Typography>
+        )}
       </Box>
     </Drawer>
   );

@@ -128,3 +128,12 @@ E2E tests using Playwright in `e2e/app.spec.ts`. Tests run with 1 worker to avoi
 - Adding items to existing categories (same component)
 
 **Run tests before deploying** - if all pass, site works.
+
+## Version bumping
+
+Every shipped feature/fix bumps the version in `package.json` (`"version"`). The value is baked into `NEXT_PUBLIC_APP_VERSION` by `next.config.ts` and shown at the bottom of the settings drawer, so the live build is always identifiable.
+
+- **Patch** (`x.y.Z`) for fixes and small changes.
+- **Minor** (`x.Y.0`) for new features.
+- Include the new version in the commit message, e.g. `feat: add letter-tracing game (v0.4.0)`.
+- Skip only for pure docs/config commits.
