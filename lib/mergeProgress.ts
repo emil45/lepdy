@@ -2,10 +2,48 @@ import { CategoryProgressData } from '@/hooks/useCategoryProgress';
 import { GamesProgressData } from '@/hooks/useGamesProgress';
 import { StreakData } from '@/hooks/useStreak';
 import { CollectedWord } from '@/hooks/useWordCollectionProgress';
+import { GameType } from '@/models/amplitudeEvents';
 
 export interface WordCollectionData {
   collectedWords: CollectedWord[];
   totalWordsBuilt: number;
+}
+
+function getDefaultGamesProgressData(): GamesProgressData {
+  return {
+    completedGameTypes: [],
+    memoryWins: 0,
+    simonHighScore: 0,
+    speedChallengeHighScores: 0,
+    wordBuilderCompletions: 0,
+    soundMatchingPerfect: 0,
+    countingGameCompletions: 0,
+    totalGamesCompleted: 0,
+  };
+}
+
+function normalizeNumber(value: unknown): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : 0;
+}
+
+function normalizeGameTypes(value: unknown): GameType[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((gameType): gameType is GameType => typeof gameType === 'string');
+}
+
+function normalizeGamesProgressData(data: GamesProgressData | null): GamesProgressData | null {
+  if (data === null) return null;
+
+  return {
+    completedGameTypes: normalizeGameTypes(data.completedGameTypes),
+    memoryWins: normalizeNumber(data.memoryWins),
+    simonHighScore: normalizeNumber(data.simonHighScore),
+    speedChallengeHighScores: normalizeNumber(data.speedChallengeHighScores),
+    wordBuilderCompletions: normalizeNumber(data.wordBuilderCompletions),
+    soundMatchingPerfect: normalizeNumber(data.soundMatchingPerfect),
+    countingGameCompletions: normalizeNumber(data.countingGameCompletions),
+    totalGamesCompleted: normalizeNumber(data.totalGamesCompleted),
+  };
 }
 
 /**
@@ -40,32 +78,46 @@ export function mergeGamesProgress(
   local: GamesProgressData | null,
   cloud: GamesProgressData | null
 ): GamesProgressData {
-  if (local === null && cloud === null) {
-    return {
-      completedGameTypes: [],
-      memoryWins: 0,
-      simonHighScore: 0,
-      speedChallengeHighScores: 0,
-      wordBuilderCompletions: 0,
-      soundMatchingPerfect: 0,
-      countingGameCompletions: 0,
-      totalGamesCompleted: 0,
-    };
-  }
-  if (local === null) return cloud!;
-  if (cloud === null) return local;
+  const normalizedLocal = normalizeGamesProgressData(local);
+  const normalizedCloud = normalizeGamesProgressData(cloud);
 
-  const completedGameTypes = [...new Set([...local.completedGameTypes, ...cloud.completedGameTypes])];
+  if (normalizedLocal === null && normalizedCloud === null) {
+    return getDefaultGamesProgressData();
+  }
+  if (normalizedLocal === null) return normalizedCloud!;
+  if (normalizedCloud === null) return normalizedLocal;
+
+  const completedGameTypes = [
+    ...new Set([
+      ...normalizedLocal.completedGameTypes,
+      ...normalizedCloud.completedGameTypes,
+    ]),
+  ];
 
   return {
     completedGameTypes,
-    memoryWins: Math.max(local.memoryWins, cloud.memoryWins),
-    simonHighScore: Math.max(local.simonHighScore, cloud.simonHighScore),
-    speedChallengeHighScores: Math.max(local.speedChallengeHighScores, cloud.speedChallengeHighScores),
-    wordBuilderCompletions: Math.max(local.wordBuilderCompletions, cloud.wordBuilderCompletions),
-    soundMatchingPerfect: Math.max(local.soundMatchingPerfect, cloud.soundMatchingPerfect),
-    countingGameCompletions: Math.max(local.countingGameCompletions, cloud.countingGameCompletions),
-    totalGamesCompleted: Math.max(local.totalGamesCompleted, cloud.totalGamesCompleted),
+    memoryWins: Math.max(normalizedLocal.memoryWins, normalizedCloud.memoryWins),
+    simonHighScore: Math.max(normalizedLocal.simonHighScore, normalizedCloud.simonHighScore),
+    speedChallengeHighScores: Math.max(
+      normalizedLocal.speedChallengeHighScores,
+      normalizedCloud.speedChallengeHighScores
+    ),
+    wordBuilderCompletions: Math.max(
+      normalizedLocal.wordBuilderCompletions,
+      normalizedCloud.wordBuilderCompletions
+    ),
+    soundMatchingPerfect: Math.max(
+      normalizedLocal.soundMatchingPerfect,
+      normalizedCloud.soundMatchingPerfect
+    ),
+    countingGameCompletions: Math.max(
+      normalizedLocal.countingGameCompletions,
+      normalizedCloud.countingGameCompletions
+    ),
+    totalGamesCompleted: Math.max(
+      normalizedLocal.totalGamesCompleted,
+      normalizedCloud.totalGamesCompleted
+    ),
   };
 }
 

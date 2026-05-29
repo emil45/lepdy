@@ -130,6 +130,34 @@ describe('mergeGamesProgress', () => {
     expect(result.countingGameCompletions).toBe(4);
     expect(result.totalGamesCompleted).toBe(15);
   });
+
+  it('tolerates missing completedGameTypes on cloud data', () => {
+    const local = makeGamesData({ completedGameTypes: ['guess-game'], memoryWins: 2 });
+    const cloud = {
+      memoryWins: 5,
+      simonHighScore: 3,
+    } as unknown as GamesProgressData;
+
+    const result = mergeGamesProgress(local, cloud);
+
+    expect(result.completedGameTypes).toEqual(['guess-game']);
+    expect(result.memoryWins).toBe(5);
+    expect(result.simonHighScore).toBe(3);
+  });
+
+  it('normalizes malformed single-sided game progress data', () => {
+    const malformedCloud = {
+      completedGameTypes: null,
+      memoryWins: '7',
+      totalGamesCompleted: 4,
+    } as unknown as GamesProgressData;
+
+    const result = mergeGamesProgress(null, malformedCloud);
+
+    expect(result.completedGameTypes).toEqual([]);
+    expect(result.memoryWins).toBe(0);
+    expect(result.totalGamesCompleted).toBe(4);
+  });
 });
 
 // ─── mergeWordCollection ──────────────────────────────────────────────────────

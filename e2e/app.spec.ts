@@ -13,6 +13,29 @@ test.describe('Homepage', () => {
     await expect(page.locator('button:has-text("אותיות")')).toBeVisible();
     await expect(page.locator('button:has-text("משחקים")')).toBeVisible();
   });
+
+  test('install prompt stays dismissed after navigation', async ({ page }) => {
+    await page.addInitScript(() => {
+      if (!sessionStorage.getItem('lepdy_install_prompt_seeded')) {
+        localStorage.setItem('lepdy_visit_count', '3');
+        localStorage.removeItem('lepdy_install_dismissed');
+        sessionStorage.removeItem('lepdy_install_visit_tracked');
+        sessionStorage.setItem('lepdy_install_prompt_seeded', 'true');
+      }
+      Object.defineProperty(navigator, 'userAgent', {
+        configurable: true,
+        get: () => 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)',
+      });
+    });
+
+    await page.goto('/en');
+    await expect(page.getByRole('heading', { name: 'Install Lepdy!' })).toBeVisible();
+    await page.getByRole('button', { name: 'Close' }).click();
+    await expect(page.getByRole('heading', { name: 'Install Lepdy!' })).toBeHidden();
+
+    await page.goto('/en/about');
+    await expect(page.getByRole('heading', { name: 'Install Lepdy!' })).toHaveCount(0);
+  });
 });
 
 test.describe('Category pages load', () => {

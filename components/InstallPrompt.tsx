@@ -11,6 +11,7 @@ import { playSound, AudioSounds } from '@/utils/audio';
 
 const VISIT_COUNT_KEY = 'lepdy_visit_count';
 const INSTALL_DISMISSED_KEY = 'lepdy_install_dismissed';
+const SESSION_VISIT_TRACKED_KEY = 'lepdy_install_visit_tracked';
 const VISITS_BEFORE_PROMPT = 3;
 
 // Bouncy animation for the icon
@@ -46,6 +47,14 @@ const SPARKLE_POSITIONS = [
   { top: 55, left: 85, duration: 2.3, delay: 1.6 },
 ];
 
+function isPromptDismissed() {
+  return localStorage.getItem(INSTALL_DISMISSED_KEY) !== null;
+}
+
+function isStandaloneMode() {
+  return window.matchMedia('(display-mode: standalone)').matches;
+}
+
 export default function InstallPrompt() {
   const t = useTranslations('installPrompt');
   const [showPrompt, setShowPrompt] = useState(false);
@@ -66,26 +75,30 @@ export default function InstallPrompt() {
 
     try {
       // Check if already dismissed
-      const dismissed = localStorage.getItem(INSTALL_DISMISSED_KEY);
-      if (dismissed) return;
+      if (isPromptDismissed()) return;
 
       // Check if app is already installed (standalone mode)
-      if (window.matchMedia('(display-mode: standalone)').matches) return;
+      if (isStandaloneMode()) return;
 
-      // Increment visit count
-      const currentCount = parseInt(localStorage.getItem(VISIT_COUNT_KEY) || '0', 10);
-      const newCount = currentCount + 1;
-      localStorage.setItem(VISIT_COUNT_KEY, String(newCount));
+      const alreadyTrackedThisSession = sessionStorage.getItem(SESSION_VISIT_TRACKED_KEY);
+      let newCount = parseInt(localStorage.getItem(VISIT_COUNT_KEY) || '0', 10);
+
+      if (!alreadyTrackedThisSession) {
+        newCount += 1;
+        localStorage.setItem(VISIT_COUNT_KEY, String(newCount));
+        sessionStorage.setItem(SESSION_VISIT_TRACKED_KEY, 'true');
+      }
 
       // Only show after required visits
       if (newCount < VISITS_BEFORE_PROMPT) return;
 
       // Detect iOS
-      const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+      const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window);
       setIsIOS(isIOSDevice);
 
       // On iOS, show manual instructions immediately
       if (isIOSDevice) {
+        if (isPromptDismissed() || isStandaloneMode()) return;
         setShowPrompt(true);
         return;
       }
@@ -93,6 +106,7 @@ export default function InstallPrompt() {
       // On other platforms, listen for beforeinstallprompt
       const handleBeforeInstallPrompt = (e: Event) => {
         e.preventDefault();
+        if (isPromptDismissed() || isStandaloneMode()) return;
         setDeferredPrompt(e as BeforeInstallPromptEvent);
         setShowPrompt(true);
       };
@@ -115,6 +129,12 @@ export default function InstallPrompt() {
     const handleAppInstalled = () => {
       setShowPrompt(false);
       setDeferredPrompt(null);
+
+      try {
+        localStorage.setItem(INSTALL_DISMISSED_KEY, new Date().toISOString());
+      } catch {
+        // localStorage may be unavailable
+      }
     };
 
     window.addEventListener('appinstalled', handleAppInstalled);
@@ -145,6 +165,7 @@ export default function InstallPrompt() {
 
   const handleDismiss = useCallback(() => {
     setShowPrompt(false);
+    setDeferredPrompt(null);
 
     try {
       localStorage.setItem(INSTALL_DISMISSED_KEY, new Date().toISOString());
