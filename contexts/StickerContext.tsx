@@ -33,7 +33,16 @@ export function StickerProvider({ children }: StickerProviderProps) {
     earnedStickerIds: Array.from(stickerValue.earnedStickerIds),
   }), [stickerValue.earnedStickerIds]);
 
-  useProgressSync(user?.uid ?? null, 'progress/stickers', syncData, notifySaved);
+  useProgressSync(
+    user?.uid ?? null,
+    'progress/stickers',
+    syncData,
+    notifySaved,
+    {
+      debounceMs: 0,
+      flushOnBackground: true,
+    }
+  );
 
   return (
     <StickerContext.Provider value={stickerValue}>
