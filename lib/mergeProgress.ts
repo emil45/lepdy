@@ -2,11 +2,18 @@ import { CategoryProgressData } from '@/hooks/useCategoryProgress';
 import { GamesProgressData } from '@/hooks/useGamesProgress';
 import { StreakData } from '@/hooks/useStreak';
 import { CollectedWord } from '@/hooks/useWordCollectionProgress';
-import { GameType } from '@/models/amplitudeEvents';
+import type { GameType } from '@/models/amplitudeEvents';
+import type { StickerData } from '@/hooks/useStickers';
 
 export interface WordCollectionData {
   collectedWords: CollectedWord[];
   totalWordsBuilt: number;
+}
+
+function getDefaultStickerData(): StickerData {
+  return {
+    earnedStickerIds: [],
+  };
 }
 
 function getDefaultGamesProgressData(): GamesProgressData {
@@ -43,6 +50,19 @@ function normalizeGamesProgressData(data: GamesProgressData | null): GamesProgre
     soundMatchingPerfect: normalizeNumber(data.soundMatchingPerfect),
     countingGameCompletions: normalizeNumber(data.countingGameCompletions),
     totalGamesCompleted: normalizeNumber(data.totalGamesCompleted),
+  };
+}
+
+function normalizeStickerIds(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((stickerId): stickerId is string => typeof stickerId === 'string');
+}
+
+function normalizeStickerData(data: StickerData | null): StickerData | null {
+  if (data === null) return null;
+
+  return {
+    earnedStickerIds: normalizeStickerIds(data.earnedStickerIds),
   };
 }
 
@@ -118,6 +138,34 @@ export function mergeGamesProgress(
       normalizedLocal.totalGamesCompleted,
       normalizedCloud.totalGamesCompleted
     ),
+  };
+}
+
+/**
+ * Merge two StickerData objects using union strategy.
+ * - earnedStickerIds: union of both sets
+ * - Handles null inputs and malformed arrays gracefully
+ */
+export function mergeStickerData(
+  local: StickerData | null,
+  cloud: StickerData | null
+): StickerData {
+  const normalizedLocal = normalizeStickerData(local);
+  const normalizedCloud = normalizeStickerData(cloud);
+
+  if (normalizedLocal === null && normalizedCloud === null) {
+    return getDefaultStickerData();
+  }
+  if (normalizedLocal === null) return normalizedCloud!;
+  if (normalizedCloud === null) return normalizedLocal;
+
+  return {
+    earnedStickerIds: [
+      ...new Set([
+        ...normalizedLocal.earnedStickerIds,
+        ...normalizedCloud.earnedStickerIds,
+      ]),
+    ],
   };
 }
 

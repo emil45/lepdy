@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   mergeCategoryProgress,
   mergeGamesProgress,
+  mergeStickerData,
   mergeWordCollection,
   mergeStreak,
   WordCollectionData,
@@ -10,6 +11,7 @@ import { CategoryProgressData } from '@/hooks/useCategoryProgress';
 import { GamesProgressData } from '@/hooks/useGamesProgress';
 import { StreakData } from '@/hooks/useStreak';
 import { CollectedWord } from '@/hooks/useWordCollectionProgress';
+import { StickerData } from '@/hooks/useStickers';
 
 // ─── mergeCategoryProgress ───────────────────────────────────────────────────
 
@@ -157,6 +159,47 @@ describe('mergeGamesProgress', () => {
     expect(result.completedGameTypes).toEqual([]);
     expect(result.memoryWins).toBe(0);
     expect(result.totalGamesCompleted).toBe(4);
+  });
+});
+
+// ─── mergeStickerData ────────────────────────────────────────────────────────
+
+describe('mergeStickerData', () => {
+  function makeStickerData(overrides: Partial<StickerData> = {}): StickerData {
+    return {
+      earnedStickerIds: [],
+      ...overrides,
+    };
+  }
+
+  it('unions earned sticker ids from local and cloud', () => {
+    const local = makeStickerData({ earnedStickerIds: ['letters_first'] });
+    const cloud = makeStickerData({ earnedStickerIds: ['numbers_one'] });
+
+    const result = mergeStickerData(local, cloud);
+
+    expect(result.earnedStickerIds).toContain('letters_first');
+    expect(result.earnedStickerIds).toContain('numbers_one');
+  });
+
+  it('does not duplicate earned sticker ids', () => {
+    const local = makeStickerData({ earnedStickerIds: ['letters_first', 'numbers_one'] });
+    const cloud = makeStickerData({ earnedStickerIds: ['numbers_one'] });
+
+    const result = mergeStickerData(local, cloud);
+
+    expect(result.earnedStickerIds.filter((id) => id === 'numbers_one')).toHaveLength(1);
+  });
+
+  it('tolerates malformed sticker data from cloud', () => {
+    const local = makeStickerData({ earnedStickerIds: ['letters_first'] });
+    const cloud = {
+      earnedStickerIds: null,
+    } as unknown as StickerData;
+
+    const result = mergeStickerData(local, cloud);
+
+    expect(result.earnedStickerIds).toEqual(['letters_first']);
   });
 });
 

@@ -1,8 +1,11 @@
 'use client';
 
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useMemo } from 'react';
 import { useStickers, UseStickersReturn } from '@/hooks/useStickers';
 import { useStickerUnlockDetector } from '@/hooks/useStickerUnlockDetector';
+import { useProgressSync } from '@/hooks/useProgressSync';
+import { useAuthContext } from '@/contexts/AuthContext';
+import { useSyncStatusContext } from '@/contexts/SyncStatusContext';
 
 const StickerContext = createContext<UseStickersReturn | null>(null);
 
@@ -23,6 +26,14 @@ export function StickerProvider({ children }: StickerProviderProps) {
   // No toast callback here - toast only shows from unlock detector,
   // not when peeling (user is already looking at the sticker!)
   const stickerValue = useStickers();
+  const { user } = useAuthContext();
+  const { notifySaved } = useSyncStatusContext();
+
+  const syncData = useMemo(() => ({
+    earnedStickerIds: Array.from(stickerValue.earnedStickerIds),
+  }), [stickerValue.earnedStickerIds]);
+
+  useProgressSync(user?.uid ?? null, 'progress/stickers', syncData, notifySaved);
 
   return (
     <StickerContext.Provider value={stickerValue}>

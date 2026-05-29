@@ -5,6 +5,7 @@ import type { User } from 'firebase/auth';
 import {
   mergeCategoryProgress,
   mergeGamesProgress,
+  mergeStickerData,
   mergeWordCollection,
   mergeStreak,
 } from '@/lib/mergeProgress';
@@ -12,6 +13,7 @@ import type { CategoryProgressData } from '@/hooks/useCategoryProgress';
 import type { GamesProgressData } from '@/hooks/useGamesProgress';
 import type { StreakData } from '@/hooks/useStreak';
 import type { WordCollectionData } from '@/lib/mergeProgress';
+import type { StickerData } from '@/hooks/useStickers';
 
 // sessionStorage key — stores the uid after a successful merge so we never
 // re-merge on token refresh or same-session re-render cycles.
@@ -24,6 +26,7 @@ const STORAGE_KEYS = {
   games: 'lepdy_games_progress',
   words: 'lepdy_word_collection',
   streak: 'lepdy_streak_data',
+  stickers: 'lepdy_sticker_data',
 } as const;
 
 // RTDB sub-paths under users/{uid}/
@@ -33,6 +36,7 @@ const RTDB_PATHS = [
   'progress/animals',
   'progress/games',
   'progress/words',
+  'progress/stickers',
   'streak',
 ] as const;
 
@@ -40,7 +44,7 @@ type RtdbPath = (typeof RTDB_PATHS)[number];
 type CloudData = Record<RtdbPath, unknown>;
 
 /**
- * Fetch all 6 RTDB paths in parallel under users/{uid}/.
+ * Fetch all 7 RTDB paths in parallel under users/{uid}/.
  * Returns null if the fetch fails, otherwise an object mapping each path to its data (or null
  * if that snapshot doesn't exist in RTDB yet).
  */
@@ -72,11 +76,12 @@ interface LocalData {
   animals: CategoryProgressData | null;
   games: GamesProgressData | null;
   words: WordCollectionData | null;
+  stickers: StickerData | null;
   streak: StreakData | null;
 }
 
 /**
- * Read all 6 localStorage keys and JSON.parse each one.
+ * Read all 7 localStorage keys and JSON.parse each one.
  * Returns null for any key that is missing or fails to parse.
  */
 function readLocalStorage(): LocalData {
@@ -95,6 +100,7 @@ function readLocalStorage(): LocalData {
     animals: parse<CategoryProgressData>(STORAGE_KEYS.animals),
     games: parse<GamesProgressData>(STORAGE_KEYS.games),
     words: parse<WordCollectionData>(STORAGE_KEYS.words),
+    stickers: parse<StickerData>(STORAGE_KEYS.stickers),
     streak: parse<StreakData>(STORAGE_KEYS.streak),
   };
 }
@@ -108,6 +114,7 @@ function writeLocalStorage(
   animals: CategoryProgressData,
   games: GamesProgressData,
   words: WordCollectionData,
+  stickers: StickerData,
   streak: StreakData
 ): void {
   try {
@@ -116,6 +123,7 @@ function writeLocalStorage(
     localStorage.setItem(STORAGE_KEYS.animals, JSON.stringify(animals));
     localStorage.setItem(STORAGE_KEYS.games, JSON.stringify(games));
     localStorage.setItem(STORAGE_KEYS.words, JSON.stringify(words));
+    localStorage.setItem(STORAGE_KEYS.stickers, JSON.stringify(stickers));
     localStorage.setItem(STORAGE_KEYS.streak, JSON.stringify(streak));
   } catch (error) {
     console.error('[useMergeOnSignIn] writeLocalStorage failed:', error);
@@ -161,12 +169,24 @@ export async function fetchAndMergeToLocalStorage(uid: string): Promise<boolean>
     local.words,
     cloud['progress/words'] as WordCollectionData | null
   );
+  const mergedStickers = mergeStickerData(
+    local.stickers,
+    cloud['progress/stickers'] as StickerData | null
+  );
   const mergedStreak = mergeStreak(
     local.streak,
     cloud['streak'] as StreakData | null
   );
 
-  writeLocalStorage(mergedLetters, mergedNumbers, mergedAnimals, mergedGames, mergedWords, mergedStreak);
+  writeLocalStorage(
+    mergedLetters,
+    mergedNumbers,
+    mergedAnimals,
+    mergedGames,
+    mergedWords,
+    mergedStickers,
+    mergedStreak
+  );
 
   return true;
 }
