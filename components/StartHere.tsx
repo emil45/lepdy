@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Box, Typography, Modal, Paper, Button, keyframes } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { playSound, AudioSounds } from '@/utils/audio';
@@ -28,6 +28,8 @@ const fadeIn = keyframes`
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
 `;
+
+const CONFETTI_COLORS = ['#ff6b35', '#ffa500', '#ffdd57', '#00c853', '#2196f3', '#9c27b0', '#e91e63'];
 
 type Step = 'welcome' | 'letter' | 'celebration' | 'done';
 
@@ -85,8 +87,18 @@ export default function StartHere({ onComplete }: StartHereProps) {
     onComplete?.();
   };
 
-  // Confetti pieces
-  const confettiColors = ['#ff6b35', '#ffa500', '#ffdd57', '#00c853', '#2196f3', '#9c27b0', '#e91e63'];
+  // Confetti pieces — precompute once so positions stay stable across re-renders
+  const confettiPieces = useMemo(
+    () =>
+      Array.from({ length: 30 }, (_, i) => ({
+        left: Math.random() * 100,
+        rounded: Math.random() > 0.5,
+        duration: 2 + Math.random() * 2,
+        delay: Math.random() * 0.5,
+        color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+      })),
+    []
+  );
 
   return (
     <Modal
@@ -127,19 +139,19 @@ export default function StartHere({ onComplete }: StartHereProps) {
               zIndex: 10,
             }}
           >
-            {Array.from({ length: 30 }).map((_, i) => (
+            {confettiPieces.map((piece, i) => (
               <Box
                 key={i}
                 sx={{
                   position: 'absolute',
-                  left: `${Math.random() * 100}%`,
+                  left: `${piece.left}%`,
                   top: '-10px',
                   width: '10px',
                   height: '10px',
-                  backgroundColor: confettiColors[i % confettiColors.length],
-                  borderRadius: Math.random() > 0.5 ? '50%' : '0',
-                  animation: `${confettiFall} ${2 + Math.random() * 2}s linear forwards`,
-                  animationDelay: `${Math.random() * 0.5}s`,
+                  backgroundColor: piece.color,
+                  borderRadius: piece.rounded ? '50%' : '0',
+                  animation: `${confettiFall} ${piece.duration}s linear forwards`,
+                  animationDelay: `${piece.delay}s`,
                 }}
               />
             ))}
