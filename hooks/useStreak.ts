@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
 export interface StreakData {
   currentStreak: number;
@@ -87,7 +87,6 @@ export function useStreak(): UseStreakReturn {
   // Load streak data on mount
   useEffect(() => {
     const data = loadStreakData();
-    const today = getTodayDate();
     const currentWeekStart = getWeekStartDate();
 
     // Reset freeze if new week started
@@ -156,7 +155,7 @@ export function useStreak(): UseStreakReturn {
     hoursSinceLastActivity >= 24 &&
     hoursSinceLastActivity < HOURS_UNTIL_STREAK_BREAK;
 
-  const milestones = [3, 7, 14, 30, 60, 100];
+  const milestones = useMemo(() => [3, 7, 14, 30, 60, 100], []);
 
   const isNewMilestone = useCallback(
     (streak: number): boolean => {

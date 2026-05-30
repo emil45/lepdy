@@ -57,9 +57,6 @@ const DIFFICULTY_SETTINGS = {
   hard: { time: 2000, options: 4 },
 } as const;
 
-const AUDIO_PLAY_DELAY = 800;
-const QUESTION_TRANSITION_DELAY = 1200;
-const TIMEOUT_GRACE_PERIOD = 200;
 const CELEBRATION_THRESHOLD = 0.7;
 
 const CATEGORY_CONFIGS = [
@@ -445,7 +442,7 @@ export default function SpeedChallengeContent() {
 
       {/* Answer Options */}
       <Grid container spacing={3} sx={{ maxWidth: 700 }}>
-        {options.map((option, index) => (
+        {options.map((option) => (
           <Grid size={{ xs: 6 }} key={option.id}>
             <Card
               elevation={4}

@@ -111,19 +111,6 @@ function TracingCanvasComponent({
     onCoverageChange(0);
   }, [letterName, onCoverageChange]);
 
-  // Check if point is on the letter
-  const isPointOnLetter = useCallback((x: number, y: number): boolean => {
-    const maskCanvas = maskCanvasRef.current;
-    if (!maskCanvas) return false;
-
-    const maskCtx = maskCanvas.getContext('2d', { willReadFrequently: true });
-    if (!maskCtx) return false;
-
-    // Check pixel at this position
-    const pixel = maskCtx.getImageData(Math.floor(x), Math.floor(y), 1, 1);
-    return pixel.data[3] > 128; // Alpha > 128 means on letter
-  }, []);
-
   // Mark pixels as covered and update progress
   const markPixelsCovered = useCallback((x: number, y: number) => {
     if (hasCompletedRef.current) return;
