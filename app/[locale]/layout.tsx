@@ -33,9 +33,15 @@ function generateJsonLd(locale: string) {
   };
 
   const descriptions: Record<string, string> = {
-    he: 'אתר חינוכי אינטראקטיבי לילדים - לימוד אותיות עברית, מספרים, צבעים, צורות ומשחקים חינוכיים. עם הגיית ילדה ישראלית אמיתית.',
-    en: 'Interactive educational website for children - learn Hebrew letters, numbers, colors, shapes and educational games. With real Israeli child pronunciation.',
-    ru: 'Интерактивный образовательный сайт для детей - изучение ивритских букв, цифр, цветов, форм и развивающие игры. С реальным произношением израильского ребенка.',
+    he: 'לפדי הוא אתר חינוכי חינמי ואינטראקטיבי ללימוד עברית לילדים בגיל הרך (גילאי 2-7). הילדים לומדים את 22 אותיות האלף-בית, מספרים 1-10, צבעים, צורות, חיות ומאכלים — כל פריט עם הגייה אמיתית של ילדה ישראלית. האתר כולל גם משחקים חינוכיים מהנים, ללא פרסומות וללא צורך בהרשמה.',
+    en: 'Lepdy is a free, interactive educational website for teaching Hebrew to young children (ages 2-7). Kids learn the 22 Alef Bet letters, numbers 1-10, colors, shapes, animals and food — each item voiced with authentic pronunciation by a real Israeli child. It also includes fun educational games, with no ads and no sign-up required.',
+    ru: 'Lepdy — бесплатный интерактивный образовательный сайт для обучения детей ивриту (2-7 лет). Дети изучают 22 буквы алеф-бет, числа 1-10, цвета, формы, животных и еду — каждый элемент озвучен настоящим израильским ребёнком. Также есть развивающие игры, без рекламы и без регистрации.',
+  };
+
+  const featureLists: Record<string, string[]> = {
+    he: ['לימוד 22 אותיות האלף-בית', 'מספרים 1-10', 'צבעים', 'צורות', 'חיות', 'מאכלים', 'משחקים חינוכיים', 'הגייה אמיתית של ילדה ישראלית'],
+    en: ['Learn the 22 Alef Bet letters', 'Numbers 1-10', 'Colors', 'Shapes', 'Animals', 'Food', 'Educational games', 'Authentic Israeli child pronunciation'],
+    ru: ['22 буквы алеф-бет', 'Числа 1-10', 'Цвета', 'Формы', 'Животные', 'Еда', 'Развивающие игры', 'Настоящее произношение израильского ребёнка'],
   };
 
   return {
@@ -50,6 +56,8 @@ function generateJsonLd(locale: string) {
         applicationCategory: 'EducationalApplication',
         operatingSystem: 'Web Browser',
         browserRequirements: 'Requires JavaScript',
+        isAccessibleForFree: true,
+        featureList: featureLists[locale] || featureLists.he,
         offers: {
           '@type': 'Offer',
           price: '0',
@@ -231,8 +239,9 @@ export default async function LocaleLayout({ children, params }: Props) {
             }
           }
         `}} />
-        <Script
-          id="json-ld"
+        {/* Plain <script> (not next/script) so the JSON-LD is in the static
+            server-rendered HTML and reliably crawled without executing JS. */}
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />

@@ -1,7 +1,6 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
-import { generatePageMetadata, BASE_URL } from '@/lib/seo';
+import { generatePageMetadata } from '@/lib/seo';
 import AboutContent from './AboutContent';
-import Script from 'next/script';
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -38,8 +37,7 @@ export default async function AboutPage({ params }: Props) {
 
   return (
     <>
-      <Script
-        id="faq-schema"
+      <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
