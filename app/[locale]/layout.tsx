@@ -33,9 +33,9 @@ function generateJsonLd(locale: string) {
   };
 
   const descriptions: Record<string, string> = {
-    he: 'לפדי הוא אתר חינוכי חינמי ואינטראקטיבי ללימוד עברית לילדים בגיל הרך (גילאי 2-7). הילדים לומדים את 22 אותיות האלף-בית, מספרים 1-10, צבעים, צורות, חיות ומאכלים — כל פריט עם הגייה אמיתית של ילדה ישראלית. האתר כולל גם משחקים חינוכיים מהנים, ללא פרסומות וללא צורך בהרשמה.',
-    en: 'Lepdy is a free, interactive educational website for teaching Hebrew to young children (ages 2-7). Kids learn the 22 Alef Bet letters, numbers 1-10, colors, shapes, animals and food — each item voiced with authentic pronunciation by a real Israeli child. It also includes fun educational games, with no ads and no sign-up required.',
-    ru: 'Lepdy — бесплатный интерактивный образовательный сайт для обучения детей ивриту (2-7 лет). Дети изучают 22 буквы алеф-бет, числа 1-10, цвета, формы, животных и еду — каждый элемент озвучен настоящим израильским ребёнком. Также есть развивающие игры, без рекламы и без регистрации.',
+    he: 'לפדי הוא אתר חינוכי חינמי ואינטראקטיבי ללימוד עברית לילדים (גילאי 2-10). הילדים לומדים את 22 אותיות האלף-בית, מספרים 1-10, צבעים, צורות, חיות ומאכלים — כל פריט עם הגייה אמיתית של ילדה ישראלית. האתר כולל גם משחקים חינוכיים מהנים, ללא פרסומות וללא צורך בהרשמה.',
+    en: 'Lepdy is a free, interactive educational website for teaching Hebrew to children (ages 2-10). Kids learn the 22 Alef Bet letters, numbers 1-10, colors, shapes, animals and food — each item voiced with authentic pronunciation by a real Israeli child. It also includes fun educational games, with no ads and no sign-up required.',
+    ru: 'Lepdy — бесплатный интерактивный образовательный сайт для обучения детей ивриту (2-10 лет). Дети изучают 22 буквы алеф-бет, числа 1-10, цвета, формы, животных и еду — каждый элемент озвучен настоящим израильским ребёнком. Также есть развивающие игры, без рекламы и без регистрации.',
   };
 
   const featureLists: Record<string, string[]> = {
@@ -68,6 +68,7 @@ function generateJsonLd(locale: string) {
           '@type': 'EducationalAudience',
           educationalRole: 'student',
           audienceType: 'Children',
+          typicalAgeRange: '2-10',
         },
         author: {
           '@type': 'Organization',
