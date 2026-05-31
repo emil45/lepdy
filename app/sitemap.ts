@@ -44,7 +44,8 @@ const routes: Route[] = [
 
   // Info Pages
   { path: '/safety', priority: 0.5, changeFrequency: 'yearly' },
-  { path: '/contact', priority: 0.5, changeFrequency: 'yearly' },
+  { path: '/privacy', priority: 0.4, changeFrequency: 'yearly' },
+  { path: '/terms', priority: 0.4, changeFrequency: 'yearly' },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

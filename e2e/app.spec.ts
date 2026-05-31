@@ -340,7 +340,7 @@ test.describe('Chess checkmate puzzles', () => {
 });
 
 test.describe('Info pages load', () => {
-  const pages = ['learn', 'about', 'safety', 'contact'];
+  const pages = ['learn', 'about', 'safety', 'privacy', 'terms'];
   for (const p of pages) {
     test(`${p} page loads`, async ({ page }) => {
       await page.goto(`/${p}`);

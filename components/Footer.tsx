@@ -22,7 +22,9 @@ export default function Footer() {
       <Typography color="textSecondary">·</Typography>
       <MuiLink component={Link} href={getPath('safety')} sx={linkSx}>{t('safety')}</MuiLink>
       <Typography color="textSecondary">·</Typography>
-      <MuiLink component={Link} href={getPath('contact')} sx={linkSx}>{t('contact')}</MuiLink>
+      <MuiLink component={Link} href={getPath('privacy')} sx={linkSx}>{t('privacy')}</MuiLink>
+      <Typography color="textSecondary">·</Typography>
+      <MuiLink component={Link} href={getPath('terms')} sx={linkSx}>{t('terms')}</MuiLink>
       <Typography color="textSecondary">·</Typography>
       <Typography variant="body2" color="textSecondary">
         Noa © {new Date().getFullYear()}

@@ -919,6 +919,8 @@
   "footer": {
     "about": "About",
     "safety": "Safety",
+    "privacy": "Privacy",
+    "terms": "Terms",
     "contact": "Contact"
   },
   "parentGate": {
@@ -948,14 +950,14 @@
     "intro": "At Lepdy, we take child safety and privacy very seriously. Our app is designed to provide a safe, educational environment for young learners.",
     "noAds": "No Advertisements",
     "noAdsText": "Lepdy is completely ad-free. Children can learn without interruptions or exposure to inappropriate content.",
-    "noDataCollection": "No Data Collection",
-    "noDataCollectionText": "We do not collect personal information from children. Your child's privacy is protected at all times.",
+    "noDataCollection": "Limited Personal Data",
+    "noDataCollectionText": "We do not ask children to submit personal information during normal play. Some parent-facing features and site analytics may process limited data as described in our Privacy Policy.",
     "parentalControls": "Parental Controls",
     "parentalControlsText": "Parent-only sections are protected by a simple math gate that children typically cannot solve, ensuring parents maintain control over app settings and information pages.",
     "offlineCapable": "Safe Learning Environment",
     "offlineCapableText": "The app contains only age-appropriate educational content carefully designed for children and families.",
-    "coppaCompliant": "Privacy Commitment",
-    "coppaCompliantText": "We are committed to protecting children's privacy and follow best practices for children's applications."
+    "coppaCompliant": "Parent Transparency",
+    "coppaCompliantText": "Parents can review our Privacy Policy and contact us with questions about data handling, cloud sync, or deletion requests."
   },
   "contact": {
     "pageTitle": "Contact Us",
