@@ -715,116 +715,32 @@
       "subtitle": "Help your child master Hebrew letters, numbers, colors, shapes, animals and food through engaging audio-visual activities with authentic Hebrew pronunciation",
       "cta": "Start Learning Hebrew"
     },
-    "why": {
-      "title": "Why Choose Our Educational App?"
-    },
-    "features": {
-      "audio": {
-        "title": "Hebrew Audio Learning",
-        "description": "Every Hebrew letter, number and word comes with clear, native pronunciation to enhance learning through authentic Hebrew audio."
-      },
-      "bilingual": {
-        "title": "Hebrew-Focused Education",
-        "description": "Dedicated Hebrew learning experience with multilingual UI support, perfect for children beginning their Hebrew language journey."
-      },
-      "interactive": {
-        "title": "Interactive Games",
-        "description": "Educational games and activities that make learning fun and engaging for children."
-      },
-      "responsive": {
-        "title": "Works Everywhere",
-        "description": "Optimized for tablets, phones and computers - learn anywhere, anytime."
-      },
-      "family": {
-        "title": "Family-Friendly",
-        "description": "Safe, ad-free environment designed specifically for children and families."
-      },
-      "educational": {
-        "title": "Pedagogically Sound",
-        "description": "Content developed based on proven educational methodologies for early childhood learning."
-      }
-    },
     "topics": {
       "title": "What Will Your Child Learn?",
       "letters": {
         "title": "Hebrew Aleph-Bet",
-        "description": "Master all 22 Hebrew letters with authentic pronunciation and proper right-to-left reading skills."
+        "description": "All 22 letters with authentic pronunciation and right-to-left reading."
       },
       "numbers": {
-        "title": "Hebrew Numbers 1-10",
-        "description": "Learn Hebrew counting from 1-10 with native pronunciation and number recognition skills."
+        "title": "Numbers 1–10",
+        "description": "Counting from one to ten, with a real voice for every number."
       },
       "colors": {
-        "title": "Colors in Hebrew",
-        "description": "Discover and identify colors while learning their Hebrew names through interactive activities."
+        "title": "Colors",
+        "description": "Name and recognize colors through bright, tappable cards."
       },
       "shapes": {
-        "title": "Shapes in Hebrew",
-        "description": "Explore geometric shapes while learning their Hebrew names and developing spatial awareness."
+        "title": "Shapes",
+        "description": "Circles, squares, triangles and more — each with its Hebrew name."
       },
       "animals": {
-        "title": "Animals in Hebrew",
-        "description": "Meet different animals and learn their Hebrew names along with authentic animal sounds."
+        "title": "Animals",
+        "description": "Meet the animals and hear the sounds they really make."
       },
       "food": {
-        "title": "Food in Hebrew",
-        "description": "Discover various foods while building Hebrew vocabulary through interactive learning."
+        "title": "Food",
+        "description": "Everyday foods that build a child’s first Hebrew vocabulary."
       }
-    },
-    "benefits": {
-      "title": "Educational Benefits for Your Child",
-      "description1": "Our platform combines proven pedagogical methods with modern technology to create an optimal learning environment for young children. Research shows that multisensory learning approaches significantly improve retention and understanding in early childhood education.",
-      "description2": "The audio-visual combination helps children develop both visual recognition and auditory processing skills, while the interactive elements maintain engagement and motivation. The Hebrew-focused approach supports cognitive development and introduces children to this beautiful ancient language.",
-      "description3": "All content is carefully designed to be age-appropriate, culturally sensitive, and educationally effective. Parents can feel confident that their children are learning in a safe, structured environment that promotes both academic growth and cultural understanding."
-    },
-    "faq": {
-      "title": "Frequently Asked Questions About Hebrew Learning",
-      "faq1": {
-        "question": "What age is best to start learning Hebrew letters?",
-        "answer": "Children can start recognizing Hebrew letters as early as 2-3 years old. Our app works for all ages, with activities suitable for young learners. Early exposure to Hebrew sounds and visual recognition creates strong foundations for future Hebrew reading and writing skills."
-      },
-      "faq2": {
-        "question": "How long should daily Hebrew practice sessions be?",
-        "answer": "We recommend 10-15 minute sessions for optimal learning. Short, frequent practice is more effective than long sessions."
-      },
-      "faq3": {
-        "question": "Do I need to know Hebrew to help my child learn?",
-        "answer": "Not at all! Our app provides authentic Hebrew pronunciation for every letter, number, and word. Parents can learn alongside their children. The interface supports multiple languages while maintaining focus on Hebrew learning objectives."
-      },
-      "faq4": {
-        "question": "What makes this Hebrew learning app different from others?",
-        "answer": "Our app combines authentic Hebrew audio, interactive games, and educational methodologies. We focus exclusively on Hebrew learning with native pronunciation and right-to-left reading practice."
-      },
-      "faq5": {
-        "question": "Can my child use this app independently?",
-        "answer": "Yes! The app is designed for independent learning while encouraging parent participation. Clear visual cues, audio instructions, and intuitive navigation allow children to explore and learn at their own pace while parents can observe and provide support."
-      },
-      "faq6": {
-        "question": "What devices does the Hebrew learning app work on?",
-        "answer": "Our web-based app works on all devices - tablets, phones, computers, and smart TVs. No downloads required! The responsive design ensures optimal learning experience across all screen sizes with touch-friendly interfaces perfect for young learners."
-      }
-    },
-    "methodology": {
-      "title": "Our Proven Hebrew Learning Methodology",
-      "scientific": {
-        "title": "Research-Based Hebrew Education",
-        "description": "Our Hebrew learning approach incorporates multisensory learning techniques to enhance Hebrew letter recognition and pronunciation skills.",
-        "point1": "Visual-auditory learning combines Hebrew letter shapes with authentic pronunciation",
-        "point2": "Spaced repetition system optimizes Hebrew vocabulary retention",
-        "point3": "Interactive feedback reinforces correct Hebrew learning patterns"
-      },
-      "practical": {
-        "title": "Hands-On Hebrew Learning Activities",
-        "description": "Hebrew learning activities engage multiple senses while building practical Hebrew skills. From tracing Hebrew letters to playing Hebrew memory games, children develop Hebrew foundations.",
-        "step1": "Listen to authentic Hebrew pronunciation for each letter and word",
-        "step2": "Practice Hebrew letter recognition through interactive visual games",
-        "step3": "Reinforce Hebrew learning through engaging memory and matching activities"
-      }
-    },
-    "finalCta": {
-      "title": "Ready to Begin the Hebrew Learning Journey?",
-      "subtitle": "Start your Hebrew learning journey today",
-      "button": "Start Learning Hebrew Now"
     }
   },
   "food": {
@@ -931,19 +847,137 @@
     "submit": "Continue"
   },
   "about": {
-    "pageTitle": "About Lepdy",
-    "intro": "Lepdy is an interactive Hebrew learning app designed for children and families. Our mission is to make learning Hebrew fun, engaging, and accessible for learners of all ages.",
-    "whatWeOffer": "What We Offer",
-    "features": {
-      "letters": "Learn the complete Hebrew alphabet (Alef-Bet) with authentic pronunciation",
-      "numbers": "Master Hebrew numbers 1-10 with interactive counting activities",
-      "vocabulary": "Build vocabulary with colors, shapes, animals, and food categories",
-      "games": "Reinforce learning through fun educational games like memory match, Simon, and word builder"
+    "hero": {
+      "eyebrow": "Our story",
+      "title": "Built for our daughter. Shared with your family.",
+      "subtitle": "Lepdy started as one parent’s way to teach their child Hebrew at home. Today it’s a free, ad-free place where children aged 2–7 fall in love with the Alef-Bet — at their own pace, in a real voice.",
+      "updatedLabel": "Updated"
     },
-    "ourApproach": "Our Approach",
-    "approachText": "We believe children learn best through play and exploration. Every element in Lepdy is designed with young learners in mind - from the colorful, friendly interface to the authentic Hebrew pronunciation recorded by a native Israeli child. Our multisensory approach combines visual, auditory, and interactive elements to create an engaging learning experience.",
-    "madeWithLove": "Made with Love",
-    "madeWithLoveText": "Lepdy was created by a parent who wanted to help their child learn Hebrew. The app features real pronunciation by Noa, ensuring children hear authentic Hebrew from the very start of their learning journey."
+    "trust": {
+      "letters": {
+        "value": "22",
+        "label": "Alef-Bet letters"
+      },
+      "categories": {
+        "value": "6",
+        "label": "learning topics"
+      },
+      "games": {
+        "value": "10",
+        "label": "educational games"
+      },
+      "price": {
+        "value": "Free",
+        "label": "no ads, ever"
+      },
+      "account": {
+        "value": "No sign-up",
+        "label": "just open and play"
+      }
+    },
+    "founder": {
+      "title": "Made by a parent. Voiced by a real child.",
+      "body": "Every letter, number and word you hear is spoken by Noa, a real Israeli girl — not a synthetic voice. We wanted children to hear Hebrew the way it’s actually spoken at home: warm and natural, from the very first tap.",
+      "signature": "— The Lepdy family"
+    },
+    "preview": {
+      "title": "A peek inside",
+      "subtitle": "Big, colorful cards. One tap plays the sound. That’s the whole idea."
+    },
+    "learn": {
+      "title": "What your child will explore",
+      "subtitle": "Six worlds to discover, each one a tap away.",
+      "cardCta": "Start learning"
+    },
+    "games": {
+      "title": "Learning that feels like play",
+      "body": "Ten little games turn practice into something kids ask to do again — matching, memory, counting, catching falling letters, even tracing their first Hebrew shapes.",
+      "cta": "See all games"
+    },
+    "whyTrust": {
+      "title": "Why parents trust Lepdy",
+      "items": {
+        "authentic": {
+          "title": "A real voice",
+          "description": "Native pronunciation by an Israeli child, not a robot."
+        },
+        "free": {
+          "title": "Free and ad-free",
+          "description": "No ads, no pop-ups, nothing to buy. A calm place to learn."
+        },
+        "noLogin": {
+          "title": "No sign-up needed",
+          "description": "Open the page and start. No account, no email, no download."
+        },
+        "everywhere": {
+          "title": "Works on any screen",
+          "description": "Phone, tablet or computer — the cards resize to fit."
+        },
+        "independent": {
+          "title": "Kids can explore alone",
+          "description": "Clear pictures and audio mean little ones don’t need to read to play."
+        },
+        "rewards": {
+          "title": "Rewards that motivate",
+          "description": "Stickers and a growing word collection keep children coming back."
+        }
+      }
+    },
+    "how": {
+      "title": "How children learn with Lepdy",
+      "intro": "Young children learn best through their senses and through play. Lepdy is built around one simple loop, repeated often:",
+      "steps": {
+        "listen": {
+          "title": "Listen",
+          "description": "Tap a card to hear the word in a clear, real voice."
+        },
+        "see": {
+          "title": "See",
+          "description": "A bold image and color anchor the word in memory."
+        },
+        "play": {
+          "title": "Play",
+          "description": "Games turn fresh words into something kids practice for fun."
+        },
+        "collect": {
+          "title": "Collect",
+          "description": "Stickers and saved words celebrate every step forward."
+        }
+      },
+      "note": "No pressure, no scores to beat — just curiosity, repeated often."
+    },
+    "faq": {
+      "title": "Questions parents ask",
+      "faq1": {
+        "question": "What age is Lepdy for?",
+        "answer": "Lepdy is designed for children aged 2 to 7. Toddlers enjoy tapping cards and hearing sounds, while older kids dive into the games and start recognizing letters and numbers on their own."
+      },
+      "faq2": {
+        "question": "How long should a session be?",
+        "answer": "Short and often works best at this age — about 10 to 15 minutes. Frequent little visits beat one long sitting."
+      },
+      "faq3": {
+        "question": "Do I need to know Hebrew to help?",
+        "answer": "Not at all. Every letter, number and word plays its own pronunciation, so you and your child can learn together from scratch."
+      },
+      "faq4": {
+        "question": "Is Lepdy really free?",
+        "answer": "Yes — completely free, with no ads and no account required. Just open the site and start playing."
+      },
+      "faq5": {
+        "question": "Can my child use it alone?",
+        "answer": "Yes. Clear pictures, audio cues and simple navigation let children explore at their own pace, with or without a grown-up nearby."
+      },
+      "faq6": {
+        "question": "What devices does it work on?",
+        "answer": "Any modern device with a browser — phone, tablet or computer. There’s nothing to download or install."
+      }
+    },
+    "cta": {
+      "title": "Ready to start?",
+      "subtitle": "Open the Alef-Bet and let your child take the first tap.",
+      "button": "Start learning — it’s free"
+    }
   },
   "safety": {
     "pageTitle": "Child Safety & Privacy",
